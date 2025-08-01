@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Quiz | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .page-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr 200px 200px 200px auto;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .stat-card.available {
+            border-left-color: var(--accent-green);
+        }
+
+        .stat-card.taken {
+            border-left-color: #ff9800;
+        }
+
+        .stat-card.completed {
+            border-left-color: var(--primary-blue);
+        }
+
+        .stat-number {
+            font-size: var(--font-size-h2);
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-card.available .stat-number {
+            color: var(--accent-green);
+        }
+
+        .stat-card.taken .stat-number {
+            color: #ff9800;
+        }
+
+        .stat-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        /* Quiz Container */
+        .quizzes-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .quizzes-header {
+            background: var(--light-gray);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quizzes-title {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .view-toggle {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+
+        .view-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        /* Table View */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .quizzes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .quizzes-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .quizzes-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .quizzes-table tr:hover {
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .quiz-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .quiz-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: var(--border-radius-md);
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .quiz-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .quiz-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--dark-gray);
+        }
+
+        .quiz-course {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .quiz-meta {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .status-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .status-badge.available {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+        }
+
+        .status-badge.registered {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .status-badge.completed {
+            background: rgba(44, 110, 170, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .status-badge.expired {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            color: var(--primary-blue);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: var(--spacing-xs);
+            font-size: var(--font-size-small);
+        }
+
+        .action-btn:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .action-btn.primary {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .action-btn.success {
+            background: var(--accent-green);
+            color: var(--white);
+            border-color: var(--accent-green);
+        }
+
+        .action-btn.warning {
+            background: #ff9800;
+            color: var(--white);
+            border-color: #ff9800;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Card View */
+        .quizzes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+        }
+
+        .quiz-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-blue);
+        }
+
+        .quiz-card-header {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            position: relative;
+        }
+
+        .quiz-status-badge {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .quiz-card-title {
+            font-size: var(--font-size-h3);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .quiz-card-course {
+            font-size: var(--font-size-small);
+            opacity: 0.9;
+        }
+
+        .quiz-card-body {
+            padding: var(--spacing-lg);
+        }
+
+        .quiz-card-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .quiz-card-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .quiz-card-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Pagination */
+        .pagination-container {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .pagination-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            max-width: 500px;
+        }
+
+        .quiz-registration-info {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .quiz-info-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .quiz-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-small);
+        }
+
+        .quiz-rules {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .rules-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--dark-gray);
+        }
+
+        .rules-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules-list li {
+            padding: var(--spacing-xs) 0;
+            color: #666;
+            position: relative;
+            padding-left: var(--spacing-md);
+        }
+
+        .rules-list li::before {
+            content: "•";
+            color: var(--primary-blue);
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .quizzes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-card-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-card-actions {
+                flex-direction: column;
+            }
+            
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">S</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Student</span>
+                    <span class="header-role" id="userRole">Sinh viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation will be populated based on user role -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" id="pageTitle">🧪 Quản lý Quiz</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="quizManager.refreshData()" id="refreshBtn">
+                        🔄 Làm mới
+                    </button>
+                    <button class="btn btn-primary" onclick="quizManager.createQuiz()" id="createQuizBtn" style="display: none;">
+                        ➕ Tạo Quiz mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section" id="statsSection">
+                <div class="stat-card available">
+                    <div class="stat-number" id="availableQuizzes">0</div>
+                    <div class="stat-label">Quiz có sẵn</div>
+                </div>
+                <div class="stat-card taken">
+                    <div class="stat-number" id="registeredQuizzes">0</div>
+                    <div class="stat-label">Đã đăng ký</div>
+                </div>
+                <div class="stat-card completed">
+                    <div class="stat-number" id="completedQuizzes">0</div>
+                    <div class="stat-label">Đã hoàn thành</div>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label class="form-label">Tìm kiếm</label>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="form-control" 
+                            placeholder="Tìm theo tên quiz, khóa học..."
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Khóa học</label>
+                        <select id="courseFilter" class="form-control">
+                            <option value="">Tất cả khóa học</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="available">Có thể đăng ký</option>
+                            <option value="registered">Đã đăng ký</option>
+                            <option value="completed">Đã hoàn thành</option>
+                            <option value="expired">Hết hạn</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Độ khó</label>
+                        <select id="difficultyFilter" class="form-control">
+                            <option value="">Tất cả độ khó</option>
+                            <option value="Dễ">Dễ</option>
+                            <option value="Trung bình">Trung bình</option>
+                            <option value="Khó">Khó</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-secondary" onclick="quizManager.clearFilters()">
+                            🔄 Xóa bộ lọc
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Container -->
+            <div class="quizzes-container">
+                <div class="quizzes-header">
+                    <div class="quizzes-title" id="quizzesTitle">Danh sách Quiz</div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="table" onclick="quizManager.switchView('table')">
+                            📋 Bảng
+                        </button>
+                        <button class="view-btn" data-view="grid" onclick="quizManager.switchView('grid')">
+                            🗂️ Thẻ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table View -->
+                <div id="tableView">
+                    <div class="table-wrapper">
+                        <table class="quizzes-table">
+                            <thead>
+                                <tr>
+                                    <th>Quiz</th>
+                                    <th>Khóa học</th>
+                                    <th>Độ khó</th>
+                                    <th>Thời gian</th>
+                                    <th>Hạn chót</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quizzesTableBody">
+                                <!-- Quiz rows will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Grid View -->
+                <div id="gridView" style="display: none;">
+                    <div class="quizzes-grid" id="quizzesGrid">
+                        <!-- Quiz cards will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfo">
+                        Hiển thị 1-10 trong tổng số 0 kết quả
+                    </div>
+                    <div class="pagination-controls" id="paginationControls">
+                        <!-- Pagination buttons will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Quiz Registration Modal -->
+    <div class="modal" id="quizRegistrationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Đăng ký làm Quiz</h3>
+                <button class="modal-close" onclick="uiManager.hideModal(document.getElementById('quizRegistrationModal'))">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="quiz-registration-info">
+                    <div class="quiz-info-title" id="modalQuizTitle">Tên Quiz</div>
+                    <div class="quiz-info-grid">
+                        <div><strong>Khóa học:</strong> <span id="modalQuizCourse">-</span></div>
+                        <div><strong>Độ khó:</strong> <span id="modalQuizDifficulty">-</span></div>
+                        <div><strong>Thời gian:</strong> <span id="modalQuizDuration">-</span></div>
+                        <div><strong>Số câu hỏi:</strong> <span id="modalQuizQuestions">-</span></div>
+                        <div><strong>Hạn chót:</strong> <span id="modalQuizDeadline">-</span></div>
+                        <div><strong>Điểm tối đa:</strong> <span id="modalQuizMaxScore">100</span></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-rules">
+                    <div class="rules-title">📋 Quy tắc làm Quiz</div>
+                    <ul class="rules-list">
+                        <li>Chỉ có 1 lần làm quiz</li>
+                        <li>Không được thoát khỏi trang trong quá trình làm bài</li>
+                        <li>Bài làm sẽ tự động nộp khi hết thời gian</li>
+                        <li>Đảm bảo kết nối internet ổn định</li>
+                        <li>Không sử dụng tài liệu tham khảo</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="uiManager.hideModal(document.getElementById('quizRegistrationModal'))">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-primary" onclick="quizManager.registerForQuiz()">
+                    Đăng ký làm Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class QuizManager {
+            constructor() {
+                this.currentUser = null;
+                this.quizzes = [];
+                this.courses = [];
+                this.userQuizzes = [];
+                this.filteredQuizzes = [];
+                this.currentPage = 1;
+                this.quizzesPerPage = 10;
+                this.currentView = 'table';
+                this.selectedQuiz = null;
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['student', 'teacher', 'admin'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.renderView();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Filters
+                const searchInput = document.getElementById('searchInput');
+                const courseFilter = document.getElementById('courseFilter');
+                const statusFilter = document.getElementById('statusFilter');
+                const difficultyFilter = document.getElementById('difficultyFilter');
+
+                searchInput.addEventListener('input', () => this.filterQuizzes());
+                courseFilter.addEventListener('change', () => this.filterQuizzes());
+                statusFilter.addEventListener('change', () => this.filterQuizzes());
+                difficultyFilter.addEventListener('change', () => this.filterQuizzes());
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'U';
+                    document.getElementById('userRole').textContent = this.currentUser.role === 'teacher' ? '👨‍🏫 Giáo viên' : '👨‍🎓 Học viên';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load quiz data
+                    const quizResponse = await fetch('data/mock-quizzes.json');
+                    this.quizzes = await quizResponse.json();
+
+                    // Load course data for filter
+                    const courseResponse = await fetch('data/mock-courses.json');
+                    this.courses = await courseResponse.json();
+
+                    // Get user quiz data
+                    this.userQuizzes = this.currentUser.progress?.quizzes || [];
+
+                    // Filter quizzes based on user role
+                    if (this.currentUser.role === 'teacher') {
+                        // Filter to show only quizzes from teacher's courses
+                        const teacherCourses = this.courses.filter(course => course.instructor === this.currentUser.username);
+                        const teacherCourseIds = teacherCourses.map(course => course.courseId);
+                        this.quizzes = this.quizzes.filter(quiz => teacherCourseIds.includes(quiz.courseId));
+                    }
+
+                    // Enhance quiz data with user status
+                    this.quizzes = this.quizzes.map(quiz => {
+                        const userQuiz = this.userQuizzes.find(uq => uq.quizId === quiz.id);
+                        return {
+                            ...quiz,
+                            userStatus: this.getUserQuizStatus(quiz, userQuiz),
+                            userScore: userQuiz ? userQuiz.score : null,
+                            takenAt: userQuiz ? userQuiz.takenAt : null
+                        };
+                    });
+
+                    this.filteredQuizzes = [...this.quizzes];
+                    this.populateFilters();
+
+                } catch (error) {
+                    console.error('Error loading quiz data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu quiz', 'error');
+                }
+            }
+
+            populateFilters() {
+                // Populate course filter
+                const courseFilter = document.getElementById('courseFilter');
+                courseFilter.innerHTML = '<option value="">Tất cả khóa học</option>';
+                
+                const courseSet = new Set();
+                this.quizzes.forEach(quiz => {
+                    const course = this.courses.find(c => c.courseId === quiz.courseId);
+                    if (course) {
+                        courseSet.add(JSON.stringify({id: course.courseId, name: course.title}));
+                    }
+                });
+
+                Array.from(courseSet).forEach(courseStr => {
+                    const course = JSON.parse(courseStr);
+                    courseFilter.innerHTML += `<option value="${course.id}">${course.name}</option>`;
+                });
+            }
+
+            renderView() {
+                this.updatePageTitle();
+                this.updateStats();
+                this.renderQuizzes();
+            }
+
+            updatePageTitle() {
+                const pageTitle = document.getElementById('pageTitle');
+                const createBtn = document.getElementById('createQuizBtn');
+
+                if (this.currentUser.role === 'student') {
+                    pageTitle.textContent = '🧪 Quiz của tôi';
+                    createBtn.style.display = 'none';
+                } else {
+                    pageTitle.textContent = '🧪 Quản lý Quiz';
+                    createBtn.style.display = 'block';
+                }
+            }
+
+            updateStats() {
+                if (this.currentUser.role === 'student') {
+                    const available = this.quizzes.filter(q => q.userStatus === 'available').length;
+                    const registered = this.quizzes.filter(q => q.userStatus === 'registered').length;
+                    const completed = this.quizzes.filter(q => q.userStatus === 'completed').length;
+
+                    document.getElementById('availableQuizzes').textContent = available;
+                    document.getElementById('registeredQuizzes').textContent = registered;
+                    document.getElementById('completedQuizzes').textContent = completed;
+                } else {
+                    // Teacher/Admin stats
+                    document.getElementById('availableQuizzes').textContent = this.quizzes.length;
+                    document.getElementById('registeredQuizzes').textContent = this.getTotalRegistrations();
+                    document.getElementById('completedQuizzes').textContent = this.getTotalCompletions();
+                }
+            }
+
+            filterQuizzes() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const courseFilter = document.getElementById('courseFilter').value;
+                const statusFilter = document.getElementById('statusFilter').value;
+                const difficultyFilter = document.getElementById('difficultyFilter').value;
+
+                this.filteredQuizzes = this.quizzes.filter(quiz => {
+                    const course = this.courses.find(c => c.courseId === quiz.courseId);
+                    const courseName = course ? course.title.toLowerCase() : '';
+
+                    const matchesSearch = !searchTerm || 
+                        quiz.title.toLowerCase().includes(searchTerm) ||
+                        courseName.includes(searchTerm);
+                    
+                    const matchesCourse = !courseFilter || quiz.courseId === courseFilter;
+                    const matchesStatus = !statusFilter || quiz.userStatus === statusFilter;
+                    const matchesDifficulty = !difficultyFilter || quiz.difficulty === difficultyFilter;
+
+                    return matchesSearch && matchesCourse && matchesStatus && matchesDifficulty;
+                });
+
+                this.currentPage = 1;
+                this.renderQuizzes();
+            }
+
+            clearFilters() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('courseFilter').value = '';
+                document.getElementById('statusFilter').value = '';
+                document.getElementById('difficultyFilter').value = '';
+                this.filterQuizzes();
+            }
+
+            switchView(view) {
+                this.currentView = view;
+                
+                // Update view buttons
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-view="${view}"]`).classList.add('active');
+
+                // Toggle view containers
+                if (view === 'table') {
+                    document.getElementById('tableView').style.display = 'block';
+                    document.getElementById('gridView').style.display = 'none';
+                } else {
+                    document.getElementById('tableView').style.display = 'none';
+                    document.getElementById('gridView').style.display = 'block';
+                }
+
+                this.renderQuizzes();
+            }
+
+            renderQuizzes() {
+                if (this.currentView === 'table') {
+                    this.renderTableView();
+                } else {
+                    this.renderGridView();
+                }
+                this.renderPagination();
+            }
+
+            renderTableView() {
+                const tbody = document.getElementById('quizzesTableBody');
+                const startIndex = (this.currentPage - 1) * this.quizzesPerPage;
+                const endIndex = startIndex + this.quizzesPerPage;
+                const pageQuizzes = this.filteredQuizzes.slice(startIndex, endIndex);
+
+                if (pageQuizzes.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <div class="empty-icon">🧪</div>
+                                <p>Không tìm thấy quiz nào</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                const quizzesHTML = pageQuizzes.map(quiz => {
+                    const course = this.courses.find(c => c.courseId === quiz.courseId);
+                    const courseName = course ? course.title : 'Khóa học không xác định';
+
+                    return `
+                        <tr>
+                            <td>
+                                <div class="quiz-info">
+                                    <div class="quiz-icon">🧪</div>
+                                    <div class="quiz-details">
+                                        <div class="quiz-name">${quiz.title}</div>
+                                        <div class="quiz-course">${quiz.description || 'Không có mô tả'}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${courseName}</td>
+                            <td>${quiz.difficulty}</td>
+                            <td>
+                                <div class="quiz-meta">
+                                    <div>${quiz.duration} phút</div>
+                                    <div>${quiz.questions.length} câu hỏi</div>
+                                </div>
+                            </td>
+                            <td>${uiManager.formatDate(quiz.deadline)}</td>
+                            <td>
+                                <span class="status-badge ${quiz.userStatus}">
+                                    ${this.getStatusText(quiz.userStatus)}
+                                </span>
+                            </td>
+                            <td class="actions-cell">
+                                ${this.renderQuizActions(quiz)}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.innerHTML = quizzesHTML;
+            }
+
+            renderGridView() {
+                const container = document.getElementById('quizzesGrid');
+                const startIndex = (this.currentPage - 1) * this.quizzesPerPage;
+                const endIndex = startIndex + this.quizzesPerPage;
+                const pageQuizzes = this.filteredQuizzes.slice(startIndex, endIndex);
+
+                if (pageQuizzes.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1;" class="empty-state">
+                            <div class="empty-icon">🧪</div>
+                            <p>Không tìm thấy quiz nào</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const quizzesHTML = pageQuizzes.map(quiz => {
+                    const course = this.courses.find(c => c.courseId === quiz.courseId);
+                    const courseName = course ? course.title : 'Khóa học không xác định';
+
+                    return `
+                        <div class="quiz-card">
+                            <div class="quiz-card-header">
+                                <div class="quiz-status-badge">${this.getStatusText(quiz.userStatus)}</div>
+                                <h3 class="quiz-card-title">${quiz.title}</h3>
+                                <div class="quiz-card-course">📚 ${courseName}</div>
+                            </div>
+                            <div class="quiz-card-body">
+                                <div class="quiz-card-meta">
+                                    <div class="meta-item">
+                                        <span>⏱️</span> ${quiz.duration} phút
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>❓</span> ${quiz.questions.length} câu hỏi
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📊</span> ${quiz.difficulty}
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📅</span> ${uiManager.formatDate(quiz.deadline)}
+                                    </div>
+                                </div>
+                                
+                                <div class="quiz-card-description">
+                                    ${quiz.description || 'Không có mô tả cho quiz này.'}
+                                </div>
+                                
+                                <div class="quiz-card-actions">
+                                    ${this.renderQuizActions(quiz)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = quizzesHTML;
+            }
+
+            renderQuizActions(quiz) {
+                const actions = [];
+
+                if (this.currentUser.role === 'student') {
+                    switch (quiz.userStatus) {
+                        case 'available':
+                            actions.push(`<button class="action-btn primary" onclick="quizManager.showRegistrationModal('${quiz.id}')">📝 Đăng ký</button>`);
+                            break;
+                        case 'registered':
+                            actions.push(`<button class="action-btn success" onclick="quizManager.startQuiz('${quiz.id}')">▶️ Bắt đầu</button>`);
+                            break;
+                        case 'completed':
+                            actions.push(`<button class="action-btn" onclick="quizManager.viewResults('${quiz.id}')">📊 Xem kết quả</button>`);
+                            if (quiz.userScore) {
+                                actions.push(`<span style="color: var(--accent-green); font-weight: bold;">${quiz.userScore}/100</span>`);
+                            }
+                            break;
+                        case 'expired':
+                            actions.push(`<button class="action-btn" disabled>⏰ Hết hạn</button>`);
+                            break;
+                    }
+                } else {
+                    // Teacher/Admin actions
+                    actions.push(`<button class="action-btn" onclick="quizManager.editQuiz('${quiz.id}')">✏️ Sửa</button>`);
+                    actions.push(`<button class="action-btn" onclick="quizManager.viewQuizResults('${quiz.id}')">📊 Kết quả</button>`);
+                    actions.push(`<button class="action-btn warning" onclick="quizManager.deleteQuiz('${quiz.id}')">🗑️ Xóa</button>`);
+                }
+
+                return actions.join(' ');
+            }
+
+            renderPagination() {
+                const totalPages = Math.ceil(this.filteredQuizzes.length / this.quizzesPerPage);
+                const startIndex = (this.currentPage - 1) * this.quizzesPerPage + 1;
+                const endIndex = Math.min(startIndex + this.quizzesPerPage - 1, this.filteredQuizzes.length);
+
+                // Update pagination info
+                document.getElementById('paginationInfo').textContent = 
+                    `Hiển thị ${startIndex}-${endIndex} trong tổng số ${this.filteredQuizzes.length} kết quả`;
+
+                // Update pagination controls
+                const controls = document.getElementById('paginationControls');
+                let paginationHTML = '';
+
+                // Previous button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} 
+                            onclick="quizManager.goToPage(${this.currentPage - 1})">
+                        ‹ Trước
+                    </button>
+                `;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= this.currentPage - 2 && i <= this.currentPage + 2)) {
+                        paginationHTML += `
+                            <button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" 
+                                    onclick="quizManager.goToPage(${i})">
+                                ${i}
+                            </button>
+                        `;
+                    } else if (i === this.currentPage - 3 || i === this.currentPage + 3) {
+                        paginationHTML += '<span class="pagination-ellipsis">...</span>';
+                    }
+                }
+
+                // Next button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} 
+                            onclick="quizManager.goToPage(${this.currentPage + 1})">
+                        Sau ›
+                    </button>
+                `;
+
+                controls.innerHTML = paginationHTML;
+            }
+
+            goToPage(page) {
+                const totalPages = Math.ceil(this.filteredQuizzes.length / this.quizzesPerPage);
+                if (page >= 1 && page <= totalPages) {
+                    this.currentPage = page;
+                    this.renderQuizzes();
+                }
+            }
+
+            showRegistrationModal(quizId) {
+                const quiz = this.quizzes.find(q => q.id === quizId);
+                if (!quiz) return;
+
+                this.selectedQuiz = quiz;
+                const course = this.courses.find(c => c.courseId === quiz.courseId);
+
+                // Populate modal
+                document.getElementById('modalQuizTitle').textContent = quiz.title;
+                document.getElementById('modalQuizCourse').textContent = course ? course.title : 'N/A';
+                document.getElementById('modalQuizDifficulty').textContent = quiz.difficulty;
+                document.getElementById('modalQuizDuration').textContent = quiz.duration + ' phút';
+                document.getElementById('modalQuizQuestions').textContent = quiz.questions.length;
+                document.getElementById('modalQuizDeadline').textContent = uiManager.formatDate(quiz.deadline);
+
+                uiManager.showModal('quizRegistrationModal');
+            }
+
+            registerForQuiz() {
+                if (!this.selectedQuiz) return;
+
+                // Mock registration
+                this.selectedQuiz.userStatus = 'registered';
+                
+                uiManager.showToast('Đăng ký quiz thành công! Bạn có thể bắt đầu làm bài.', 'success');
+                
+                // Log activity
+                authManager.logActivity('Quiz Registration', `Registered for quiz: ${this.selectedQuiz.title}`);
+                
+                // Close modal and refresh
+                uiManager.hideModal(document.getElementById('quizRegistrationModal'));
+                this.updateStats();
+                this.renderQuizzes();
+            }
+
+            startQuiz(quizId) {
+                window.location.href = `quiz-attempt.html?id=${quizId}`;
+            }
+
+            viewResults(quizId) {
+                window.location.href = `quiz-results.html?id=${quizId}`;
+            }
+
+            createQuiz() {
+                window.location.href = 'quiz-builder.html';
+            }
+
+            editQuiz(quizId) {
+                window.location.href = `quiz-builder.html?id=${quizId}`;
+            }
+
+            viewQuizResults(quizId) {
+                window.location.href = `quiz-results.html?quiz=${quizId}`;
+            }
+
+            deleteQuiz(quizId) {
+                const quiz = this.quizzes.find(q => q.id === quizId);
+                if (!quiz) return;
+
+                uiManager.showConfirm(
+                    `Bạn có chắc muốn xóa quiz "${quiz.title}"?`,
+                    () => {
+                        uiManager.showToast('Quiz đã được xóa thành công', 'success');
+                        // Mock deletion - remove from array
+                        this.quizzes = this.quizzes.filter(q => q.id !== quizId);
+                        this.filteredQuizzes = this.filteredQuizzes.filter(q => q.id !== quizId);
+                        this.renderQuizzes();
+                        this.updateStats();
+                    }
+                );
+            }
+
+            refreshData() {
+                this.loadData().then(() => {
+                    this.renderView();
+                    uiManager.showToast('Đã làm mới dữ liệu', 'success');
+                });
+            }
+
+            getUserQuizStatus(quiz, userQuiz) {
+                const now = new Date();
+                const deadline = new Date(quiz.deadline);
+
+                if (userQuiz) {
+                    return 'completed';
+                }
+
+                if (deadline < now) {
+                    return 'expired';
+                }
+
+                // Check if user is registered (mock logic)
+                const isRegistered = Math.random() > 0.7; // 30% chance of being registered
+                return isRegistered ? 'registered' : 'available';
+            }
+
+            getStatusText(status) {
+                const statusMap = {
+                    'available': 'Có thể đăng ký',
+                    'registered': 'Đã đăng ký',
+                    'completed': 'Đã hoàn thành',
+                    'expired': 'Hết hạn'
+                };
+                return statusMap[status] || status;
+            }
+
+            getTotalRegistrations() {
+                // Mock data for teacher/admin view
+                return Math.floor(Math.random() * 100) + 50;
+            }
+
+            getTotalCompletions() {
+                // Mock data for teacher/admin view
+                return Math.floor(Math.random() * 80) + 30;
+            }
+        }
+
+        // Initialize quiz manager when DOM is loaded
+        let quizManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            quizManager = new QuizManager();
+        });
+    </script>
+</body>
+</html> 

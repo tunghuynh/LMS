@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Giảng viên | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            border-left: 4px solid var(--primary-blue);
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-card.courses { border-left-color: var(--primary-blue); }
+        .stat-card.students { border-left-color: var(--accent-green); }
+        .stat-card.quizzes { border-left-color: #ff9800; }
+        .stat-card.reviews { border-left-color: #9c27b0; }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: var(--font-size-body);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-change {
+            font-size: var(--font-size-small);
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .action-card {
+            background: var(--white);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-blue);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .action-title {
+            font-weight: 600;
+            font-size: var(--font-size-h3);
+            margin-bottom: var(--spacing-sm);
+            color: var(--dark-gray);
+        }
+
+        .action-desc {
+            font-size: var(--font-size-small);
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .recent-enrollments, .recent-quizzes {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .enrollment-item, .quiz-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .enrollment-item:last-child, .quiz-item:last-child {
+            border-bottom: none;
+        }
+
+        .enrollment-info, .quiz-info {
+            flex: 1;
+        }
+
+        .enrollment-name, .quiz-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .enrollment-course, .quiz-course {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .enrollment-time, .quiz-time {
+            font-size: var(--font-size-small);
+            color: #999;
+            margin-right: var(--spacing-md);
+        }
+
+        .course-management {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .course-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: all 0.2s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .course-header {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .course-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .course-title {
+            font-weight: 600;
+            font-size: var(--font-size-h3);
+        }
+
+        .course-content {
+            padding: var(--spacing-lg);
+        }
+
+        .course-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .course-stat {
+            text-align: center;
+        }
+
+        .course-stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .course-stat-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .course-actions .btn {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .course-management {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">T</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Teacher</span>
+                    <span class="header-role" id="userRole">Giảng viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <div class="content-header">
+                <h1 class="content-title">Dashboard Giảng viên</h1>
+                <p class="content-subtitle">Quản lý khóa học và theo dõi tiến độ học tập của học viên</p>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="stat-card courses">
+                    <div class="stat-number" id="totalCourses">3</div>
+                    <div class="stat-label">Khóa học đang giảng dạy</div>
+                    <div class="stat-change">
+                        <span>↗</span> +1 khóa học mới tháng này
+                    </div>
+                </div>
+
+                <div class="stat-card students">
+                    <div class="stat-number" id="totalStudents">75</div>
+                    <div class="stat-label">Tổng số học viên</div>
+                    <div class="stat-change">
+                        <span>↗</span> +12 học viên tuần này
+                    </div>
+                </div>
+
+                <div class="stat-card quizzes">
+                    <div class="stat-number" id="totalQuizzes">8</div>
+                    <div class="stat-label">Quiz đã tạo</div>
+                    <div class="stat-change">
+                        <span>↗</span> +2 quiz tuần này
+                    </div>
+                </div>
+
+                <div class="stat-card reviews">
+                    <div class="stat-number" id="avgRating">4.8</div>
+                    <div class="stat-label">Đánh giá trung bình</div>
+                    <div class="stat-change">
+                        <span>↗</span> +0.2 điểm tháng này
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Hành động nhanh</h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="course-create.html" class="action-card">
+                            <div class="action-icon">➕</div>
+                            <div class="action-title">Tạo khóa học</div>
+                            <div class="action-desc">Tạo khóa học mới với nội dung phong phú</div>
+                        </a>
+                        <a href="quiz-builder.html" class="action-card">
+                            <div class="action-icon">🧪</div>
+                            <div class="action-title">Tạo Quiz</div>
+                            <div class="action-desc">Soạn quiz để kiểm tra kiến thức học viên</div>
+                        </a>
+                        <a href="enrollments.html" class="action-card">
+                            <div class="action-icon">👥</div>
+                            <div class="action-title">Quản lý học viên</div>
+                            <div class="action-desc">Phê duyệt đăng ký và theo dõi tiến độ</div>
+                        </a>
+                        <a href="lesson-create.html" class="action-card">
+                            <div class="action-icon">📝</div>
+                            <div class="action-title">Thêm bài học</div>
+                            <div class="action-desc">Tạo bài học mới với video, PDF hoặc text</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Enrollments -->
+            <div class="recent-enrollments">
+                <h3 style="margin-bottom: var(--spacing-md);">Đăng ký gần đây</h3>
+                <div id="recentEnrollments">
+                    <!-- Enrollments will be loaded here -->
+                </div>
+            </div>
+
+            <!-- My Courses -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Khóa học của tôi</h3>
+                </div>
+                <div class="card-body">
+                    <div class="course-management" id="myCourses">
+                        <!-- Courses will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Quiz Results -->
+            <div class="recent-quizzes">
+                <h3 style="margin-bottom: var(--spacing-md);">Kết quả Quiz gần đây</h3>
+                <div id="recentQuizResults">
+                    <!-- Quiz results will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script>
+        class TeacherDashboard {
+            constructor() {
+                this.currentUser = null;
+                this.courses = [];
+                this.enrollments = [];
+                this.quizResults = [];
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['teacher'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.renderDashboard();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Responsive sidebar
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth > 768) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                        document.getElementById('content').classList.remove('sidebar-collapsed');
+                        document.getElementById('footer').classList.remove('sidebar-collapsed');
+                    }
+                });
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'T';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load courses
+                    const coursesResponse = await fetch('data/mock-courses.json');
+                    const allCourses = await coursesResponse.json();
+                    
+                    // Filter teacher's courses
+                    this.courses = allCourses.filter(course => course.instructor === this.currentUser.username);
+
+                    // Mock enrollment data
+                    this.enrollments = [
+                        {
+                            studentName: "Nguyễn Văn A",
+                            courseName: "Lập trình cơ bản",
+                            enrolledAt: "2024-03-15T10:30:00Z",
+                            status: "pending"
+                        },
+                        {
+                            studentName: "Trần Thị B",
+                            courseName: "Cấu trúc dữ liệu",
+                            enrolledAt: "2024-03-14T14:20:00Z",
+                            status: "approved"
+                        },
+                        {
+                            studentName: "Lê Văn C",
+                            courseName: "Lập trình cơ bản",
+                            enrolledAt: "2024-03-13T09:15:00Z",
+                            status: "pending"
+                        }
+                    ];
+
+                    // Mock quiz results
+                    this.quizResults = [
+                        {
+                            studentName: "Nguyễn Văn A",
+                            quizName: "Quiz Tuần 1 - Lập trình cơ bản",
+                            score: 85,
+                            totalScore: 100,
+                            submittedAt: "2024-03-15T16:45:00Z"
+                        },
+                        {
+                            studentName: "Trần Thị B",
+                            quizName: "Quiz Giữa kỳ - Lập trình cơ bản",
+                            score: 92,
+                            totalScore: 100,
+                            submittedAt: "2024-03-14T11:30:00Z"
+                        },
+                        {
+                            studentName: "Vũ Thị F",
+                            quizName: "Quiz JavaScript - Phát triển Web",
+                            score: 95,
+                            totalScore: 100,
+                            submittedAt: "2024-03-13T15:20:00Z"
+                        }
+                    ];
+
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu', 'error');
+                }
+            }
+
+            renderDashboard() {
+                this.updateStats();
+                this.renderRecentEnrollments();
+                this.renderMyCourses();
+                this.renderRecentQuizResults();
+            }
+
+            updateStats() {
+                // Update course count
+                document.getElementById('totalCourses').textContent = this.courses.length;
+
+                // Calculate total students
+                const totalStudents = this.courses.reduce((sum, course) => sum + course.studentsEnrolled, 0);
+                document.getElementById('totalStudents').textContent = totalStudents;
+
+                // Count quizzes (mock)
+                document.getElementById('totalQuizzes').textContent = 8;
+
+                // Average rating (mock)
+                document.getElementById('avgRating').textContent = '4.8';
+            }
+
+            renderRecentEnrollments() {
+                const container = document.getElementById('recentEnrollments');
+                
+                if (this.enrollments.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">Chưa có đăng ký mới.</p>';
+                    return;
+                }
+
+                const enrollmentsHTML = this.enrollments.slice(0, 5).map(enrollment => {
+                    const statusClass = enrollment.status === 'pending' ? 'warning' : 'success';
+                    const statusText = enrollment.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt';
+                    
+                    return `
+                        <div class="enrollment-item">
+                            <div class="enrollment-info">
+                                <div class="enrollment-name">${enrollment.studentName}</div>
+                                <div class="enrollment-course">${enrollment.courseName}</div>
+                            </div>
+                            <div class="enrollment-time">${uiManager.formatDateTime(enrollment.enrolledAt)}</div>
+                            <span class="badge ${statusClass}">${statusText}</span>
+                            ${enrollment.status === 'pending' ? `
+                                <button class="btn btn-success btn-small" onclick="teacherDashboard.approveEnrollment('${enrollment.studentName}')">
+                                    Duyệt
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = enrollmentsHTML;
+            }
+
+            renderMyCourses() {
+                const container = document.getElementById('myCourses');
+                
+                if (this.courses.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: var(--spacing-xl); color: #666; grid-column: 1 / -1;">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">📚</div>
+                            <p>Bạn chưa tạo khóa học nào.</p>
+                            <a href="course-create.html" class="btn btn-primary" style="margin-top: var(--spacing-md);">
+                                Tạo khóa học đầu tiên
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const coursesHTML = this.courses.map(course => `
+                    <div class="course-card">
+                        <div class="course-header">
+                            <div class="course-icon">📚</div>
+                            <div class="course-title">${course.title}</div>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-stats">
+                                <div class="course-stat">
+                                    <div class="course-stat-number">${course.studentsEnrolled}</div>
+                                    <div class="course-stat-label">Học viên</div>
+                                </div>
+                                <div class="course-stat">
+                                    <div class="course-stat-number">${course.lessons.length}</div>
+                                    <div class="course-stat-label">Bài học</div>
+                                </div>
+                            </div>
+                            <div class="course-actions">
+                                <a href="course-detail.html?id=${course.courseId}" class="btn btn-secondary btn-small">
+                                    Xem chi tiết
+                                </a>
+                                <a href="course-edit.html?id=${course.courseId}" class="btn btn-primary btn-small">
+                                    Chỉnh sửa
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = coursesHTML;
+            }
+
+            renderRecentQuizResults() {
+                const container = document.getElementById('recentQuizResults');
+                
+                if (this.quizResults.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">Chưa có kết quả quiz nào.</p>';
+                    return;
+                }
+
+                const resultsHTML = this.quizResults.slice(0, 5).map(result => {
+                    const percentage = Math.round((result.score / result.totalScore) * 100);
+                    const gradeClass = percentage >= 80 ? 'success' : percentage >= 60 ? 'warning' : 'danger';
+                    
+                    return `
+                        <div class="quiz-item">
+                            <div class="quiz-info">
+                                <div class="quiz-name">${result.studentName}</div>
+                                <div class="quiz-course">${result.quizName}</div>
+                            </div>
+                            <div class="quiz-time">${uiManager.formatDateTime(result.submittedAt)}</div>
+                            <span class="badge ${gradeClass}">${result.score}/${result.totalScore}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = resultsHTML;
+            }
+
+            approveEnrollment(studentName) {
+                uiManager.showConfirm(
+                    `Bạn có chắc muốn duyệt đăng ký của ${studentName}?`,
+                    () => {
+                        // Update enrollment status
+                        const enrollment = this.enrollments.find(e => e.studentName === studentName);
+                        if (enrollment) {
+                            enrollment.status = 'approved';
+                            this.renderRecentEnrollments();
+                            uiManager.showToast(`Đã duyệt đăng ký của ${studentName}`, 'success');
+                        }
+                    }
+                );
+            }
+        }
+
+        // Initialize dashboard when DOM is loaded
+        let teacherDashboard;
+        document.addEventListener('DOMContentLoaded', () => {
+            teacherDashboard = new TeacherDashboard();
+        });
+    </script>
+
+    <!-- Components -->
+    <script src="js/components/menu-manager.js"></script>
+</body>
+</html> 

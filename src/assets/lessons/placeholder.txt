@@ -1,0 +1,18 @@
+# Lessons Folder
+
+Thư mục này chứa các file bài học:
+
+## PDF Files
+- lesson2.pdf (Cấu trúc điều khiển)
+- lesson6.pdf (Danh sách liên kết)
+- lesson9.pdf (CSS Styling)
+- lesson13.pdf (SQL Cơ bản)
+- lesson16.pdf (Linear Regression)
+
+## Markdown Files
+- lesson3.md (Hàm Functions)
+- lesson7.md (Stack và Queue)
+- lesson11.md (Responsive Design)
+- lesson14.md (Thiết kế Database)
+
+**Lưu ý:** Các file này là placeholder. Trong production, cần thay thế bằng nội dung bài học thật. 

@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "user": "student01",
+    "action": "Login",
+    "description": "User logged in successfully",
+    "timestamp": "2024-03-15T08:30:00.000Z",
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 2,
+    "user": "student01",
+    "action": "Course Enrollment",
+    "description": "Enrolled in course: Lập trình cơ bản",
+    "timestamp": "2024-03-15T08:35:00.000Z",
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 3,
+    "user": "student01",
+    "action": "Lesson Completed",
+    "description": "Completed lesson: Biến và Kiểu dữ liệu",
+    "timestamp": "2024-03-15T09:15:00.000Z",
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 4,
+    "user": "teacher01",
+    "action": "Login",
+    "description": "Teacher logged in successfully",
+    "timestamp": "2024-03-15T07:45:00.000Z",
+    "ipAddress": "192.168.1.50",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 5,
+    "user": "teacher01",
+    "action": "Course Created",
+    "description": "Created new course: Machine Learning cơ bản",
+    "timestamp": "2024-03-15T10:20:00.000Z",
+    "ipAddress": "192.168.1.50",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 6,
+    "user": "student02",
+    "action": "Login",
+    "description": "User logged in successfully",
+    "timestamp": "2024-03-15T09:00:00.000Z",
+    "ipAddress": "192.168.1.101",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  },
+  {
+    "id": 7,
+    "user": "student02",
+    "action": "Quiz Attempt",
+    "description": "Started quiz: Quiz Tuần 1 - Lập trình cơ bản",
+    "timestamp": "2024-03-15T09:30:00.000Z",
+    "ipAddress": "192.168.1.101",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  },
+  {
+    "id": 8,
+    "user": "student02",
+    "action": "Quiz Completed",
+    "description": "Completed quiz: Quiz Tuần 1 - Lập trình cơ bản (Score: 78/100)",
+    "timestamp": "2024-03-15T10:00:00.000Z",
+    "ipAddress": "192.168.1.101",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  },
+  {
+    "id": 9,
+    "user": "admin01",
+    "action": "Login",
+    "description": "Admin logged in successfully",
+    "timestamp": "2024-03-15T08:00:00.000Z",
+    "ipAddress": "192.168.1.10",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 10,
+    "user": "admin01",
+    "action": "User Management",
+    "description": "Viewed user management dashboard",
+    "timestamp": "2024-03-15T08:05:00.000Z",
+    "ipAddress": "192.168.1.10",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 11,
+    "user": "teacher02",
+    "action": "Login",
+    "description": "Teacher logged in successfully",
+    "timestamp": "2024-03-15T09:45:00.000Z",
+    "ipAddress": "192.168.1.51",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15"
+  },
+  {
+    "id": 12,
+    "user": "teacher02",
+    "action": "Quiz Created",
+    "description": "Created new quiz: Quiz JavaScript - Phát triển Web",
+    "timestamp": "2024-03-15T11:00:00.000Z",
+    "ipAddress": "192.168.1.51",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15"
+  },
+  {
+    "id": 13,
+    "user": "student03",
+    "action": "Login",
+    "description": "User logged in successfully",
+    "timestamp": "2024-03-15T10:30:00.000Z",
+    "ipAddress": "192.168.1.102",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+  },
+  {
+    "id": 14,
+    "user": "student03",
+    "action": "Profile Update",
+    "description": "Updated learning goals",
+    "timestamp": "2024-03-15T10:45:00.000Z",
+    "ipAddress": "192.168.1.102",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+  },
+  {
+    "id": 15,
+    "user": "student01",
+    "action": "Logout",
+    "description": "User logged out",
+    "timestamp": "2024-03-15T11:30:00.000Z",
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 16,
+    "user": "teacher01",
+    "action": "Lesson Upload",
+    "description": "Uploaded new lesson: Linear Regression",
+    "timestamp": "2024-03-15T14:20:00.000Z",
+    "ipAddress": "192.168.1.50",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "id": 17,
+    "user": "admin01",
+    "action": "System Backup",
+    "description": "Initiated daily system backup",
+    "timestamp": "2024-03-15T02:00:00.000Z",
+    "ipAddress": "192.168.1.10",
+    "userAgent": "System Process"
+  },
+  {
+    "id": 18,
+    "user": "student02",
+    "action": "Password Reset",
+    "description": "Password reset requested",
+    "timestamp": "2024-03-15T15:30:00.000Z",
+    "ipAddress": "192.168.1.101",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  },
+  {
+    "id": 19,
+    "user": "teacher02",
+    "action": "Student Approval",
+    "description": "Approved enrollment for student03 in Phát triển Web course",
+    "timestamp": "2024-03-15T16:00:00.000Z",
+    "ipAddress": "192.168.1.51",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15"
+  },
+  {
+    "id": 20,
+    "user": "admin01",
+    "action": "Logout",
+    "description": "Admin logged out",
+    "timestamp": "2024-03-15T17:00:00.000Z",
+    "ipAddress": "192.168.1.10",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  }
+] 

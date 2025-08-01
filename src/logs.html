@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhật ký hoạt động | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .page-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .filters-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr 200px 200px 200px auto;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+
+        .date-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .stat-card.warning {
+            border-left-color: #ff9800;
+        }
+
+        .stat-card.danger {
+            border-left-color: #f44336;
+        }
+
+        .stat-card.success {
+            border-left-color: var(--accent-green);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-card.warning .stat-number {
+            color: #ff9800;
+        }
+
+        .stat-card.danger .stat-number {
+            color: #f44336;
+        }
+
+        .stat-card.success .stat-number {
+            color: var(--accent-green);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .logs-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .logs-header {
+            background: var(--light-gray);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logs-title {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .logs-count {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .logs-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .logs-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        .logs-table tr:hover {
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .log-timestamp {
+            font-family: 'Courier New', monospace;
+            font-size: var(--font-size-small);
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .log-user {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        .log-action {
+            font-weight: 500;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            display: inline-block;
+        }
+
+        .log-action.login {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+        }
+
+        .log-action.logout {
+            background: rgba(158, 158, 158, 0.1);
+            color: #666;
+        }
+
+        .log-action.create {
+            background: rgba(44, 110, 170, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .log-action.update {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .log-action.delete {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
+        .log-action.view {
+            background: rgba(156, 39, 176, 0.1);
+            color: #9c27b0;
+        }
+
+        .log-description {
+            max-width: 300px;
+            line-height: 1.4;
+        }
+
+        .log-ip {
+            font-family: 'Courier New', monospace;
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .severity-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: var(--spacing-xs);
+        }
+
+        .severity-info {
+            background: var(--primary-blue);
+        }
+
+        .severity-warning {
+            background: #ff9800;
+        }
+
+        .severity-error {
+            background: #f44336;
+        }
+
+        .severity-success {
+            background: var(--accent-green);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .pagination-container {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .pagination-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .export-options {
+            position: relative;
+            display: inline-block;
+        }
+
+        .export-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--shadow-hover);
+            min-width: 150px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .export-dropdown.show {
+            display: block;
+        }
+
+        .export-option {
+            padding: var(--spacing-sm) var(--spacing-md);
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .export-option:last-child {
+            border-bottom: none;
+        }
+
+        .export-option:hover {
+            background: var(--light-gray);
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            
+            .logs-table {
+                font-size: var(--font-size-small);
+            }
+            
+            .logs-table th,
+            .logs-table td {
+                padding: var(--spacing-sm);
+            }
+            
+            .log-description {
+                max-width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">A</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Admin</span>
+                    <span class="header-role" id="userRole">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation will be populated based on user role -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">📋 Nhật ký hoạt động</h1>
+                <div class="header-actions">
+                    <div class="export-options">
+                        <button class="btn btn-secondary" onclick="logsManager.toggleExportDropdown()">
+                            📤 Xuất báo cáo ▼
+                        </button>
+                        <div class="export-dropdown" id="exportDropdown">
+                            <div class="export-option" onclick="logsManager.exportLogs('csv')">
+                                📊 Xuất CSV
+                            </div>
+                            <div class="export-option" onclick="logsManager.exportLogs('excel')">
+                                📈 Xuất Excel
+                            </div>
+                            <div class="export-option" onclick="logsManager.exportLogs('pdf')">
+                                📄 Xuất PDF
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="logsManager.refreshLogs()">
+                        🔄 Làm mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalLogs">0</div>
+                    <div class="stat-label">Tổng hoạt động</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-number" id="todayLogs">0</div>
+                    <div class="stat-label">Hôm nay</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-number" id="warningLogs">0</div>
+                    <div class="stat-label">Cảnh báo</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-number" id="errorLogs">0</div>
+                    <div class="stat-label">Lỗi</div>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label class="form-label">Tìm kiếm</label>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="form-control" 
+                            placeholder="Tìm theo người dùng, hành động, mô tả..."
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Người dùng</label>
+                        <select id="userFilter" class="form-control">
+                            <option value="">Tất cả người dùng</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hành động</label>
+                        <select id="actionFilter" class="form-control">
+                            <option value="">Tất cả hành động</option>
+                            <option value="Login">Đăng nhập</option>
+                            <option value="Logout">Đăng xuất</option>
+                            <option value="Create">Tạo mới</option>
+                            <option value="Update">Cập nhật</option>
+                            <option value="Delete">Xóa</option>
+                            <option value="View">Xem</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thời gian</label>
+                        <div class="date-range">
+                            <input type="date" id="dateFrom" class="form-control">
+                            <input type="date" id="dateTo" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-secondary" onclick="logsManager.clearFilters()">
+                            🔄 Xóa bộ lọc
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Table -->
+            <div class="logs-container">
+                <div class="logs-header">
+                    <div class="logs-title">Danh sách hoạt động</div>
+                    <div class="logs-count" id="logsCount">Tổng: 0 hoạt động</div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Người dùng</th>
+                                <th>Hành động</th>
+                                <th>Mô tả</th>
+                                <th>IP Address</th>
+                                <th>User Agent</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <!-- Logs will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfo">
+                        Hiển thị 1-10 trong tổng số 0 kết quả
+                    </div>
+                    <div class="pagination-controls" id="paginationControls">
+                        <!-- Pagination buttons will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class LogsManager {
+            constructor() {
+                this.currentUser = null;
+                this.logs = [];
+                this.filteredLogs = [];
+                this.currentPage = 1;
+                this.logsPerPage = 20;
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication - only admin can access logs
+                if (!authManager.checkPageAccess(['admin'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.renderLogs();
+                this.updateStats();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Search and filters
+                document.getElementById('searchInput').addEventListener('input', () => {
+                    this.filterLogs();
+                });
+
+                document.getElementById('userFilter').addEventListener('change', () => {
+                    this.filterLogs();
+                });
+
+                document.getElementById('actionFilter').addEventListener('change', () => {
+                    this.filterLogs();
+                });
+
+                document.getElementById('dateFrom').addEventListener('change', () => {
+                    this.filterLogs();
+                });
+
+                document.getElementById('dateTo').addEventListener('change', () => {
+                    this.filterLogs();
+                });
+
+                // Close export dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.export-options')) {
+                        document.getElementById('exportDropdown').classList.remove('show');
+                    }
+                });
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userRole').textContent = this.currentUser.role === 'admin' ? '👨‍💼 Quản trị viên' : '👨‍🎓 Học viên';
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'A';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load activity logs
+                    const logsResponse = await fetch('data/mock-logs.json');
+                    this.logs = await logsResponse.json();
+                    
+                    // Sort logs by timestamp (newest first)
+                    this.logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    this.filteredLogs = [...this.logs];
+
+                    // Load users for filter dropdown
+                    const users = await authManager.loadUsers();
+                    const userFilter = document.getElementById('userFilter');
+                    userFilter.innerHTML = '<option value="">Tất cả người dùng</option>';
+                    
+                    // Get unique users from logs
+                    const uniqueUsers = [...new Set(this.logs.map(log => log.user))];
+                    uniqueUsers.forEach(username => {
+                        const user = users.find(u => u.username === username);
+                        const displayName = user ? (user.fullName || user.username) : username;
+                        userFilter.innerHTML += `<option value="${username}">${displayName}</option>`;
+                    });
+
+                } catch (error) {
+                    console.error('Error loading logs data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu nhật ký', 'error');
+                }
+            }
+
+            updateStats() {
+                const total = this.logs.length;
+                const today = new Date().toISOString().split('T')[0];
+                const todayCount = this.logs.filter(log => 
+                    log.timestamp.startsWith(today)
+                ).length;
+
+                // Mock warning and error counts
+                const warningCount = this.logs.filter(log => 
+                    log.action.includes('Failed') || log.action.includes('Error')
+                ).length;
+                const errorCount = Math.floor(warningCount * 0.3);
+
+                document.getElementById('totalLogs').textContent = total;
+                document.getElementById('todayLogs').textContent = todayCount;
+                document.getElementById('warningLogs').textContent = warningCount;
+                document.getElementById('errorLogs').textContent = errorCount;
+            }
+
+            filterLogs() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const userFilter = document.getElementById('userFilter').value;
+                const actionFilter = document.getElementById('actionFilter').value;
+                const dateFrom = document.getElementById('dateFrom').value;
+                const dateTo = document.getElementById('dateTo').value;
+
+                this.filteredLogs = this.logs.filter(log => {
+                    const matchesSearch = !searchTerm || 
+                        log.user.toLowerCase().includes(searchTerm) ||
+                        log.action.toLowerCase().includes(searchTerm) ||
+                        log.description.toLowerCase().includes(searchTerm);
+                    
+                    const matchesUser = !userFilter || log.user === userFilter;
+                    
+                    const matchesAction = !actionFilter || log.action.includes(actionFilter);
+                    
+                    const logDate = log.timestamp.split('T')[0];
+                    const matchesDateFrom = !dateFrom || logDate >= dateFrom;
+                    const matchesDateTo = !dateTo || logDate <= dateTo;
+
+                    return matchesSearch && matchesUser && matchesAction && matchesDateFrom && matchesDateTo;
+                });
+
+                this.currentPage = 1;
+                this.renderLogs();
+            }
+
+            clearFilters() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('userFilter').value = '';
+                document.getElementById('actionFilter').value = '';
+                document.getElementById('dateFrom').value = '';
+                document.getElementById('dateTo').value = '';
+                this.filterLogs();
+            }
+
+            renderLogs() {
+                const tbody = document.getElementById('logsTableBody');
+                const startIndex = (this.currentPage - 1) * this.logsPerPage;
+                const endIndex = startIndex + this.logsPerPage;
+                const pageLogs = this.filteredLogs.slice(startIndex, endIndex);
+
+                // Update count
+                document.getElementById('logsCount').textContent = `Tổng: ${this.filteredLogs.length} hoạt động`;
+
+                if (pageLogs.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <div class="empty-icon">📋</div>
+                                <p>Không tìm thấy hoạt động nào</p>
+                            </td>
+                        </tr>
+                    `;
+                    this.renderPagination();
+                    return;
+                }
+
+                const logsHTML = pageLogs.map(log => {
+                    const actionType = this.getActionType(log.action);
+                    const severity = this.getSeverity(log.action);
+                    
+                    return `
+                        <tr>
+                            <td class="log-timestamp">
+                                <span class="severity-indicator severity-${severity}"></span>
+                                ${uiManager.formatDateTime(log.timestamp)}
+                            </td>
+                            <td class="log-user">${log.user}</td>
+                            <td>
+                                <span class="log-action ${actionType}">${log.action}</span>
+                            </td>
+                            <td class="log-description">${log.description}</td>
+                            <td class="log-ip">${log.ipAddress}</td>
+                            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${log.userAgent}">
+                                ${this.getBrowserInfo(log.userAgent)}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.innerHTML = logsHTML;
+                this.renderPagination();
+            }
+
+            renderPagination() {
+                const totalPages = Math.ceil(this.filteredLogs.length / this.logsPerPage);
+                const startIndex = (this.currentPage - 1) * this.logsPerPage + 1;
+                const endIndex = Math.min(startIndex + this.logsPerPage - 1, this.filteredLogs.length);
+
+                // Update pagination info
+                document.getElementById('paginationInfo').textContent = 
+                    `Hiển thị ${startIndex}-${endIndex} trong tổng số ${this.filteredLogs.length} kết quả`;
+
+                // Update pagination controls
+                const controls = document.getElementById('paginationControls');
+                let paginationHTML = '';
+
+                // Previous button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} 
+                            onclick="logsManager.goToPage(${this.currentPage - 1})">
+                        ‹ Trước
+                    </button>
+                `;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= this.currentPage - 2 && i <= this.currentPage + 2)) {
+                        paginationHTML += `
+                            <button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" 
+                                    onclick="logsManager.goToPage(${i})">
+                                ${i}
+                            </button>
+                        `;
+                    } else if (i === this.currentPage - 3 || i === this.currentPage + 3) {
+                        paginationHTML += '<span class="pagination-ellipsis">...</span>';
+                    }
+                }
+
+                // Next button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} 
+                            onclick="logsManager.goToPage(${this.currentPage + 1})">
+                        Sau ›
+                    </button>
+                `;
+
+                controls.innerHTML = paginationHTML;
+            }
+
+            goToPage(page) {
+                const totalPages = Math.ceil(this.filteredLogs.length / this.logsPerPage);
+                if (page >= 1 && page <= totalPages) {
+                    this.currentPage = page;
+                    this.renderLogs();
+                }
+            }
+
+            getActionType(action) {
+                if (action.includes('Login')) return 'login';
+                if (action.includes('Logout')) return 'logout';
+                if (action.includes('Create') || action.includes('Register')) return 'create';
+                if (action.includes('Update') || action.includes('Edit')) return 'update';
+                if (action.includes('Delete') || action.includes('Remove')) return 'delete';
+                if (action.includes('View') || action.includes('Access')) return 'view';
+                return 'view';
+            }
+
+            getSeverity(action) {
+                if (action.includes('Failed') || action.includes('Error')) return 'error';
+                if (action.includes('Warning') || action.includes('Attempt')) return 'warning';
+                if (action.includes('Success') || action.includes('Complete')) return 'success';
+                return 'info';
+            }
+
+            getBrowserInfo(userAgent) {
+                if (userAgent.includes('Chrome')) return '🌐 Chrome';
+                if (userAgent.includes('Firefox')) return '🦊 Firefox';
+                if (userAgent.includes('Safari')) return '🧭 Safari';
+                if (userAgent.includes('Edge')) return '🌟 Edge';
+                return '🌐 Unknown';
+            }
+
+            toggleExportDropdown() {
+                const dropdown = document.getElementById('exportDropdown');
+                dropdown.classList.toggle('show');
+            }
+
+            exportLogs(format) {
+                const dropdown = document.getElementById('exportDropdown');
+                dropdown.classList.remove('show');
+                
+                uiManager.showToast(`Đang xuất nhật ký dưới định dạng ${format.toUpperCase()}...`, 'info');
+                
+                setTimeout(() => {
+                    uiManager.showToast(`Xuất nhật ký ${format.toUpperCase()} thành công! File đã được tải xuống.`, 'success');
+                }, 2000);
+            }
+
+            refreshLogs() {
+                this.loadData().then(() => {
+                    this.renderLogs();
+                    this.updateStats();
+                    uiManager.showToast('Đã làm mới nhật ký hoạt động', 'success');
+                });
+            }
+        }
+
+        // Initialize logs manager when DOM is loaded
+        let logsManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            logsManager = new LogsManager();
+        });
+    </script>
+</body>
+</html> 

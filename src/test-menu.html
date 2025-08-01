@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Menu System - E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .test-container {
+            padding: var(--spacing-lg);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-section {
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .role-switcher {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .permission-info {
+            background: #f8f9fa;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .menu-debug {
+            background: #1e1e1e;
+            color: #fff;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-md);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: var(--spacing-md);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform - Menu Test</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">T</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Test User</span>
+                    <span class="header-role" id="userRole">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar sidebar-fixed" id="sidebar">
+        <div class="sidebar-nav" id="sidebarNav">
+            <!-- Menu will be loaded by CommonMenuManager -->
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="test-container">
+            <div class="test-section">
+                <h1>🧪 Menu System Test</h1>
+                <p>Test menu system với different roles và permissions</p>
+                
+                <div class="role-switcher">
+                    <button class="btn btn-primary" onclick="testMenuSystem.switchRole('admin')">
+                        👨‍💼 Switch to Admin
+                    </button>
+                    <button class="btn btn-secondary" onclick="testMenuSystem.switchRole('teacher')">
+                        👨‍🏫 Switch to Teacher
+                    </button>
+                    <button class="btn btn-outline" onclick="testMenuSystem.switchRole('student')">
+                        👨‍🎓 Switch to Student
+                    </button>
+                </div>
+                
+                <div class="permission-info" id="permissionInfo">
+                    <!-- Permission info will be loaded here -->
+                </div>
+                
+                <div class="actions-section">
+                    <h3>Test Actions</h3>
+                    <button class="btn btn-small btn-info" onclick="testMenuSystem.showMenuData()">
+                        📋 Show Menu Data
+                    </button>
+                    <button class="btn btn-small btn-info" onclick="testMenuSystem.showPermissions()">
+                        🔐 Show Permissions
+                    </button>
+                    <button class="btn btn-small btn-success" onclick="testMenuSystem.testActionPermissions()">
+                        ✅ Test Action Permissions
+                    </button>
+                    <button class="btn btn-small btn-warning" onclick="testMenuSystem.reloadMenu()">
+                        🔄 Reload Menu
+                    </button>
+                </div>
+                
+                <div class="menu-debug" id="debugOutput">
+                    Debug output will appear here...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript Files -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+
+    <script>
+        class MenuTestSystem {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.logToDebug('🚀 Menu Test System Initialized');
+                this.logToDebug('📌 Use the buttons above to test different roles and permissions');
+                
+                // Check if CommonMenuManager is loaded
+                if (typeof CommonMenuManager === 'undefined') {
+                    this.logToDebug('⚠️ CommonMenuManager not loaded yet, waiting...');
+                    setTimeout(() => this.init(), 500);
+                    return;
+                }
+                
+                this.logToDebug('✅ CommonMenuManager class available');
+                
+                // Setup initial test user
+                this.switchRole('admin');
+                this.updatePermissionInfo();
+            }
+
+            switchRole(role) {
+                // Create test user with specified role
+                const testUsers = {
+                    admin: {
+                        id: 'admin-test',
+                        username: 'admin01',
+                        fullName: 'Admin Test User',
+                        role: 'admin',
+                        email: 'admin@test.com'
+                    },
+                    teacher: {
+                        id: 'teacher-test',
+                        username: 'teacher01', 
+                        fullName: 'Teacher Test User',
+                        role: 'teacher',
+                        email: 'teacher@test.com'
+                    },
+                    student: {
+                        id: 'student-test',
+                        username: 'student01',
+                        fullName: 'Student Test User', 
+                        role: 'student',
+                        email: 'student@test.com'
+                    }
+                };
+
+                const user = testUsers[role];
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // Update header display
+                document.getElementById('userName').textContent = user.fullName;
+                document.getElementById('userAvatar').textContent = user.fullName.charAt(0);
+                
+                const roleMap = {
+                    'admin': '👨‍💼 Quản trị viên',
+                    'teacher': '👨‍🏫 Giảng viên',
+                    'student': '👨‍🎓 Học viên'
+                };
+                document.getElementById('userRole').textContent = roleMap[role];
+                
+                // Reload menu
+                this.reloadMenu();
+                this.updatePermissionInfo();
+                this.logToDebug(`🔄 Switched to role: ${role}`);
+            }
+
+            reloadMenu() {
+                this.logToDebug('🔄 Reloading menu manager...');
+                
+                // Destroy existing menu manager
+                if (window.commonMenuManager) {
+                    delete window.commonMenuManager;
+                    this.logToDebug('🗑️ Destroyed existing menu manager');
+                }
+                
+                // Create new menu manager
+                setTimeout(() => {
+                    this.logToDebug('⚡ Creating new menu manager...');
+                    
+                    // Check if CommonMenuManager is available
+                    if (typeof CommonMenuManager === 'undefined') {
+                        this.logToDebug('❌ CommonMenuManager class not found');
+                        return;
+                    }
+                    
+                    try {
+                        window.commonMenuManager = new CommonMenuManager({
+                            containerId: 'sidebar'
+                        });
+                        this.logToDebug('✅ Menu manager instance created');
+                        
+                        // Check if it was created successfully
+                        setTimeout(() => {
+                            if (window.commonMenuManager) {
+                                this.logToDebug('✅ Menu manager created successfully');
+                            } else {
+                                this.logToDebug('❌ Failed to create menu manager');
+                            }
+                        }, 500);
+                        
+                    } catch (error) {
+                        this.logToDebug('❌ Error creating menu manager: ' + error.message);
+                    }
+                }, 100);
+            }
+
+            updatePermissionInfo() {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const role = currentUser.role || 'student';
+                
+                let permissionHTML = `
+                    <h4>🔐 Current Role: ${role.toUpperCase()}</h4>
+                    <p><strong>User:</strong> ${currentUser.fullName}</p>
+                `;
+                
+                // Wait for permissions to load
+                setTimeout(() => {
+                    if (window.commonMenuManager && window.commonMenuManager.permissionsData) {
+                        const permissions = window.commonMenuManager.getUserPermissions();
+                        if (permissions) {
+                            permissionHTML += `
+                                <p><strong>Description:</strong> ${permissions.description}</p>
+                                <p><strong>Menu Access:</strong> ${JSON.stringify(permissions.allowedMenus).substring(0, 100)}...</p>
+                            `;
+                        }
+                    }
+                    document.getElementById('permissionInfo').innerHTML = permissionHTML;
+                }, 500);
+                
+                document.getElementById('permissionInfo').innerHTML = permissionHTML;
+            }
+
+            showMenuData() {
+                if (!window.commonMenuManager) {
+                    this.logToDebug('❌ Menu manager not loaded');
+                    return;
+                }
+                
+                const menuData = window.commonMenuManager.getMenuData();
+                this.logToDebug('📋 Filtered Menu Data:');
+                this.logToDebug(JSON.stringify(menuData, null, 2));
+            }
+
+            showPermissions() {
+                if (!window.commonMenuManager) {
+                    this.logToDebug('❌ Menu manager not loaded');
+                    return;
+                }
+                
+                const permissions = window.commonMenuManager.getUserPermissions();
+                this.logToDebug('🔐 User Permissions:');
+                this.logToDebug(JSON.stringify(permissions, null, 2));
+            }
+
+            testActionPermissions() {
+                if (!window.commonMenuManager) {
+                    this.logToDebug('❌ Menu manager not loaded');
+                    return;
+                }
+
+                const testActions = [
+                    'create-course',
+                    'edit-course', 
+                    'delete-course',
+                    'enroll-course',
+                    'create-quiz',
+                    'take-quiz',
+                    'add-user',
+                    'manage-students'
+                ];
+
+                this.logToDebug('✅ Testing Action Permissions:');
+                testActions.forEach(action => {
+                    const canPerform = window.commonMenuManager.canPerformAction(action);
+                    this.logToDebug(`  ${action}: ${canPerform ? '✅ ALLOWED' : '❌ DENIED'}`);
+                });
+            }
+
+            logToDebug(message) {
+                const debugOutput = document.getElementById('debugOutput');
+                const timestamp = new Date().toLocaleTimeString();
+                debugOutput.innerHTML += `[${timestamp}] ${message}\n`;
+                debugOutput.scrollTop = debugOutput.scrollHeight;
+            }
+        }
+
+        // Initialize test system
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 DOM loaded, checking script dependencies...');
+            console.log('🔍 CommonMenuManager available:', typeof CommonMenuManager !== 'undefined');
+            console.log('🔍 AuthManager available:', typeof AuthManager !== 'undefined');
+            console.log('🔍 UIManager available:', typeof UIManager !== 'undefined');
+            
+            window.testMenuSystem = new MenuTestSystem();
+            
+            // Auto-test after a delay
+            setTimeout(() => {
+                testMenuSystem.logToDebug('🚀 Menu Test System Initialized');
+                testMenuSystem.logToDebug('📌 Use the buttons above to test different roles and permissions');
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

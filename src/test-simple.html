@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Menu Test</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+    <h1>🧪 Simple Menu Test</h1>
+    
+    <!-- Set up test user -->
+    <script>
+        localStorage.setItem('currentUser', JSON.stringify({
+            username: 'admin',
+            role: 'admin',
+            fullName: 'Test Admin'
+        }));
+        console.log('Test user set:', JSON.parse(localStorage.getItem('currentUser')));
+    </script>
+    
+    <!-- Test sidebar -->
+    <div class="sidebar sidebar-fixed" id="sidebar">
+        <div class="sidebar-nav" id="sidebarNav">
+            <!-- Menu should be loaded here by CommonMenuManager -->
+        </div>
+    </div>
+    
+    <div style="margin-left: 300px; padding: 20px;">
+        <h2>Menu should appear to the left</h2>
+        <p>Check console for loading messages</p>
+        <div id="menuStatus">Loading...</div>
+    </div>
+    
+    <!-- Load required scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    
+    <script>
+        setTimeout(() => {
+            const menuStatus = document.getElementById('menuStatus');
+            const sidebarNav = document.getElementById('sidebarNav');
+            
+            if (sidebarNav.children.length > 0) {
+                menuStatus.innerHTML = '✅ Menu loaded successfully!';
+                menuStatus.style.color = 'green';
+            } else {
+                menuStatus.innerHTML = '❌ Menu not loaded';
+                menuStatus.style.color = 'red';
+            }
+        }, 2000);
+    </script>
+</body>
+</html> 

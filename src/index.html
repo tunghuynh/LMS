@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPlatform - Nền tảng học trực tuyến hàng đầu</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    
+    <style>
+        /* Landing Page Styles */
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: var(--spacing-md) 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: var(--white);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: var(--font-size-h2);
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: var(--spacing-xl);
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1e5a94 100%);
+            color: var(--white);
+            padding: 120px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="0,100 1000,100 1000,0"/></svg>');
+            background-size: cover;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: var(--spacing-lg);
+            justify-content: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .btn-hero {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: var(--border-radius-lg);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-hero {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .btn-primary-hero:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary-hero {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-secondary-hero:hover {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .hero-demo {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-lg);
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-title {
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+        }
+
+        .demo-accounts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .demo-account {
+            background: rgba(255, 255, 255, 0.2);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-md);
+            text-align: left;
+        }
+
+        .demo-role {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .demo-credentials {
+            font-size: var(--font-size-small);
+            opacity: 0.9;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: var(--light-gray);
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 80px 0;
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: var(--spacing-lg);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 0;
+            background: var(--white);
+        }
+
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .testimonial-card {
+            background: var(--light-gray);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            position: relative;
+        }
+
+        .testimonial-quote {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: var(--spacing-lg);
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .author-role {
+            color: #666;
+            font-size: var(--font-size-small);
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--accent-green) 0%, #45a049 100%);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .cta-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-gray);
+            color: var(--white);
+            padding: var(--spacing-xl) 0 var(--spacing-lg);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .footer-section h3 {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #444;
+            padding-top: var(--spacing-lg);
+            color: #ccc;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+
+            .demo-accounts {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 100px 0 60px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .btn-hero {
+                padding: var(--spacing-md) var(--spacing-lg);
+            }
+
+            .features,
+            .stats,
+            .testimonials,
+            .cta {
+                padding: 60px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">📚 EduPlatform</a>
+            
+            <ul class="nav-menu">
+                <li><a href="#features" class="nav-link">Tính năng</a></li>
+                <li><a href="#about" class="nav-link">Về chúng tôi</a></li>
+                <li><a href="#testimonials" class="nav-link">Đánh giá</a></li>
+                <li><a href="#contact" class="nav-link">Liên hệ</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="#demo" class="btn btn-secondary btn-small">Demo miễn phí</a>
+                <a href="#login" class="btn btn-primary btn-small">Đăng nhập</a>
+                <button class="mobile-menu-btn">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1 class="hero-title">
+                Học trực tuyến<br>
+                <span style="color: #64f764;">hiệu quả nhất</span>
+            </h1>
+            <p class="hero-subtitle">
+                Nền tảng học trực tuyến hiện đại với hàng nghìn khóa học chất lượng cao, 
+                giúp bạn nâng cao kỹ năng và phát triển sự nghiệp.
+            </p>
+            
+            <div class="hero-actions">
+                <a href="#demo" class="btn-hero btn-primary-hero">
+                    🚀 Bắt đầu học ngay
+                </a>
+                <a href="#features" class="btn-hero btn-secondary-hero">
+                    📖 Tìm hiểu thêm
+                </a>
+            </div>
+
+            <div class="hero-demo" id="demo">
+                <h3 class="demo-title">🎯 Trải nghiệm ngay với tài khoản demo</h3>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                    Nhấn vào nút đăng nhập để chuyển đến trang đăng nhập tương ứng
+                </p>
+                <div class="demo-accounts">
+                    <div class="demo-account">
+                        <div class="demo-role">👨‍🎓 Học viên</div>
+                        <div class="demo-credentials">
+                            Username: student01<br>
+                            Password: 123456
+                        </div>
+                        <button class="btn btn-secondary btn-small" style="margin-top: 10px;" onclick="loginAs('student', event)">
+                            Đi đến trang đăng nhập
+                        </button>
+                    </div>
+                    <div class="demo-account">
+                        <div class="demo-role">👨‍🏫 Giảng viên</div>
+                        <div class="demo-credentials">
+                            Username: teacher01<br>
+                            Password: abcdef
+                        </div>
+                        <button class="btn btn-secondary btn-small" style="margin-top: 10px;" onclick="loginAs('teacher', event)">
+                            Đi đến trang đăng nhập
+                        </button>
+                    </div>
+                    <div class="demo-account">
+                        <div class="demo-role">👨‍💼 Quản trị</div>
+                        <div class="demo-credentials">
+                            Username: admin01<br>
+                            Password: admin123
+                        </div>
+                        <button class="btn btn-secondary btn-small" style="margin-top: 10px;" onclick="loginAs('admin', event)">
+                            Đi đến trang đăng nhập
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <div class="section-header">
+                <h2 class="section-title">Tại sao chọn EduPlatform?</h2>
+                <p class="section-subtitle">
+                    Chúng tôi mang đến những tính năng hiện đại nhất để tối ưu hóa trải nghiệm học tập của bạn
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3 class="feature-title">Khóa học đa dạng</h3>
+                    <p class="feature-description">
+                        Hàng nghìn khóa học từ cơ bản đến nâng cao, được thiết kế bởi các chuyên gia hàng đầu trong ngành.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3 class="feature-title">Chứng chỉ uy tín</h3>
+                    <p class="feature-description">
+                        Nhận chứng chỉ được công nhận rộng rãi sau khi hoàn thành khóa học, giúp nâng cao giá trị bản thân.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title">Cộng đồng học tập</h3>
+                    <p class="feature-description">
+                        Kết nối với hàng triệu học viên trên toàn thế giới, chia sẻ kiến thức và cùng nhau phát triển.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Học mọi lúc mọi nơi</h3>
+                    <p class="feature-description">
+                        Giao diện responsive, hỗ trợ đầy đủ các thiết bị di động để bạn có thể học tập bất cứ nơi đâu.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🧪</div>
+                    <h3 class="feature-title">Kiểm tra & Đánh giá</h3>
+                    <p class="feature-description">
+                        Hệ thống quiz và bài tập phong phú giúp đánh giá năng lực và củng cố kiến thức hiệu quả.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Theo dõi tiến độ</h3>
+                    <p class="feature-description">
+                        Dashboard chi tiết giúp bạn theo dõi tiến độ học tập và điều chỉnh kế hoạch học phù hợp.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">50,000+</div>
+                    <div class="stat-label">Học viên</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1,000+</div>
+                    <div class="stat-label">Khóa học</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Giảng viên</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Hài lòng</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="testimonials-container">
+            <div class="section-header">
+                <h2 class="section-title">Học viên nói gì về chúng tôi?</h2>
+                <p class="section-subtitle">
+                    Hàng nghìn học viên đã tin tưởng và đạt được thành công với EduPlatform
+                </p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "EduPlatform đã giúp tôi nâng cao kỹ năng lập trình và tìm được công việc mơ ước. 
+                        Các khóa học rất chất lượng và giảng viên nhiệt tình hỗ trợ."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">N</div>
+                        <div class="author-info">
+                            <div class="author-name">Nguyễn Văn A</div>
+                            <div class="author-role">Frontend Developer</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "Tôi đã học được rất nhiều kiến thức bổ ích từ các khóa học về Digital Marketing. 
+                        Nội dung cập nhật, thực tế và dễ hiểu."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">T</div>
+                        <div class="author-info">
+                            <div class="author-name">Trần Thị B</div>
+                            <div class="author-role">Marketing Manager</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "Giao diện thân thiện, dễ sử dụng. Tôi có thể học mọi lúc mọi nơi trên điện thoại. 
+                        Hệ thống quiz giúp tôi kiểm tra kiến thức rất hiệu quả."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">L</div>
+                        <div class="author-info">
+                            <div class="author-name">Lê Minh C</div>
+                            <div class="author-role">Sinh viên</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="login">
+        <div class="cta-container">
+            <h2 class="cta-title">Sẵn sàng bắt đầu hành trình học tập?</h2>
+            <p class="cta-subtitle">
+                Tham gia cùng hàng nghìn học viên khác và khám phá tiềm năng vô hạn của bản thân
+            </p>
+            
+            <div class="hero-actions">
+                <button class="btn-hero btn-primary-hero" onclick="showRegisterModal()">
+                    🎯 Đăng ký miễn phí
+                </button>
+                <a href="#demo" class="btn-hero btn-secondary-hero">
+                    🚀 Dùng thử ngay
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>📚 EduPlatform</h3>
+                    <p>Nền tảng học trực tuyến hàng đầu Việt Nam</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Sản phẩm</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Khóa học</a></li>
+                        <li><a href="#">Quiz</a></li>
+                        <li><a href="#">Chứng chỉ</a></li>
+                        <li><a href="#">Ứng dụng mobile</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Hỗ trợ</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Trung tâm trợ giúp</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Hướng dẫn</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Về chúng tôi</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Tin tức</a></li>
+                        <li><a href="#">Đối tác</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Registration Modal (placeholder) -->
+    <div id="registerModal" style="display: none;">
+        <!-- Modal will be implemented with footer component -->
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script>
+        // Landing Page Controller
+        class LandingPage {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.setupNavbar();
+                this.setupSmoothScroll();
+                this.checkExistingUser();
+                this.setupAnimations();
+            }
+
+            setupNavbar() {
+                const navbar = document.getElementById('navbar');
+                
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
+                });
+            }
+
+            setupSmoothScroll() {
+                // Smooth scrolling for navigation links
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+
+            checkExistingUser() {
+                // If user is already logged in, redirect to appropriate dashboard
+                if (typeof authManager !== 'undefined') {
+                    const currentUser = authManager.getCurrentUser();
+                    if (currentUser) {
+                        authManager.redirectToDashboard();
+                    }
+                }
+            }
+
+            setupAnimations() {
+                // Intersection Observer for animation on scroll
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, observerOptions);
+
+                // Observe feature cards
+                document.querySelectorAll('.feature-card, .testimonial-card').forEach(card => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    observer.observe(card);
+                });
+            }
+        }
+
+        // Demo login functions
+        function loginAs(role, event) {
+            // Show loading effect
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Đang chuyển hướng...';
+            btn.disabled = true;
+
+            // Redirect to login page after short delay
+            setTimeout(() => {
+                window.location.href = `login-${role}.html`;
+            }, 500);
+        }
+
+        function showRegisterModal() {
+            // For now, redirect to register page
+            window.location.href = 'register.html';
+        }
+
+        // Initialize landing page
+        document.addEventListener('DOMContentLoaded', () => {
+            new LandingPage();
+        });
+
+        // Mobile menu toggle (for future implementation)
+        function toggleMobileMenu() {
+            // Will be implemented when needed
+            console.log('Mobile menu toggle');
+        }
+    </script>
+</body>
+</html> 

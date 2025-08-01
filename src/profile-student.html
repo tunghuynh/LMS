@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ cá nhân | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .avatar-section {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-large:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .avatar-large:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .profile-role {
+            font-size: var(--font-size-body);
+            opacity: 0.9;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .profile-email {
+            font-size: var(--font-size-body);
+            opacity: 0.8;
+        }
+
+        .profile-tabs {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: var(--font-size-body);
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .tab-content {
+            padding: var(--spacing-xl);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .form-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: var(--font-size-h3);
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .goal-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .progress-section {
+            background: var(--light-gray);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .progress-item:last-child {
+            border-bottom: none;
+        }
+
+        .progress-info {
+            flex: 1;
+        }
+
+        .progress-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .progress-details {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .progress-bar-container {
+            width: 150px;
+            margin-left: var(--spacing-md);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-small);
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .achievement-card {
+            background: var(--white);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .achievement-card.earned {
+            border-color: var(--accent-green);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .achievement-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .achievement-desc {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-box {
+            background: var(--white);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+            
+            .tabs-nav {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                border-bottom: none;
+                border-right: 3px solid transparent;
+            }
+            
+            .tab-button.active {
+                border-bottom: none;
+                border-right-color: var(--primary-blue);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">S</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Student</span>
+                    <span class="header-role" id="userRole">Sinh viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation will be populated based on user role -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <div class="profile-container">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="avatar-section">
+                        <div class="avatar-large" id="avatarLarge">
+                            <span id="avatarText">U</span>
+                            <div class="avatar-overlay">📷 Thay đổi</div>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">
+                            Tải ảnh lên
+                        </button>
+                    </div>
+                    <div class="profile-info">
+                        <h1 class="profile-name" id="profileName">Tên người dùng</h1>
+                        <div class="profile-role" id="profileRole">Vai trò</div>
+                        <div class="profile-email" id="profileEmail">email@example.com</div>
+                    </div>
+                </div>
+
+                <!-- Profile Tabs -->
+                <div class="profile-tabs">
+                    <div class="tabs-nav">
+                        <button class="tab-button active" data-tab="personal">
+                            👤 Thông tin cá nhân
+                        </button>
+                        <button class="tab-button" data-tab="progress">
+                            📈 Tiến độ học tập
+                        </button>
+                        <button class="tab-button" data-tab="achievements">
+                            🏆 Thành tích
+                        </button>
+                        <button class="tab-button" data-tab="settings">
+                            ⚙️ Cài đặt
+                        </button>
+                    </div>
+
+                    <div class="tab-content">
+                        <!-- Personal Info Tab -->
+                        <div class="tab-panel active" id="personal">
+                            <form id="profileForm">
+                                <div class="form-section">
+                                    <h3 class="section-title">
+                                        📝 Thông tin cơ bản
+                                    </h3>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Họ và tên</label>
+                                            <input type="text" id="fullName" class="form-control" placeholder="Nhập họ và tên">
+                                            <div class="form-error" id="fullNameError"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" id="email" class="form-control" placeholder="Nhập email" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Tên đăng nhập</label>
+                                            <input type="text" id="username" class="form-control" placeholder="Tên đăng nhập" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Vai trò</label>
+                                            <input type="text" id="role" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <h3 class="section-title">
+                                        🎯 Mục tiêu học tập
+                                    </h3>
+                                    <div class="form-row single">
+                                        <div class="form-group">
+                                            <label class="form-label">Mô tả mục tiêu của bạn</label>
+                                            <textarea 
+                                                id="goal" 
+                                                class="form-control goal-textarea" 
+                                                placeholder="Ví dụ: Hoàn thành 5 khóa học trong học kỳ này, đạt điểm trung bình 85+..."
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        💾 Lưu thay đổi
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="profileManager.resetForm()">
+                                        🔄 Đặt lại
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Progress Tab -->
+                        <div class="tab-panel" id="progress">
+                            <div class="stats-grid" id="progressStats">
+                                <!-- Stats will be loaded here -->
+                            </div>
+
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    📚 Khóa học đang tham gia
+                                </h3>
+                                <div class="progress-section" id="courseProgress">
+                                    <!-- Course progress will be loaded here -->
+                                </div>
+                            </div>
+
+                            <div class="form-section" id="quizProgressSection">
+                                <h3 class="section-title">
+                                    🧪 Kết quả Quiz
+                                </h3>
+                                <div class="progress-section" id="quizProgress">
+                                    <!-- Quiz progress will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Achievements Tab -->
+                        <div class="tab-panel" id="achievements">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    🏆 Thành tích đã đạt được
+                                </h3>
+                                <div class="achievement-grid" id="achievementsList">
+                                    <!-- Achievements will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings Tab -->
+                        <div class="tab-panel" id="settings">
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    🔒 Đổi mật khẩu
+                                </h3>
+                                <form id="passwordForm">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Mật khẩu hiện tại</label>
+                                            <input type="password" id="currentPassword" class="form-control" placeholder="Nhập mật khẩu hiện tại">
+                                            <div class="form-error" id="currentPasswordError"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Mật khẩu mới</label>
+                                            <input type="password" id="newPassword" class="form-control" placeholder="Nhập mật khẩu mới">
+                                            <div class="form-error" id="newPasswordError"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row single">
+                                        <div class="form-group">
+                                            <label class="form-label">Xác nhận mật khẩu mới</label>
+                                            <input type="password" id="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu mới">
+                                            <div class="form-error" id="confirmPasswordError"></div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        🔐 Đổi mật khẩu
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    🗑️ Xóa tài khoản
+                                </h3>
+                                <p style="color: #666; margin-bottom: var(--spacing-md);">
+                                    ⚠️ Hành động này không thể hoàn tác. Tất cả dữ liệu của bạn sẽ bị xóa vĩnh viễn.
+                                </p>
+                                <button class="btn" style="background: #f44336; color: white;" onclick="profileManager.deleteAccount()">
+                                    🗑️ Xóa tài khoản
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class ProfileManager {
+            constructor() {
+                this.currentUser = null;
+                this.originalData = null;
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['student', 'teacher', 'admin'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadUserData();
+                this.populateForm();
+                this.renderProgress();
+                this.renderAchievements();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Tab switching
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        this.switchTab(button.dataset.tab);
+                    });
+                });
+
+                // Profile form
+                document.getElementById('profileForm').addEventListener('submit', (e) => {
+                    this.handleProfileUpdate(e);
+                });
+
+                // Password form
+                document.getElementById('passwordForm').addEventListener('submit', (e) => {
+                    this.handlePasswordChange(e);
+                });
+
+                // Avatar upload
+                document.getElementById('avatarInput').addEventListener('change', (e) => {
+                    this.handleAvatarUpload(e);
+                });
+
+                // Avatar click
+                document.getElementById('avatarLarge').addEventListener('click', () => {
+                    document.getElementById('avatarInput').click();
+                });
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'U';
+                }
+            }
+
+            async loadUserData() {
+                try {
+                    // Load full user data
+                    const users = await authManager.loadUsers();
+                    const fullUserData = users.find(u => u.id === this.currentUser.id);
+                    
+                    if (fullUserData) {
+                        this.originalData = { ...fullUserData };
+                        this.currentUser = { ...this.currentUser, ...fullUserData };
+                    }
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu người dùng', 'error');
+                }
+            }
+
+            populateForm() {
+                // Profile header
+                document.getElementById('profileName').textContent = this.currentUser.fullName || this.currentUser.username;
+                document.getElementById('profileRole').textContent = this.getRoleDisplay(this.currentUser.role);
+                document.getElementById('profileEmail').textContent = this.currentUser.email;
+
+                // Avatar
+                const avatarText = document.getElementById('avatarText');
+                avatarText.textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'U';
+
+                // Form fields
+                document.getElementById('fullName').value = this.currentUser.fullName || '';
+                document.getElementById('email').value = this.currentUser.email || '';
+                document.getElementById('username').value = this.currentUser.username || '';
+                document.getElementById('role').value = this.getRoleDisplay(this.currentUser.role);
+                document.getElementById('goal').value = this.currentUser.goal || '';
+            }
+
+            getRoleDisplay(role) {
+                const roleMap = {
+                    'student': 'Học viên',
+                    'teacher': 'Giảng viên',
+                    'admin': 'Quản trị viên'
+                };
+                return roleMap[role] || role;
+            }
+
+            switchTab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+                // Update tab panels
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+            }
+
+            async handleProfileUpdate(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    fullName: document.getElementById('fullName').value.trim(),
+                    goal: document.getElementById('goal').value.trim()
+                };
+
+                // Validation
+                if (!formData.fullName) {
+                    this.showError('fullNameError', 'Vui lòng nhập họ và tên');
+                    return;
+                }
+
+                try {
+                    const result = await authManager.updateProfile(formData);
+                    
+                    if (result.success) {
+                        uiManager.showToast('Cập nhật thông tin thành công!', 'success');
+                        
+                        // Update display
+                        this.currentUser = { ...this.currentUser, ...formData };
+                        document.getElementById('profileName').textContent = formData.fullName;
+                        document.getElementById('userName').textContent = formData.fullName;
+                        
+                        // Update avatar
+                        const avatarText = document.getElementById('avatarText');
+                        avatarText.textContent = formData.fullName.charAt(0).toUpperCase();
+                        document.getElementById('userAvatar').textContent = formData.fullName.charAt(0).toUpperCase();
+                        
+                    } else {
+                        uiManager.showToast(result.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Update profile error:', error);
+                    uiManager.showToast('Có lỗi xảy ra khi cập nhật', 'error');
+                }
+            }
+
+            async handlePasswordChange(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Clear previous errors
+                this.clearError('currentPassword');
+                this.clearError('newPassword');
+                this.clearError('confirmPassword');
+
+                // Validation
+                if (!currentPassword) {
+                    this.showError('currentPasswordError', 'Vui lòng nhập mật khẩu hiện tại');
+                    return;
+                }
+
+                if (!newPassword) {
+                    this.showError('newPasswordError', 'Vui lòng nhập mật khẩu mới');
+                    return;
+                }
+
+                if (newPassword.length < 6) {
+                    this.showError('newPasswordError', 'Mật khẩu mới phải có ít nhất 6 ký tự');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    this.showError('confirmPasswordError', 'Mật khẩu xác nhận không khớp');
+                    return;
+                }
+
+                if (currentPassword !== this.originalData.password) {
+                    this.showError('currentPasswordError', 'Mật khẩu hiện tại không đúng');
+                    return;
+                }
+
+                try {
+                    const result = await authManager.updateProfile({ password: newPassword });
+                    
+                    if (result.success) {
+                        uiManager.showToast('Đổi mật khẩu thành công!', 'success');
+                        document.getElementById('passwordForm').reset();
+                    } else {
+                        uiManager.showToast(result.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Change password error:', error);
+                    uiManager.showToast('Có lỗi xảy ra khi đổi mật khẩu', 'error');
+                }
+            }
+
+            handleAvatarUpload(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    uiManager.showToast('Vui lòng chọn file hình ảnh', 'error');
+                    return;
+                }
+
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    uiManager.showToast('File quá lớn. Vui lòng chọn file nhỏ hơn 5MB', 'error');
+                    return;
+                }
+
+                // Create preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const avatarLarge = document.getElementById('avatarLarge');
+                    avatarLarge.innerHTML = `
+                        <img src="${e.target.result}" alt="Avatar">
+                        <div class="avatar-overlay">📷 Thay đổi</div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+
+                // Mock upload (in real app, would upload to server)
+                uiManager.showToast('Ảnh đại diện đã được cập nhật!', 'success');
+            }
+
+            renderProgress() {
+                if (this.currentUser.role !== 'student') {
+                    document.getElementById('quizProgressSection').style.display = 'none';
+                    return;
+                }
+
+                // Render stats
+                const statsContainer = document.getElementById('progressStats');
+                const courseCount = this.currentUser.progress.courses.length;
+                const quizCount = this.currentUser.progress.quizzes.length;
+                const avgProgress = courseCount > 0 ? 
+                    Math.round(this.currentUser.progress.courses.reduce((sum, c) => sum + c.completed, 0) / courseCount) : 0;
+                const avgScore = quizCount > 0 ?
+                    Math.round(this.currentUser.progress.quizzes.reduce((sum, q) => sum + q.score, 0) / quizCount) : 0;
+
+                statsContainer.innerHTML = `
+                    <div class="stat-box">
+                        <div class="stat-number">${courseCount}</div>
+                        <div class="stat-label">Khóa học tham gia</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">${avgProgress}%</div>
+                        <div class="stat-label">Tiến độ trung bình</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">${quizCount}</div>
+                        <div class="stat-label">Quiz đã làm</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">${avgScore}</div>
+                        <div class="stat-label">Điểm trung bình</div>
+                    </div>
+                `;
+
+                // Render course progress
+                const courseContainer = document.getElementById('courseProgress');
+                if (courseCount > 0) {
+                    const courseHTML = this.currentUser.progress.courses.map(course => `
+                        <div class="progress-item">
+                            <div class="progress-info">
+                                <div class="progress-name">${course.courseName}</div>
+                                <div class="progress-details">Đăng ký: ${uiManager.formatDate(course.enrolledAt)}</div>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-label">
+                                    <span>Tiến độ</span>
+                                    <span>${course.completed}%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: ${course.completed}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                    courseContainer.innerHTML = courseHTML;
+                } else {
+                    courseContainer.innerHTML = '<p style="text-align: center; color: #666;">Chưa tham gia khóa học nào.</p>';
+                }
+
+                // Render quiz progress
+                const quizContainer = document.getElementById('quizProgress');
+                if (quizCount > 0) {
+                    const quizHTML = this.currentUser.progress.quizzes.map(quiz => `
+                        <div class="progress-item">
+                            <div class="progress-info">
+                                <div class="progress-name">${quiz.quizName}</div>
+                                <div class="progress-details">Hoàn thành: ${uiManager.formatDate(quiz.takenAt)}</div>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-label">
+                                    <span>Điểm số</span>
+                                    <span>${quiz.score}/100</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: ${quiz.score}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                    quizContainer.innerHTML = quizHTML;
+                } else {
+                    quizContainer.innerHTML = '<p style="text-align: center; color: #666;">Chưa hoàn thành quiz nào.</p>';
+                }
+            }
+
+            renderAchievements() {
+                const achievementsContainer = document.getElementById('achievementsList');
+                
+                // Mock achievements
+                const achievements = [
+                    { icon: '🎓', title: 'Người học tích cực', desc: 'Hoàn thành khóa học đầu tiên', earned: true },
+                    { icon: '🏆', title: 'Thủ khoa', desc: 'Đạt điểm 100 trong quiz', earned: false },
+                    { icon: '📚', title: 'Học giả', desc: 'Hoàn thành 5 khóa học', earned: false },
+                    { icon: '⚡', title: 'Tốc độ ánh sáng', desc: 'Hoàn thành quiz trong 5 phút', earned: true },
+                    { icon: '🎯', title: 'Bắn tỉa', desc: 'Đạt 90% trong 3 quiz liên tiếp', earned: false },
+                    { icon: '🔥', title: 'Chuỗi chiến thắng', desc: 'Học liên tiếp 7 ngày', earned: true }
+                ];
+
+                const achievementsHTML = achievements.map(achievement => `
+                    <div class="achievement-card ${achievement.earned ? 'earned' : ''}">
+                        <div class="achievement-icon">${achievement.icon}</div>
+                        <div class="achievement-title">${achievement.title}</div>
+                        <div class="achievement-desc">${achievement.desc}</div>
+                        ${achievement.earned ? '<div style="color: var(--accent-green); font-size: 12px; margin-top: 8px;">✅ Đã đạt được</div>' : ''}
+                    </div>
+                `).join('');
+
+                achievementsContainer.innerHTML = achievementsHTML;
+            }
+
+            resetForm() {
+                this.populateForm();
+                uiManager.showToast('Đã đặt lại form về trạng thái ban đầu', 'info');
+            }
+
+            deleteAccount() {
+                uiManager.showConfirm(
+                    'Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác!',
+                    () => {
+                        uiManager.showToast('Tính năng xóa tài khoản sẽ được triển khai trong phiên bản tiếp theo', 'info');
+                    }
+                );
+            }
+
+            showError(elementId, message) {
+                const errorElement = document.getElementById(elementId);
+                const inputElement = document.getElementById(elementId.replace('Error', ''));
+                
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.style.display = 'block';
+                }
+                
+                if (inputElement) {
+                    inputElement.classList.add('error');
+                }
+            }
+
+            clearError(fieldName) {
+                const errorElement = document.getElementById(fieldName + 'Error');
+                const inputElement = document.getElementById(fieldName);
+                
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+                
+                if (inputElement) {
+                    inputElement.classList.remove('error');
+                }
+            }
+        }
+
+        // Initialize profile manager when DOM is loaded
+        let profileManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            profileManager = new ProfileManager();
+        });
+    </script>
+</body>
+</html> 

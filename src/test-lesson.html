@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Lesson Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-link {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            background: #2C6EAA;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .test-link:hover {
+            background: #1e5a94;
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Lesson Page</h1>
+    
+    <div class="info">
+        <h3>📋 Hướng dẫn test:</h3>
+        <p>1. Nhấp vào link để test lesson.html với different courseId và lessonId</p>
+        <p>2. Mở Developer Console (F12) để xem logs</p>
+        <p>3. Kiểm tra xem có lỗi promise nào không</p>
+    </div>
+
+    <h3>🎯 Test Links:</h3>
+    
+    <a href="lesson.html?courseId=course1&lessonId=js1" class="test-link">
+        📹 Test Lesson 1 (JavaScript - Video)
+    </a>
+    
+    <a href="lesson.html?courseId=course1&lessonId=js2" class="test-link">
+        📹 Test Lesson 2 (JavaScript - Video)
+    </a>
+    
+    <a href="lesson.html?courseId=course2&lessonId=ux1" class="test-link">
+        🎨 Test Lesson 3 (UI/UX - Video)
+    </a>
+    
+    <a href="lesson.html?courseId=course1&lessonId=js3" class="test-link">
+        📝 Test Lesson 3 (JavaScript - Markdown)
+    </a>
+    
+    <a href="lesson.html?courseId=course1&lessonId=js4" class="test-link">
+        📄 Test Lesson 4 (JavaScript - PDF)
+    </a>
+    
+    <a href="lesson.html?courseId=course2&lessonId=ux2" class="test-link">
+        📝 Test Lesson 5 (UI/UX - Markdown)
+    </a>
+    
+    <a href="lesson.html?courseId=course2&lessonId=ux3" class="test-link">
+        📄 Test Lesson 6 (UI/UX - PDF)
+    </a>
+    
+    <a href="lesson.html?courseId=nonexistent&lessonId=nonexistent" class="test-link">
+        ❌ Test Course/Lesson không tồn tại (Demo fallback)
+    </a>
+    
+    <a href="lesson.html?courseId=course1&lessonId=wronglesson" class="test-link">
+        ⚠️ Test Wrong lessonId (Fallback to first lesson)
+    </a>
+
+    <div class="info">
+        <h3>🔍 Những gì cần kiểm tra:</h3>
+        <ul>
+            <li>✅ Lesson content hiển thị đúng</li>
+            <li>✅ Không có lỗi Promise</li>
+            <li>✅ Sidebar lessons list render được</li>
+            <li>✅ Video player hoạt động (YouTube embed)</li>
+            <li>✅ Navigation buttons hoạt động</li>
+            <li>✅ Console không có lỗi</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <h3>📺 Expected Content Types:</h3>
+        <ul>
+            <li><strong>js1:</strong> JavaScript Intro (YouTube video)</li>
+            <li><strong>js2:</strong> Variables & Data Types (YouTube video)</li>
+            <li><strong>js3:</strong> Syntax & Control Structures (Markdown with code examples)</li>
+            <li><strong>js4:</strong> JavaScript Reference (PDF document)</li>
+            <li><strong>ux1:</strong> Design Principles (YouTube video)</li>
+            <li><strong>ux2:</strong> Design Thinking Process (Markdown with case study)</li>
+            <li><strong>ux3:</strong> Figma Fundamentals (PDF guide)</li>
+        </ul>
+    </div>
+
+    <script>
+        // Setup mock user data for testing
+        const mockUser = {
+            id: 'user1',
+            username: 'testuser',
+            fullName: 'Test User', 
+            email: 'test@example.com',
+            role: 'student',
+            progress: {
+                courses: [
+                    {
+                        courseId: 'course1',
+                        courseName: 'Lập trình JavaScript',
+                        enrolledAt: new Date().toISOString(),
+                        completed: 25,
+                        lessonsCompleted: ['js1'] // Mark first lesson as completed
+                    }
+                ],
+                quizzes: []
+            }
+        };
+
+        // Save mock user to localStorage
+        localStorage.setItem('currentUser', JSON.stringify(mockUser));
+        
+        console.log('✅ Mock user data saved to localStorage');
+        console.log('Current user:', mockUser);
+    </script>
+</body>
+</html> 

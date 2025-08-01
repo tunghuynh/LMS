@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Menu - E-Learning Platform</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .debug-info {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        #sidebar {
+            border: 2px solid #ccc;
+            min-height: 300px;
+            background: white;
+        }
+        
+        .status {
+            color: green;
+        }
+        
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐛 Menu Debug Page</h1>
+    
+    <div class="debug-info">
+        <h3>Debug Information:</h3>
+        <div id="debugStatus">Loading...</div>
+    </div>
+    
+    <div class="debug-info">
+        <h3>User Role:</h3>
+        <select id="roleSelector" onchange="changeRole()">
+            <option value="admin">Admin</option>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+        </select>
+        <button onclick="initializeMenu()">🔄 Reload Menu</button>
+    </div>
+    
+    <div class="debug-info">
+        <h3>Sidebar Container:</h3>
+        <div id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be rendered here by CommonMenuManager -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+
+    <script>
+        function updateDebugStatus(message, isError = false) {
+            const status = document.getElementById('debugStatus');
+            const timestamp = new Date().toLocaleTimeString();
+            status.innerHTML += `[${timestamp}] <span class="${isError ? 'error' : 'status'}">${message}</span><br>`;
+        }
+
+        function changeRole() {
+            const role = document.getElementById('roleSelector').value;
+            updateDebugStatus(`🔄 Switching to role: ${role}`);
+            
+            // Create test user
+            const testUser = {
+                id: `${role}-test`,
+                username: `${role}01`,
+                fullName: `${role.charAt(0).toUpperCase() + role.slice(1)} Test User`,
+                role: role,
+                email: `${role}@test.com`
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(testUser));
+            updateDebugStatus(`✅ User set in localStorage`);
+            
+            initializeMenu();
+        }
+
+        function initializeMenu() {
+            updateDebugStatus('🚀 Initializing menu...');
+            
+            // Destroy existing menu manager
+            if (window.commonMenuManager) {
+                delete window.commonMenuManager;
+                updateDebugStatus('🗑️ Destroyed existing menu manager');
+            }
+            
+            // Clear sidebar
+            document.getElementById('sidebar').innerHTML = '';
+            
+            // Check if CommonMenuManager is available
+            if (typeof CommonMenuManager === 'undefined') {
+                updateDebugStatus('❌ CommonMenuManager class not found', true);
+                return;
+            }
+            
+            try {
+                window.commonMenuManager = new CommonMenuManager({
+                    containerId: 'sidebar'
+                });
+                updateDebugStatus('✅ Menu manager created');
+                
+                // Check after a delay
+                setTimeout(() => {
+                    if (window.commonMenuManager && document.getElementById('sidebar').innerHTML.trim()) {
+                        updateDebugStatus('✅ Menu rendered successfully');
+                    } else {
+                        updateDebugStatus('❌ Menu not rendered', true);
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                updateDebugStatus(`❌ Error creating menu: ${error.message}`, true);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDebugStatus('📄 DOM loaded');
+            
+            // Check script dependencies
+            updateDebugStatus(`🔍 CommonMenuManager: ${typeof CommonMenuManager !== 'undefined' ? '✅' : '❌'}`);
+            updateDebugStatus(`🔍 AuthManager: ${typeof AuthManager !== 'undefined' ? '✅' : '❌'}`);
+            updateDebugStatus(`🔍 UIManager: ${typeof UIManager !== 'undefined' ? '✅' : '❌'}`);
+            
+            // Set default user
+            const defaultUser = {
+                id: 'admin-test',
+                username: 'admin01',
+                fullName: 'Admin Test User',
+                role: 'admin',
+                email: 'admin@test.com'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(defaultUser));
+            updateDebugStatus('👤 Default admin user set');
+            
+            // Initialize menu with delay to ensure scripts are loaded
+            setTimeout(() => {
+                initializeMenu();
+            }, 500);
+        });
+    </script>
+</body>
+</html> 

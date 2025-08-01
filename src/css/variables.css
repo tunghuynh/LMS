@@ -1,0 +1,48 @@
+/* CSS Variables - Style Guide */
+:root {
+    /* Colors */
+    --primary-blue: #2C6EAA;
+    --accent-green: #4CAF50;
+    --light-gray: #F5F5F5;
+    --dark-gray: #333333;
+    --white: #FFFFFF;
+    --border-color: #e0e0e0;
+    --hover-blue: #f0f8ff;
+    --shadow-light: 0 2px 5px rgba(0,0,0,0.1);
+    --shadow-hover: 0 4px 8px rgba(0,0,0,0.15);
+    
+    /* Typography */
+    --font-family: 'Roboto', sans-serif;
+    --font-size-h1: 28px;
+    --font-size-h2: 22px;
+    --font-size-h3: 18px;
+    --font-size-body: 16px;
+    --font-size-small: 14px;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Border Radius */
+    --border-radius-sm: 4px;
+    --border-radius-md: 6px;
+    --border-radius-lg: 8px;
+    
+    /* Breakpoints */
+    --breakpoint-mobile: 768px;
+    --breakpoint-tablet: 1024px;
+    
+    /* Layout */
+    --header-height: 60px;
+    --sidebar-width: 240px;
+    --sidebar-collapsed-width: 60px;
+    
+    /* Z-index */
+    --z-header: 1000;
+    --z-sidebar: 900;
+    --z-modal: 2000;
+    --z-dropdown: 1500;
+} 

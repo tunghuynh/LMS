@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân quyền hệ thống - E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+
+        
+        .permissions-container {
+            padding: var(--spacing-lg);
+        }
+
+        .permissions-header {
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .permissions-title {
+            font-size: var(--font-size-h1);
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .permissions-description {
+            color: #666;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .permissions-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        /* Permission Table */
+        .permissions-table-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .permissions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .permissions-table th,
+        .permissions-table td {
+            padding: var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .permissions-table th {
+            background: var(--light-gray);
+            font-weight: 600;
+            color: var(--dark-gray);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .permissions-table tr:hover {
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        /* Role Headers */
+        .role-header {
+            text-align: center;
+            background: var(--primary-blue);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .role-header.admin {
+            background: #dc3545;
+        }
+
+        .role-header.teacher {
+            background: var(--accent-green);
+        }
+
+        .role-header.student {
+            background: #6c757d;
+        }
+
+        /* Module Rows */
+        .module-row {
+            background: rgba(44, 110, 170, 0.1);
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .module-row td:first-child {
+            position: relative;
+            padding-left: var(--spacing-lg);
+        }
+
+        .module-row td:first-child::before {
+            content: '📁';
+            margin-right: var(--spacing-sm);
+        }
+
+        /* Function Rows */
+        .function-row {
+            background: var(--white);
+        }
+
+        .function-row td:first-child {
+            padding-left: calc(var(--spacing-lg) * 2);
+            position: relative;
+        }
+
+        .function-row td:first-child::before {
+            content: '└─';
+            color: #999;
+            margin-right: var(--spacing-sm);
+        }
+
+        /* Action Rows */
+        .action-row {
+            background: rgba(248, 249, 250, 0.8);
+        }
+
+        .action-row td:first-child {
+            padding-left: calc(var(--spacing-lg) * 3);
+            font-size: var(--font-size-small);
+            color: #666;
+            position: relative;
+        }
+
+        .action-row td:first-child::before {
+            content: '⌙';
+            color: #ccc;
+            margin-right: var(--spacing-sm);
+        }
+
+        /* Permission Checkboxes */
+        .permission-checkbox {
+            /* display: flex; */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .permission-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin: 0;
+            vertical-align: middle;
+        }
+
+        .permission-checkbox input[type="checkbox"]:checked {
+            accent-color: var(--primary-blue);
+        }
+        
+        /* Ensure table cells for checkboxes are centered */
+        .permissions-table td.permission-checkbox {
+            text-align: center;
+            vertical-align: middle;
+            width: 120px;
+        }
+
+        /* Permission Status */
+        .permission-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .permission-status.granted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .permission-status.denied {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .permission-status.inherited {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: center;
+        }
+
+        .bulk-actions label {
+            font-weight: 500;
+            margin-right: var(--spacing-md);
+        }
+
+        .bulk-actions select {
+            margin-right: var(--spacing-md);
+        }
+
+        /* Legend */
+        .permissions-legend {
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            margin-top: var(--spacing-lg);
+        }
+
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .legend-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .permissions-table-container {
+                overflow-x: auto;
+            }
+
+            .permissions-table {
+                min-width: 600px;
+            }
+
+            .permissions-actions {
+                flex-direction: column;
+            }
+
+            .bulk-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .legend-items {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">A</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">User</span>
+                    <span class="header-role" id="userRole">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="permissions-container">
+                <!-- Header Section -->
+                <div class="permissions-header">
+                    <h1 class="permissions-title">🔐 Phân quyền hệ thống</h1>
+                    <p class="permissions-description">
+                        Quản lý quyền truy cập các chức năng của hệ thống cho từng vai trò người dùng.
+                        Chọn các chức năng mà mỗi vai trò được phép sử dụng.
+                    </p>
+                    <div class="permissions-actions">
+                        <button class="btn btn-primary" onclick="permissionManager.savePermissions()">
+                            💾 Lưu phân quyền
+                        </button>
+                        <button class="btn btn-secondary" onclick="permissionManager.resetToDefault()">
+                            🔄 Khôi phục mặc định
+                        </button>
+                        <button class="btn btn-accent" onclick="permissionManager.exportPermissions()">
+                            📤 Xuất cấu hình
+                        </button>
+                        <button class="btn btn-outline" onclick="permissionManager.importPermissions()">
+                            📥 Nhập cấu hình
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Permission Table -->
+                <div class="permissions-table-container">
+                    <!-- Bulk Actions -->
+                    <div class="bulk-actions">
+                        <label>Thao tác hàng loạt:</label>
+                        <select id="bulkRole">
+                            <option value="">Chọn vai trò</option>
+                            <option value="admin">👨‍💼 Admin</option>
+                            <option value="teacher">👨‍🏫 Teacher</option>
+                            <option value="student">👨‍🎓 Student</option>
+                        </select>
+                        <button class="btn btn-small" onclick="permissionManager.grantAllForRole()">
+                            ✅ Cấp tất cả quyền
+                        </button>
+                        <button class="btn btn-small btn-secondary" onclick="permissionManager.revokeAllForRole()">
+                            ❌ Thu hồi tất cả quyền
+                        </button>
+                    </div>
+
+                    <table class="permissions-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">Chức năng / Thao tác</th>
+                                <th class="role-header admin" style="width: 20%;">👨‍💼 Admin</th>
+                                <th class="role-header teacher" style="width: 20%;">👨‍🏫 Teacher</th>
+                                <th class="role-header student" style="width: 20%;">👨‍🎓 Student</th>
+                            </tr>
+                        </thead>
+                        <tbody id="permissionsTableBody">
+                            <!-- Content will be generated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Legend -->
+                <div class="permissions-legend">
+                    <h3 class="legend-title">📖 Chú giải</h3>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="legend-icon">📁</span>
+                            <span>Module chính của hệ thống</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-icon">🔧</span>
+                            <span>Chức năng trong module</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-icon">⌙</span>
+                            <span>Thao tác cụ thể (button, action)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="permission-status granted">Granted</span>
+                            <span>Được cấp quyền</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="permission-status denied">Denied</span>
+                            <span>Bị từ chối quyền</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="permission-status inherited">Inherited</span>
+                            <span>Thừa kế từ module cha</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class PermissionManager {
+            constructor() {
+                this.permissions = {};
+                this.defaultPermissions = {};
+                this.init();
+            }
+
+            init() {
+                // Check authentication - only admins can access
+                if (!authManager.isLoggedIn()) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const currentUser = authManager.getCurrentUser();
+                if (currentUser.role !== 'admin') {
+                    uiManager.showToast('Chỉ Admin mới có quyền truy cập trang này', 'error');
+                    authManager.redirectToDashboard();
+                    return;
+                }
+
+                this.setupDefaultPermissions();
+                this.loadPermissions();
+                this.renderPermissionsTable();
+            }
+
+            setupDefaultPermissions() {
+                this.defaultPermissions = {
+                    // User Management
+                    'users_view': { admin: true, teacher: false, student: false },
+                    'users_create': { admin: true, teacher: false, student: false },
+                    'users_edit': { admin: true, teacher: false, student: false },
+                    'users_delete': { admin: true, teacher: false, student: false },
+                    'users_export': { admin: true, teacher: false, student: false },
+                    
+                    // Profile Management
+                    'profile_view': { admin: true, teacher: true, student: true },
+                    'profile_edit': { admin: true, teacher: true, student: true },
+                    'profile_avatar': { admin: true, teacher: true, student: true },
+                    
+                    // Course Management
+                    'courses_view': { admin: true, teacher: true, student: true },
+                    'courses_create': { admin: true, teacher: true, student: false },
+                    'courses_edit': { admin: true, teacher: true, student: false },
+                    'courses_delete': { admin: true, teacher: false, student: false },
+                    'courses_publish': { admin: true, teacher: true, student: false },
+                    'courses_enroll': { admin: true, teacher: false, student: true },
+                    
+                    // Lesson Management
+                    'lessons_view': { admin: true, teacher: true, student: true },
+                    'lessons_create': { admin: true, teacher: true, student: false },
+                    'lessons_edit': { admin: true, teacher: true, student: false },
+                    'lessons_delete': { admin: true, teacher: true, student: false },
+                    'lessons_complete': { admin: true, teacher: true, student: true },
+                    
+                    // Quiz Management
+                    'quizzes_view': { admin: true, teacher: true, student: true },
+                    'quizzes_create': { admin: true, teacher: true, student: false },
+                    'quizzes_edit': { admin: true, teacher: true, student: false },
+                    'quizzes_delete': { admin: true, teacher: false, student: false },
+                    'quizzes_take': { admin: true, teacher: true, student: true },
+                    'quizzes_results': { admin: true, teacher: true, student: true },
+                    
+                    // Class Management
+                    'classes_view': { admin: true, teacher: true, student: false },
+                    'classes_create': { admin: true, teacher: true, student: false },
+                    'classes_edit': { admin: true, teacher: true, student: false },
+                    'classes_delete': { admin: true, teacher: false, student: false },
+                    'classes_manage_students': { admin: true, teacher: true, student: false },
+                    
+                    // Reports & Analytics
+                    'reports_view': { admin: true, teacher: true, student: false },
+                    'reports_export': { admin: true, teacher: false, student: false },
+                    'analytics_view': { admin: true, teacher: false, student: false },
+                    
+                    // System Settings
+                    'settings_view': { admin: true, teacher: false, student: false },
+                    'settings_edit': { admin: true, teacher: false, student: false },
+                    'permissions_manage': { admin: true, teacher: false, student: false },
+                    'logs_view': { admin: true, teacher: false, student: false }
+                };
+            }
+
+            loadPermissions() {
+                const saved = localStorage.getItem('systemPermissions');
+                this.permissions = saved ? JSON.parse(saved) : { ...this.defaultPermissions };
+            }
+
+            savePermissions() {
+                localStorage.setItem('systemPermissions', JSON.stringify(this.permissions));
+                authManager.logActivity('Permissions Updated', 'Updated system permissions');
+                uiManager.showToast('Đã lưu cấu hình phân quyền thành công!', 'success');
+            }
+
+            renderPermissionsTable() {
+                const tbody = document.getElementById('permissionsTableBody');
+                
+                const permissionStructure = [
+                    {
+                        name: 'Quản lý người dùng',
+                        type: 'module',
+                        functions: [
+                            {
+                                name: 'Danh sách người dùng',
+                                type: 'function',
+                                actions: [
+                                    { key: 'users_view', name: 'Xem danh sách' },
+                                    { key: 'users_create', name: 'Thêm người dùng' },
+                                    { key: 'users_edit', name: 'Sửa thông tin' },
+                                    { key: 'users_delete', name: 'Xóa người dùng' },
+                                    { key: 'users_export', name: 'Xuất dữ liệu' }
+                                ]
+                            },
+                            {
+                                name: 'Hồ sơ cá nhân',
+                                type: 'function',
+                                actions: [
+                                    { key: 'profile_view', name: 'Xem hồ sơ' },
+                                    { key: 'profile_edit', name: 'Chỉnh sửa hồ sơ' },
+                                    { key: 'profile_avatar', name: 'Đổi avatar' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Quản lý khóa học',
+                        type: 'module',
+                        functions: [
+                            {
+                                name: 'Khóa học',
+                                type: 'function',
+                                actions: [
+                                    { key: 'courses_view', name: 'Xem khóa học' },
+                                    { key: 'courses_create', name: 'Tạo khóa học' },
+                                    { key: 'courses_edit', name: 'Sửa khóa học' },
+                                    { key: 'courses_delete', name: 'Xóa khóa học' },
+                                    { key: 'courses_publish', name: 'Xuất bản' },
+                                    { key: 'courses_enroll', name: 'Đăng ký học' }
+                                ]
+                            },
+                            {
+                                name: 'Bài học',
+                                type: 'function',
+                                actions: [
+                                    { key: 'lessons_view', name: 'Xem bài học' },
+                                    { key: 'lessons_create', name: 'Tạo bài học' },
+                                    { key: 'lessons_edit', name: 'Sửa bài học' },
+                                    { key: 'lessons_delete', name: 'Xóa bài học' },
+                                    { key: 'lessons_complete', name: 'Đánh dấu hoàn thành' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Hệ thống kiểm tra',
+                        type: 'module',
+                        functions: [
+                            {
+                                name: 'Quản lý Quiz',
+                                type: 'function',
+                                actions: [
+                                    { key: 'quizzes_view', name: 'Xem quiz' },
+                                    { key: 'quizzes_create', name: 'Tạo quiz' },
+                                    { key: 'quizzes_edit', name: 'Sửa quiz' },
+                                    { key: 'quizzes_delete', name: 'Xóa quiz' },
+                                    { key: 'quizzes_take', name: 'Làm quiz' },
+                                    { key: 'quizzes_results', name: 'Xem kết quả' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Quản lý lớp học',
+                        type: 'module',
+                        functions: [
+                            {
+                                name: 'Lớp học',
+                                type: 'function',
+                                actions: [
+                                    { key: 'classes_view', name: 'Xem lớp học' },
+                                    { key: 'classes_create', name: 'Tạo lớp học' },
+                                    { key: 'classes_edit', name: 'Sửa lớp học' },
+                                    { key: 'classes_delete', name: 'Xóa lớp học' },
+                                    { key: 'classes_manage_students', name: 'Quản lý học viên' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Báo cáo & Phân tích',
+                        type: 'module',
+                        functions: [
+                            {
+                                name: 'Báo cáo',
+                                type: 'function',
+                                actions: [
+                                    { key: 'reports_view', name: 'Xem báo cáo' },
+                                    { key: 'reports_export', name: 'Xuất báo cáo' },
+                                    { key: 'analytics_view', name: 'Xem phân tích' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Cài đặt hệ thống',
+                        type: 'module',
+                        functions: [
+                            {
+                                name: 'Quản trị hệ thống',
+                                type: 'function',
+                                actions: [
+                                    { key: 'settings_view', name: 'Xem cài đặt' },
+                                    { key: 'settings_edit', name: 'Sửa cài đặt' },
+                                    { key: 'permissions_manage', name: 'Quản lý phân quyền' },
+                                    { key: 'logs_view', name: 'Xem nhật ký' }
+                                ]
+                            }
+                        ]
+                    }
+                ];
+
+                let html = '';
+                
+                permissionStructure.forEach(module => {
+                    // Module row
+                    html += `
+                        <tr class="module-row">
+                            <td><strong>${module.name}</strong></td>
+                            <td colspan="3"></td>
+                        </tr>
+                    `;
+                    
+                    module.functions.forEach(func => {
+                        // Function row
+                        html += `
+                            <tr class="function-row">
+                                <td><strong>${func.name}</strong></td>
+                                <td colspan="3"></td>
+                            </tr>
+                        `;
+                        
+                        func.actions.forEach(action => {
+                            // Action row
+                            const adminChecked = this.permissions[action.key]?.admin ? 'checked' : '';
+                            const teacherChecked = this.permissions[action.key]?.teacher ? 'checked' : '';
+                            const studentChecked = this.permissions[action.key]?.student ? 'checked' : '';
+                            
+                            html += `
+                                <tr class="action-row">
+                                    <td>${action.name}</td>
+                                    <td class="permission-checkbox">
+                                        <input type="checkbox" 
+                                               data-permission="${action.key}" 
+                                               data-role="admin" 
+                                               ${adminChecked}
+                                               onchange="permissionManager.updatePermission('${action.key}', 'admin', this.checked)">
+                                    </td>
+                                    <td class="permission-checkbox">
+                                        <input type="checkbox" 
+                                               data-permission="${action.key}" 
+                                               data-role="teacher" 
+                                               ${teacherChecked}
+                                               onchange="permissionManager.updatePermission('${action.key}', 'teacher', this.checked)">
+                                    </td>
+                                    <td class="permission-checkbox">
+                                        <input type="checkbox" 
+                                               data-permission="${action.key}" 
+                                               data-role="student" 
+                                               ${studentChecked}
+                                               onchange="permissionManager.updatePermission('${action.key}', 'student', this.checked)">
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    });
+                });
+                
+                tbody.innerHTML = html;
+            }
+
+            updatePermission(permissionKey, role, granted) {
+                if (!this.permissions[permissionKey]) {
+                    this.permissions[permissionKey] = { admin: false, teacher: false, student: false };
+                }
+                this.permissions[permissionKey][role] = granted;
+                
+                // Auto-save after each change
+                this.savePermissions();
+            }
+
+            grantAllForRole() {
+                const role = document.getElementById('bulkRole').value;
+                if (!role) {
+                    uiManager.showToast('Vui lòng chọn vai trò', 'warning');
+                    return;
+                }
+
+                Object.keys(this.permissions).forEach(key => {
+                    this.permissions[key][role] = true;
+                });
+
+                this.renderPermissionsTable();
+                this.savePermissions();
+                uiManager.showToast(`Đã cấp tất cả quyền cho ${role}`, 'success');
+            }
+
+            revokeAllForRole() {
+                const role = document.getElementById('bulkRole').value;
+                if (!role) {
+                    uiManager.showToast('Vui lòng chọn vai trò', 'warning');
+                    return;
+                }
+
+                Object.keys(this.permissions).forEach(key => {
+                    this.permissions[key][role] = false;
+                });
+
+                this.renderPermissionsTable();
+                this.savePermissions();
+                uiManager.showToast(`Đã thu hồi tất cả quyền của ${role}`, 'success');
+            }
+
+            resetToDefault() {
+                uiManager.showConfirm(
+                    'Bạn có chắc muốn khôi phục cài đặt phân quyền mặc định? Tất cả thay đổi sẽ bị mất.',
+                    () => {
+                        this.permissions = { ...this.defaultPermissions };
+                        this.renderPermissionsTable();
+                        this.savePermissions();
+                        uiManager.showToast('Đã khôi phục cài đặt mặc định', 'success');
+                    }
+                );
+            }
+
+            exportPermissions() {
+                const dataStr = JSON.stringify(this.permissions, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `permissions_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                uiManager.showToast('Đã xuất cấu hình phân quyền', 'success');
+                authManager.logActivity('Permissions Export', 'Exported permissions configuration');
+            }
+
+            importPermissions() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                const imported = JSON.parse(e.target.result);
+                                this.permissions = imported;
+                                this.renderPermissionsTable();
+                                this.savePermissions();
+                                uiManager.showToast('Đã nhập cấu hình phân quyền thành công', 'success');
+                                authManager.logActivity('Permissions Import', 'Imported permissions configuration');
+                            } catch (error) {
+                                uiManager.showToast('File không hợp lệ', 'error');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            }
+        }
+
+        // Initialize permission manager
+        let permissionManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            permissionManager = new PermissionManager();
+        });
+    </script>
+</body>
+</html> 

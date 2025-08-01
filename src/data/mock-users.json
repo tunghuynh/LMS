@@ -1,0 +1,118 @@
+[
+  {
+    "id": 1,
+    "username": "student01",
+    "password": "123456",
+    "email": "student01@example.com",
+    "role": "student",
+    "fullName": "Nguyễn Văn A",
+    "avatar": "assets/images/avatar-student01.png",
+    "goal": "Hoàn thành 5 khóa học trong học kỳ này",
+    "progress": {
+      "courses": [
+        { "courseId": 101, "courseName": "Lập trình cơ bản", "completed": 40, "enrolledAt": "2024-01-15" },
+        { "courseId": 102, "courseName": "Cấu trúc dữ liệu", "completed": 70, "enrolledAt": "2024-02-01" }
+      ],
+      "quizzes": [
+        { "quizId": 201, "quizName": "Quiz Tuần 1", "score": 85, "takenAt": "2024-01-20" },
+        { "quizId": 202, "quizName": "Quiz Giữa kỳ", "score": 92, "takenAt": "2024-02-15" }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "username": "student02",
+    "password": "123456",
+    "email": "student02@example.com",
+    "role": "student",
+    "fullName": "Trần Thị B",
+    "avatar": "assets/images/avatar-student02.png",
+    "goal": "Đạt điểm A trong tất cả các quiz",
+    "progress": {
+      "courses": [
+        { "courseId": 101, "courseName": "Lập trình cơ bản", "completed": 60, "enrolledAt": "2024-01-10" },
+        { "courseId": 103, "courseName": "Phát triển Web", "completed": 30, "enrolledAt": "2024-02-10" }
+      ],
+      "quizzes": [
+        { "quizId": 201, "quizName": "Quiz Tuần 1", "score": 78, "takenAt": "2024-01-22" },
+        { "quizId": 203, "quizName": "Quiz JavaScript", "score": 88, "takenAt": "2024-02-20" }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "username": "teacher01",
+    "password": "abcdef",
+    "email": "teacher01@example.com",
+    "role": "teacher",
+    "fullName": "Lê Minh C",
+    "avatar": "assets/images/avatar-teacher01.png",
+    "goal": "Tạo 3 khóa học mới trong năm này",
+    "progress": {
+      "courses": [
+        { "courseId": 101, "courseName": "Lập trình cơ bản", "role": "teacher", "students": 25 },
+        { "courseId": 102, "courseName": "Cấu trúc dữ liệu", "role": "teacher", "students": 18 }
+      ],
+      "quizzes": [
+        { "quizId": 201, "quizName": "Quiz Tuần 1", "created": true, "responses": 23 },
+        { "quizId": 202, "quizName": "Quiz Giữa kỳ", "created": true, "responses": 20 }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "username": "teacher02",
+    "password": "abcdef",
+    "email": "teacher02@example.com",
+    "role": "teacher",
+    "fullName": "Phạm Thị D",
+    "avatar": "assets/images/avatar-teacher02.png",
+    "goal": "Nâng cao chất lượng giảng dạy",
+    "progress": {
+      "courses": [
+        { "courseId": 103, "courseName": "Phát triển Web", "role": "teacher", "students": 30 },
+        { "courseId": 104, "courseName": "Cơ sở dữ liệu", "role": "teacher", "students": 22 }
+      ],
+      "quizzes": [
+        { "quizId": 203, "quizName": "Quiz JavaScript", "created": true, "responses": 28 },
+        { "quizId": 204, "quizName": "Quiz SQL", "created": true, "responses": 20 }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "username": "admin01",
+    "password": "admin123",
+    "email": "admin@example.com",
+    "role": "admin",
+    "fullName": "Hoàng Văn E",
+    "avatar": "assets/images/avatar-admin01.png",
+    "goal": "Quản lý hệ thống hiệu quả",
+    "progress": {
+      "users": 150,
+      "courses": 12,
+      "quizzes": 45,
+      "enrollments": 380
+    }
+  },
+  {
+    "id": 6,
+    "username": "student03",
+    "password": "123456",
+    "email": "student03@example.com",
+    "role": "student",
+    "fullName": "Vũ Thị F",
+    "avatar": "assets/images/avatar-student03.png",
+    "goal": "Học thêm về AI và Machine Learning",
+    "progress": {
+      "courses": [
+        { "courseId": 103, "courseName": "Phát triển Web", "completed": 85, "enrolledAt": "2024-01-20" },
+        { "courseId": 104, "courseName": "Cơ sở dữ liệu", "completed": 45, "enrolledAt": "2024-02-05" }
+      ],
+      "quizzes": [
+        { "quizId": 203, "quizName": "Quiz JavaScript", "score": 95, "takenAt": "2024-02-18" },
+        { "quizId": 204, "quizName": "Quiz SQL", "score": 82, "takenAt": "2024-02-25" }
+      ]
+    }
+  }
+] 

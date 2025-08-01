@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Danh mục - E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+
+        
+        .categories-header {
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .categories-title {
+            font-size: var(--font-size-h1);
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .categories-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .search-filter-bar {
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-filter-bar .form-control {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .category-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .category-header {
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            position: relative;
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .category-name {
+            font-size: var(--font-size-h3);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .category-description {
+            opacity: 0.9;
+            font-size: var(--font-size-small);
+        }
+
+        .category-stats {
+            position: absolute;
+            top: var(--spacing-md);
+            right: var(--spacing-md);
+            background: rgba(255, 255, 255, 0.2);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+        }
+
+        .category-body {
+            padding: var(--spacing-lg);
+        }
+
+        .category-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-number {
+            font-size: var(--font-size-h3);
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .info-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .category-actions .btn {
+            flex: 1;
+        }
+
+        .category-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .category-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .category-status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Modal Styles */
+        .category-modal .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .icon-selector {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .icon-option {
+            aspect-ratio: 1;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.5rem;
+        }
+
+        .icon-option:hover {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.1);
+        }
+
+        .icon-option.selected {
+            border-color: var(--primary-blue);
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .color-selector {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .color-option {
+            aspect-ratio: 1;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-option.selected {
+            border-color: var(--dark-gray);
+            transform: scale(1.2);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .categories-actions {
+                flex-direction: column;
+            }
+
+            .category-info {
+                grid-template-columns: 1fr;
+            }
+
+            .icon-selector {
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .color-selector {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">A</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">User</span>
+                    <span class="header-role" id="userRole">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header Section -->
+            <div class="categories-header">
+                <h1 class="categories-title">📂 Quản lý Danh mục</h1>
+                <p style="color: #666; margin-bottom: var(--spacing-md);">
+                    Tổ chức và phân loại khóa học theo các danh mục chuyên môn.
+                </p>
+                <div class="categories-actions">
+                    <button class="btn btn-primary" onclick="categoryManager.showCreateModal()">
+                        ➕ Thêm danh mục
+                    </button>
+                    <button class="btn btn-secondary" onclick="categoryManager.exportCategories()">
+                        📤 Xuất danh sách
+                    </button>
+                    <button class="btn btn-outline" onclick="categoryManager.importCategories()">
+                        📥 Nhập danh mục
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="search-filter-bar">
+                <input type="text" id="searchInput" class="form-control" placeholder="🔍 Tìm kiếm danh mục..." 
+                       onkeyup="categoryManager.filterCategories()">
+                <select id="statusFilter" class="form-control" onchange="categoryManager.filterCategories()">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="active">Đang hoạt động</option>
+                    <option value="inactive">Tạm dừng</option>
+                </select>
+                <select id="sortBy" class="form-control" onchange="categoryManager.sortCategories()">
+                    <option value="name">Sắp xếp theo tên</option>
+                    <option value="courses">Số khóa học</option>
+                    <option value="created">Ngày tạo</option>
+                </select>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categories will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-state-icon">📂</div>
+                <h3>Chưa có danh mục nào</h3>
+                <p>Bắt đầu bằng cách tạo danh mục đầu tiên cho khóa học của bạn.</p>
+                <button class="btn btn-primary" onclick="categoryManager.showCreateModal()">
+                    ➕ Tạo danh mục đầu tiên
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- Create/Edit Category Modal -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">➕ Thêm danh mục mới</h3>
+                <button class="modal-close" onclick="uiManager.hideModal('categoryModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <div class="form-group">
+                        <label class="form-label">Tên danh mục *</label>
+                        <input type="text" id="categoryName" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mô tả</label>
+                        <textarea id="categoryDescription" class="form-control" rows="3" 
+                                  placeholder="Mô tả ngắn gọn về danh mục này..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Biểu tượng</label>
+                        <div class="icon-selector" id="iconSelector">
+                            <!-- Icons will be generated -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Màu sắc</label>
+                        <div class="color-selector" id="colorSelector">
+                            <!-- Colors will be generated -->
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Thứ tự hiển thị</label>
+                            <input type="number" id="categoryOrder" class="form-control" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Trạng thái</label>
+                            <select id="categoryStatus" class="form-control">
+                                <option value="active">Đang hoạt động</option>
+                                <option value="inactive">Tạm dừng</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="categoryFeatured">
+                            Danh mục nổi bật
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="uiManager.hideModal('categoryModal')">
+                    Hủy
+                </button>
+                <button class="btn btn-primary" onclick="categoryManager.saveCategory()">
+                    💾 Lưu danh mục
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class CategoryManager {
+            constructor() {
+                this.categories = [];
+                this.filteredCategories = [];
+                this.currentCategory = null;
+                this.availableIcons = ['📚', '💻', '🎨', '🔬', '📊', '🎵', '🏃‍♂️', '🍳', '📷', '✏️', '🌍', '💼', '🎭', '🔧', '📱', '🎮'];
+                this.availableColors = ['#2C6EAA', '#4CAF50', '#FF9800', '#F44336', '#9C27B0', '#607D8B'];
+                this.init();
+            }
+
+            init() {
+                // Check authentication
+                if (!authManager.isLoggedIn()) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const currentUser = authManager.getCurrentUser();
+                if (!['admin', 'teacher'].includes(currentUser.role)) {
+                    uiManager.showToast('Bạn không có quyền truy cập trang này', 'error');
+                    authManager.redirectToDashboard();
+                    return;
+                }
+
+                this.loadCategories();
+                this.setupIconSelector();
+                this.setupColorSelector();
+                this.renderCategories();
+            }
+
+            loadCategories() {
+                // Load from localStorage or use default categories
+                const saved = localStorage.getItem('courseCategories');
+                if (saved) {
+                    this.categories = JSON.parse(saved);
+                } else {
+                    this.categories = [
+                        {
+                            id: 1,
+                            name: 'Lập trình',
+                            description: 'Các khóa học về lập trình, phát triển phần mềm',
+                            icon: '💻',
+                            color: '#2C6EAA',
+                            courseCount: 8,
+                            studentCount: 156,
+                            status: 'active',
+                            featured: true,
+                            order: 1,
+                            created: '2025-01-01'
+                        },
+                        {
+                            id: 2,
+                            name: 'Thiết kế',
+                            description: 'Thiết kế đồ họa, UI/UX, nghệ thuật số',
+                            icon: '🎨',
+                            color: '#9C27B0',
+                            courseCount: 5,
+                            studentCount: 89,
+                            status: 'active',
+                            featured: false,
+                            order: 2,
+                            created: '2025-01-02'
+                        },
+                        {
+                            id: 3,
+                            name: 'Kinh doanh',
+                            description: 'Quản lý, marketing, khởi nghiệp',
+                            icon: '💼',
+                            color: '#FF9800',
+                            courseCount: 3,
+                            studentCount: 67,
+                            status: 'active',
+                            featured: false,
+                            order: 3,
+                            created: '2025-01-03'
+                        }
+                    ];
+                    this.saveCategories();
+                }
+                this.filteredCategories = [...this.categories];
+            }
+
+            saveCategories() {
+                localStorage.setItem('courseCategories', JSON.stringify(this.categories));
+            }
+
+            setupIconSelector() {
+                const container = document.getElementById('iconSelector');
+                container.innerHTML = this.availableIcons.map(icon => 
+                    `<div class="icon-option" onclick="categoryManager.selectIcon('${icon}')">${icon}</div>`
+                ).join('');
+            }
+
+            setupColorSelector() {
+                const container = document.getElementById('colorSelector');
+                container.innerHTML = this.availableColors.map(color => 
+                    `<div class="color-option" style="background: ${color}" onclick="categoryManager.selectColor('${color}')"></div>`
+                ).join('');
+            }
+
+            renderCategories() {
+                const container = document.getElementById('categoriesGrid');
+                const emptyState = document.getElementById('emptyState');
+
+                if (this.filteredCategories.length === 0) {
+                    container.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                container.style.display = 'grid';
+                emptyState.style.display = 'none';
+
+                const categoriesHTML = this.filteredCategories.map(category => `
+                    <div class="category-card">
+                        <div class="category-header" style="background: linear-gradient(135deg, ${category.color}, ${category.color}dd);">
+                            <div class="category-stats">${category.courseCount} khóa học</div>
+                            <div class="category-icon">${category.icon}</div>
+                            <div class="category-name">${category.name}</div>
+                            <div class="category-description">${category.description}</div>
+                        </div>
+                        <div class="category-body">
+                            <div class="category-info">
+                                <div class="info-item">
+                                    <div class="info-number">${category.courseCount}</div>
+                                    <div class="info-label">Khóa học</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-number">${category.studentCount}</div>
+                                    <div class="info-label">Học viên</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: var(--spacing-md); text-align: center;">
+                                <span class="category-status ${category.status}">
+                                    ${category.status === 'active' ? '✅ Đang hoạt động' : '⏸️ Tạm dừng'}
+                                </span>
+                                ${category.featured ? '<span class="category-status granted" style="margin-left: var(--spacing-sm);">⭐ Nổi bật</span>' : ''}
+                            </div>
+                            <div class="category-actions">
+                                <button class="btn btn-outline btn-small" onclick="categoryManager.viewCourses(${category.id})">
+                                    👁️ Xem khóa học
+                                </button>
+                                <button class="btn btn-secondary btn-small" onclick="categoryManager.editCategory(${category.id})">
+                                    ✏️ Sửa
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="categoryManager.deleteCategory(${category.id})">
+                                    🗑️ Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = categoriesHTML;
+            }
+
+            showCreateModal() {
+                this.currentCategory = null;
+                document.getElementById('modalTitle').textContent = '➕ Thêm danh mục mới';
+                document.getElementById('categoryForm').reset();
+                document.getElementById('categoryOrder').value = this.categories.length + 1;
+                
+                // Reset selections
+                document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
+                document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+                
+                uiManager.showModal('categoryModal');
+            }
+
+            editCategory(id) {
+                this.currentCategory = this.categories.find(c => c.id === id);
+                if (!this.currentCategory) return;
+
+                document.getElementById('modalTitle').textContent = '✏️ Chỉnh sửa danh mục';
+                document.getElementById('categoryName').value = this.currentCategory.name;
+                document.getElementById('categoryDescription').value = this.currentCategory.description;
+                document.getElementById('categoryOrder').value = this.currentCategory.order;
+                document.getElementById('categoryStatus').value = this.currentCategory.status;
+                document.getElementById('categoryFeatured').checked = this.currentCategory.featured;
+
+                // Set selected icon and color
+                this.selectIcon(this.currentCategory.icon);
+                this.selectColor(this.currentCategory.color);
+
+                uiManager.showModal('categoryModal');
+            }
+
+            selectIcon(icon) {
+                document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
+                event.target.classList.add('selected');
+                this.selectedIcon = icon;
+            }
+
+            selectColor(color) {
+                document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+                event.target.classList.add('selected');
+                this.selectedColor = color;
+            }
+
+            saveCategory() {
+                const name = document.getElementById('categoryName').value.trim();
+                if (!name) {
+                    uiManager.showToast('Vui lòng nhập tên danh mục', 'warning');
+                    return;
+                }
+
+                const categoryData = {
+                    name: name,
+                    description: document.getElementById('categoryDescription').value.trim(),
+                    icon: this.selectedIcon || '📚',
+                    color: this.selectedColor || '#2C6EAA',
+                    order: parseInt(document.getElementById('categoryOrder').value),
+                    status: document.getElementById('categoryStatus').value,
+                    featured: document.getElementById('categoryFeatured').checked
+                };
+
+                if (this.currentCategory) {
+                    // Update existing category
+                    const index = this.categories.findIndex(c => c.id === this.currentCategory.id);
+                    this.categories[index] = { ...this.currentCategory, ...categoryData };
+                    uiManager.showToast('Đã cập nhật danh mục thành công!', 'success');
+                } else {
+                    // Create new category
+                    const newCategory = {
+                        id: Date.now(),
+                        ...categoryData,
+                        courseCount: 0,
+                        studentCount: 0,
+                        created: new Date().toISOString().split('T')[0]
+                    };
+                    this.categories.push(newCategory);
+                    uiManager.showToast('Đã thêm danh mục mới thành công!', 'success');
+                }
+
+                this.saveCategories();
+                this.filteredCategories = [...this.categories];
+                this.renderCategories();
+                uiManager.hideModal('categoryModal');
+
+                authManager.logActivity('Category Management', `${this.currentCategory ? 'Updated' : 'Created'} category: ${name}`);
+            }
+
+            deleteCategory(id) {
+                const category = this.categories.find(c => c.id === id);
+                if (!category) return;
+
+                const message = category.courseCount > 0 
+                    ? `Danh mục "${category.name}" có ${category.courseCount} khóa học. Bạn có chắc muốn xóa?`
+                    : `Bạn có chắc muốn xóa danh mục "${category.name}"?`;
+
+                uiManager.showConfirm(message, () => {
+                    this.categories = this.categories.filter(c => c.id !== id);
+                    this.saveCategories();
+                    this.filteredCategories = [...this.categories];
+                    this.renderCategories();
+                    uiManager.showToast('Đã xóa danh mục thành công!', 'success');
+                    authManager.logActivity('Category Management', `Deleted category: ${category.name}`);
+                });
+            }
+
+            viewCourses(categoryId) {
+                // Redirect to courses page with category filter
+                window.location.href = `courses.html?category=${categoryId}`;
+            }
+
+            filterCategories() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const statusFilter = document.getElementById('statusFilter').value;
+
+                this.filteredCategories = this.categories.filter(category => {
+                    const matchesSearch = category.name.toLowerCase().includes(searchTerm) ||
+                                        category.description.toLowerCase().includes(searchTerm);
+                    const matchesStatus = !statusFilter || category.status === statusFilter;
+                    
+                    return matchesSearch && matchesStatus;
+                });
+
+                this.renderCategories();
+            }
+
+            sortCategories() {
+                const sortBy = document.getElementById('sortBy').value;
+                
+                this.filteredCategories.sort((a, b) => {
+                    switch (sortBy) {
+                        case 'name':
+                            return a.name.localeCompare(b.name);
+                        case 'courses':
+                            return b.courseCount - a.courseCount;
+                        case 'created':
+                            return new Date(b.created) - new Date(a.created);
+                        default:
+                            return a.order - b.order;
+                    }
+                });
+
+                this.renderCategories();
+            }
+
+            exportCategories() {
+                const dataStr = JSON.stringify(this.categories, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `categories_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                uiManager.showToast('Đã xuất danh sách danh mục', 'success');
+                authManager.logActivity('Category Export', 'Exported categories data');
+            }
+
+            importCategories() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                const imported = JSON.parse(e.target.result);
+                                if (Array.isArray(imported)) {
+                                    this.categories = imported;
+                                    this.saveCategories();
+                                    this.filteredCategories = [...this.categories];
+                                    this.renderCategories();
+                                    uiManager.showToast('Đã nhập danh mục thành công', 'success');
+                                    authManager.logActivity('Category Import', 'Imported categories data');
+                                } else {
+                                    uiManager.showToast('File không đúng định dạng', 'error');
+                                }
+                            } catch (error) {
+                                uiManager.showToast('File không hợp lệ', 'error');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            }
+        }
+
+        // Initialize category manager
+        let categoryManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            categoryManager = new CategoryManager();
+        });
+    </script>
+</body>
+</html> 
+

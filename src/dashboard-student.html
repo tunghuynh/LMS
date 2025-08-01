@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Học viên | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            border-left: 4px solid var(--primary-blue);
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-card.courses {
+            border-left-color: var(--primary-blue);
+        }
+
+        .stat-card.stat-progress {
+            border-left-color: var(--accent-green);
+        }
+
+        .stat-card.quizzes {
+            border-left-color: #ff9800;
+        }
+
+        .stat-card.achievements {
+            border-left-color: #9c27b0;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: var(--font-size-body);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-change {
+            font-size: var(--font-size-small);
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .recent-activity {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.course {
+            background: var(--primary-blue);
+        }
+
+        .activity-icon.quiz {
+            background: #ff9800;
+        }
+
+        .activity-icon.lesson {
+            background: var(--accent-green);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .activity-desc {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .activity-time {
+            font-size: var(--font-size-small);
+            color: #999;
+            flex-shrink: 0;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .action-card {
+            background: var(--white);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .action-title {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .action-desc {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .course-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: all 0.2s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .course-thumbnail {
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 3rem;
+        }
+
+        .course-content {
+            padding: var(--spacing-md);
+        }
+
+        .course-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--dark-gray);
+        }
+
+        .course-progress {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-small);
+        }
+
+        .progress {
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--accent-green);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">S</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Student</span>
+                    <span class="header-role" id="userRole">Sinh viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <div class="content-header">
+                <h1 class="content-title">Dashboard</h1>
+                <p class="content-subtitle">Chào mừng bạn quay trở lại! Hãy tiếp tục hành trình học tập của bạn.</p>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="stat-card courses">
+                    <div class="stat-number" id="totalCourses">3</div>
+                    <div class="stat-label">Khóa học đang tham gia</div>
+                    <div class="stat-change">
+                        <span>↗</span> +1 khóa học mới tuần này
+                    </div>
+                </div>
+
+                <div class="stat-card stat-progress">
+                    <div class="stat-number" id="avgProgress">67%</div>
+                    <div class="stat-label">Tiến độ trung bình</div>
+                    <div class="stat-change">
+                        <span>↗</span> +15% so với tuần trước
+                    </div>
+                </div>
+
+                <div class="stat-card quizzes">
+                    <div class="stat-number" id="completedQuizzes">8</div>
+                    <div class="stat-label">Quiz đã hoàn thành</div>
+                    <div class="stat-change">
+                        <span>↗</span> +2 quiz tuần này
+                    </div>
+                </div>
+
+                <div class="stat-card achievements">
+                    <div class="stat-number" id="avgScore">86</div>
+                    <div class="stat-label">Điểm trung bình</div>
+                    <div class="stat-change">
+                        <span>↗</span> +3 điểm so với tháng trước
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Hành động nhanh</h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="courses.html" class="action-card">
+                            <div class="action-icon">📚</div>
+                            <div class="action-title">Tìm khóa học</div>
+                            <div class="action-desc">Khám phá các khóa học mới</div>
+                        </a>
+                        <a href="quizzes.html" class="action-card">
+                            <div class="action-icon">🧪</div>
+                            <div class="action-title">Làm Quiz</div>
+                            <div class="action-desc">Kiểm tra kiến thức của bạn</div>
+                        </a>
+                        <a href="progress.html" class="action-card">
+                            <div class="action-icon">📈</div>
+                            <div class="action-title">Xem tiến độ</div>
+                            <div class="action-desc">Theo dõi quá trình học tập</div>
+                        </a>
+                        <a href="profile-student.html" class="action-card">
+                            <div class="action-icon">⚙️</div>
+                            <div class="action-title">Cài đặt</div>
+                            <div class="action-desc">Cập nhật thông tin cá nhân</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <h3 style="margin-bottom: var(--spacing-md);">Hoạt động gần đây</h3>
+                <div id="recentActivities">
+                    <!-- Activities will be loaded here -->
+                </div>
+            </div>
+
+            <!-- My Courses -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Khóa học của tôi</h3>
+                </div>
+                <div class="card-body">
+                    <div class="course-grid" id="myCourses">
+                        <!-- Courses will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class StudentDashboard {
+            constructor() {
+                this.currentUser = null;
+                this.courses = [];
+                this.activities = [];
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['student'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.renderDashboard();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Responsive sidebar
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth > 768) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                        document.getElementById('content').classList.remove('sidebar-collapsed');
+                        document.getElementById('footer').classList.remove('sidebar-collapsed');
+                    }
+                });
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'S';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load courses
+                    const coursesResponse = await fetch('data/mock-courses.json');
+                    const allCourses = await coursesResponse.json();
+                    
+                                    // Filter user's enrolled courses
+                const userProgress = this.currentUser.progress || { courses: [], quizzes: [] };
+                const userCourses = userProgress.courses || [];
+                
+                this.courses = allCourses.filter(course => {
+                    return userCourses.some(userCourse => userCourse.courseId === course.courseId);
+                });
+
+                    // Load recent activities (mock)
+                    this.activities = [
+                        {
+                            type: 'lesson',
+                            icon: '📖',
+                            title: 'Hoàn thành bài học',
+                            description: 'Biến và Kiểu dữ liệu - Lập trình cơ bản',
+                            time: '2 giờ trước'
+                        },
+                        {
+                            type: 'quiz',
+                            icon: '🏆',
+                            title: 'Hoàn thành quiz',
+                            description: 'Quiz Tuần 1 - Điểm: 85/100',
+                            time: '1 ngày trước'
+                        },
+                        {
+                            type: 'course',
+                            icon: '📚',
+                            title: 'Đăng ký khóa học mới',
+                            description: 'Phát triển Web',
+                            time: '3 ngày trước'
+                        },
+                        {
+                            type: 'lesson',
+                            icon: '📖',
+                            title: 'Bắt đầu bài học',
+                            description: 'Stack và Queue - Cấu trúc dữ liệu',
+                            time: '5 ngày trước'
+                        }
+                    ];
+
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu', 'error');
+                }
+            }
+
+            renderDashboard() {
+                this.updateStats();
+                this.renderRecentActivities();
+                this.renderMyCourses();
+            }
+
+            updateStats() {
+                // Update course count
+                document.getElementById('totalCourses').textContent = this.courses.length;
+
+                // Calculate average progress
+                const userProgress = this.currentUser.progress || { courses: [], quizzes: [] };
+                const courses = userProgress.courses || [];
+                const totalProgress = courses.reduce((sum, course) => sum + (course.completed || 0), 0);
+                const avgProgress = courses.length > 0 
+                    ? Math.round(totalProgress / courses.length) 
+                    : 0;
+                document.getElementById('avgProgress').textContent = avgProgress + '%';
+
+                // Update quiz count
+                const quizzes = userProgress.quizzes || [];
+                document.getElementById('completedQuizzes').textContent = quizzes.length;
+
+                // Calculate average score
+                const totalScore = quizzes.reduce((sum, quiz) => sum + (quiz.score || 0), 0);
+                const avgScore = quizzes.length > 0 
+                    ? Math.round(totalScore / quizzes.length) 
+                    : 0;
+                document.getElementById('avgScore').textContent = avgScore;
+            }
+
+            renderRecentActivities() {
+                const container = document.getElementById('recentActivities');
+                
+                if (this.activities.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">Chưa có hoạt động nào.</p>';
+                    return;
+                }
+
+                const activitiesHTML = this.activities.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon ${activity.type}">
+                            ${activity.icon}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">${activity.title}</div>
+                            <div class="activity-desc">${activity.description}</div>
+                        </div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = activitiesHTML;
+            }
+
+            renderMyCourses() {
+                const container = document.getElementById('myCourses');
+                
+                if (this.courses.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: var(--spacing-xl); color: #666;">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">📚</div>
+                            <p>Bạn chưa đăng ký khóa học nào.</p>
+                            <a href="courses.html" class="btn btn-primary" style="margin-top: var(--spacing-md);">
+                                Khám phá khóa học
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const coursesHTML = this.courses.map(course => {
+                    const userProgressData = this.currentUser.progress || { courses: [], quizzes: [] };
+                    const userCourses = userProgressData.courses || [];
+                    const userProgress = userCourses.find(uc => uc.courseId === course.courseId);
+                    const progressPercent = userProgress ? userProgress.completed : 0;
+                    
+                    return `
+                        <div class="course-card">
+                            <div class="course-thumbnail">
+                                📚
+                            </div>
+                            <div class="course-content">
+                                <h4 class="course-title">${course.title}</h4>
+                                <div class="course-progress">
+                                    <div class="progress-label">
+                                        <span>Tiến độ</span>
+                                        <span>${progressPercent}%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                                    </div>
+                                </div>
+                                <a href="course-detail.html?id=${course.courseId}" class="btn btn-primary btn-small">
+                                    ${progressPercent > 0 ? 'Tiếp tục học' : 'Bắt đầu học'}
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = coursesHTML;
+            }
+        }
+
+        // Initialize dashboard when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new StudentDashboard();
+        });
+    </script>
+</body>
+</html> 

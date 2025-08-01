@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Syntax Fix</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+    <h1>🔧 Test Syntax Error Fix</h1>
+    
+    <!-- Set up test user -->
+    <script>
+        localStorage.setItem('currentUser', JSON.stringify({
+            username: 'admin',
+            role: 'admin',
+            fullName: 'Test Admin'
+        }));
+    </script>
+    
+    <!-- Test sidebar -->
+    <div class="sidebar sidebar-fixed" id="sidebar">
+        <div class="sidebar-nav" id="sidebarNav">
+            <!-- Menu should be loaded here -->
+        </div>
+    </div>
+    
+    <div style="margin-left: 300px; padding: 20px;">
+        <h2>Syntax Error Check</h2>
+        <div id="statusDisplay">Loading scripts...</div>
+        
+        <h3>Console Messages:</h3>
+        <div id="consoleOutput" style="background: #f5f5f5; padding: 10px; border-radius: 4px; min-height: 100px; font-family: monospace;"></div>
+    </div>
+    
+    <!-- Load scripts in order to test conflicts -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    
+    <script>
+        // Override console methods to display messages
+        const consoleOutput = document.getElementById('consoleOutput');
+        const statusDisplay = document.getElementById('statusDisplay');
+        
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleOutput.innerHTML += '<div style="color: blue;">LOG: ' + args.join(' ') + '</div>';
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            consoleOutput.innerHTML += '<div style="color: red;">ERROR: ' + args.join(' ') + '</div>';
+        };
+        
+        // Test after scripts load
+        setTimeout(() => {
+            try {
+                if (typeof CommonMenuManager !== 'undefined') {
+                    statusDisplay.innerHTML = '✅ All scripts loaded successfully! No syntax errors.';
+                    statusDisplay.style.color = 'green';
+                } else {
+                    statusDisplay.innerHTML = '⚠️ CommonMenuManager not found';
+                    statusDisplay.style.color = 'orange';
+                }
+            } catch (error) {
+                statusDisplay.innerHTML = '❌ Syntax error: ' + error.message;
+                statusDisplay.style.color = 'red';
+            }
+        }, 2000);
+        
+        // Catch global errors
+        window.addEventListener('error', function(e) {
+            consoleOutput.innerHTML += '<div style="color: red; font-weight: bold;">SYNTAX ERROR: ' + e.message + ' at line ' + e.lineno + '</div>';
+            statusDisplay.innerHTML = '❌ Syntax Error Detected!';
+            statusDisplay.style.color = 'red';
+        });
+    </script>
+</body>
+</html> 

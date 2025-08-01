@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý người dùng | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .page-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .filters-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .filters-row {
+            display: grid;
+            grid-template-columns: 1fr 200px 200px auto;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+
+        .table-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: var(--light-gray);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .table-count {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .users-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .users-table tr:hover {
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .user-email {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .role-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .role-badge.student {
+            background: rgba(44, 110, 170, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .role-badge.teacher {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+        }
+
+        .role-badge.admin {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .status-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+        }
+
+        .status-badge.inactive {
+            background: rgba(158, 158, 158, 0.1);
+            color: #9e9e9e;
+        }
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            padding: var(--spacing-xs);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+            margin-right: var(--spacing-xs);
+        }
+
+        .action-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .action-btn.edit {
+            color: var(--primary-blue);
+        }
+
+        .action-btn.delete {
+            color: #f44336;
+        }
+
+        .pagination-container {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .pagination-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            max-width: 500px;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: flex-end;
+            margin-top: var(--spacing-lg);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filters-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            
+            .users-table {
+                font-size: var(--font-size-small);
+            }
+            
+            .users-table th,
+            .users-table td {
+                padding: var(--spacing-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">A</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Admin</span>
+                    <span class="header-role" id="userRole">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation will be populated based on user role -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">👥 Quản lý người dùng</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="userManager.showAddModal()">
+                        ➕ Thêm người dùng
+                    </button>
+                    <button class="btn btn-secondary" onclick="userManager.exportUsers()">
+                        📤 Xuất danh sách
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-row">
+                    <div class="form-group">
+                        <label class="form-label">Tìm kiếm</label>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="form-control" 
+                            placeholder="Tìm theo tên, email, username..."
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vai trò</label>
+                        <select id="roleFilter" class="form-control">
+                            <option value="">Tất cả vai trò</option>
+                            <option value="student">Học viên</option>
+                            <option value="teacher">Giảng viên</option>
+                            <option value="admin">Quản trị viên</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive">Không hoạt động</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-secondary" onclick="userManager.clearFilters()">
+                            🔄 Xóa bộ lọc
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">Danh sách người dùng</div>
+                    <div class="table-count" id="userCount">Tổng: 0 người dùng</div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Người dùng</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                <th>Hoạt động cuối</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfo">
+                        Hiển thị 1-10 trong tổng số 0 kết quả
+                    </div>
+                    <div class="pagination-controls" id="paginationControls">
+                        <!-- Pagination buttons will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Thêm người dùng mới</h3>
+                <button class="modal-close" onclick="uiManager.hideModal(document.getElementById('userModal'))">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" id="userForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Họ và tên *</label>
+                            <input type="text" id="modalFullName" class="form-control" required>
+                            <div class="form-error" id="modalFullNameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tên đăng nhập *</label>
+                            <input type="text" id="modalUsername" class="form-control" required>
+                            <div class="form-error" id="modalUsernameError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" id="modalEmail" class="form-control" required>
+                            <div class="form-error" id="modalEmailError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Vai trò *</label>
+                            <select id="modalRole" class="form-control" required>
+                                <option value="">Chọn vai trò</option>
+                                <option value="student">Học viên</option>
+                                <option value="teacher">Giảng viên</option>
+                                <option value="admin">Quản trị viên</option>
+                            </select>
+                            <div class="form-error" id="modalRoleError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row single" id="passwordRow">
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu *</label>
+                            <input type="password" id="modalPassword" class="form-control" required>
+                            <div class="form-error" id="modalPasswordError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label class="form-label">Mục tiêu học tập</label>
+                            <textarea id="modalGoal" class="form-control" rows="3" placeholder="Mô tả mục tiêu học tập của người dùng..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="uiManager.hideModal(document.getElementById('userModal'))">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-primary" onclick="userManager.saveUser()">
+                    <span id="saveButtonText">Thêm người dùng</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script>
+        class UserManager {
+            constructor() {
+                this.currentUser = null;
+                this.users = [];
+                this.filteredUsers = [];
+                this.currentPage = 1;
+                this.usersPerPage = 10;
+                this.editingUserId = null;
+                this.permissions = {};
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['admin', 'teacher'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.setupRolePermissions();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadUsers();
+                this.renderUsers();
+            }
+
+            setupRolePermissions() {
+                // Define permissions based on user role
+                if (this.currentUser.role === 'admin') {
+                    this.permissions = {
+                        canViewAllUsers: true,
+                        canCreateUser: true,
+                        canEditUser: true,
+                        canDeleteUser: true,
+                        canChangeUserRole: true,
+                        canManageTeachers: true,
+                        canManageStudents: true,
+                        canManageAdmins: true,
+                        canExportData: true,
+                        canImportData: true
+                    };
+                } else if (this.currentUser.role === 'teacher') {
+                    this.permissions = {
+                        canViewAllUsers: false, // Only students in their classes
+                        canCreateUser: false,
+                        canEditUser: false, // Only basic info of their students
+                        canDeleteUser: false,
+                        canChangeUserRole: false,
+                        canManageTeachers: false,
+                        canManageStudents: true, // Limited to their classes
+                        canManageAdmins: false,
+                        canExportData: false,
+                        canImportData: false
+                    };
+                }
+
+                // Update UI based on permissions
+                this.updateUIPermissions();
+            }
+
+            updateUIPermissions() {
+                // Hide/show buttons based on permissions
+                const addUserBtn = document.querySelector('.btn-primary');
+                if (addUserBtn && !this.permissions.canCreateUser) {
+                    addUserBtn.style.display = 'none';
+                }
+
+                const importBtn = document.querySelector('button[onclick*="importUsers"]');
+                if (importBtn && !this.permissions.canImportData) {
+                    importBtn.style.display = 'none';
+                }
+
+                const exportBtn = document.querySelector('button[onclick*="exportUsers"]');
+                if (exportBtn && !this.permissions.canExportData) {
+                    exportBtn.style.display = 'none';
+                }
+
+                // Update page title for teachers
+                if (this.currentUser.role === 'teacher') {
+                    document.querySelector('.page-title').textContent = '👥 Quản lý Học viên';
+                }
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Search and filters
+                document.getElementById('searchInput').addEventListener('input', () => {
+                    this.filterUsers();
+                });
+
+                document.getElementById('roleFilter').addEventListener('change', () => {
+                    this.filterUsers();
+                });
+
+                document.getElementById('statusFilter').addEventListener('change', () => {
+                    this.filterUsers();
+                });
+
+                // Form submission
+                document.getElementById('userForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveUser();
+                });
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                // Update user role display
+                const currentUser = authManager.getCurrentUser();
+                if (currentUser) {
+                    const roleMap = {
+                        'admin': ' Quản trị viên',
+                        'teacher': ' Giảng viên', 
+                        'student': ' Học viên'
+                    };
+                    document.getElementById('userRole').textContent = roleMap[currentUser.role] || ' User';
+                }
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'U';
+                }
+            }
+
+            async loadUsers() {
+                try {
+                    this.users = await authManager.loadUsers();
+                    
+                    // If teacher, only show students
+                    if (this.currentUser.role === 'teacher') {
+                        this.users = this.users.filter(user => user.role === 'student');
+                    }
+                    
+                    this.filteredUsers = [...this.users];
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                    uiManager.showToast('Có lỗi khi tải danh sách người dùng', 'error');
+                }
+            }
+
+            filterUsers() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const roleFilter = document.getElementById('roleFilter').value;
+                const statusFilter = document.getElementById('statusFilter').value;
+
+                this.filteredUsers = this.users.filter(user => {
+                    const matchesSearch = !searchTerm || 
+                        user.fullName?.toLowerCase().includes(searchTerm) ||
+                        user.email?.toLowerCase().includes(searchTerm) ||
+                        user.username?.toLowerCase().includes(searchTerm);
+                    
+                    const matchesRole = !roleFilter || user.role === roleFilter;
+                    
+                    // Mock status - in real app would check last login, etc.
+                    const userStatus = Math.random() > 0.2 ? 'active' : 'inactive';
+                    const matchesStatus = !statusFilter || userStatus === statusFilter;
+
+                    return matchesSearch && matchesRole && matchesStatus;
+                });
+
+                this.currentPage = 1;
+                this.renderUsers();
+            }
+
+            clearFilters() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('roleFilter').value = '';
+                document.getElementById('statusFilter').value = '';
+                this.filterUsers();
+            }
+
+            renderUserActions(user) {
+                let actions = [];
+
+                // View action (always available)
+                actions.push(`<button class="action-btn view" onclick="userManager.viewUser(${user.id})" title="Xem chi tiết">👁️</button>`);
+
+                // Edit action (based on permissions)
+                if (this.canEditUser(user)) {
+                    actions.push(`<button class="action-btn edit" onclick="userManager.editUser(${user.id})" title="Chỉnh sửa">✏️</button>`);
+                }
+
+                // Delete action (based on permissions)
+                if (this.canDeleteUser(user)) {
+                    actions.push(`<button class="action-btn delete" onclick="userManager.deleteUser(${user.id})" title="Xóa">🗑️</button>`);
+                }
+
+                return actions.join(' ');
+            }
+
+            canEditUser(user) {
+                if (this.currentUser.role === 'admin') {
+                    return this.permissions.canEditUser;
+                } else if (this.currentUser.role === 'teacher') {
+                    // Teachers can only edit students, not other teachers or admins
+                    return user.role === 'student' && this.permissions.canManageStudents;
+                }
+                return false;
+            }
+
+            canDeleteUser(user) {
+                if (this.currentUser.role === 'admin') {
+                    // Admins can delete anyone except themselves
+                    return this.permissions.canDeleteUser && user.id !== this.currentUser.id;
+                } else if (this.currentUser.role === 'teacher') {
+                    // Teachers cannot delete users
+                    return false;
+                }
+                return false;
+            }
+
+            renderUsers() {
+                const tbody = document.getElementById('usersTableBody');
+                const startIndex = (this.currentPage - 1) * this.usersPerPage;
+                const endIndex = startIndex + this.usersPerPage;
+                const pageUsers = this.filteredUsers.slice(startIndex, endIndex);
+
+                // Update count
+                document.getElementById('userCount').textContent = `Tổng: ${this.filteredUsers.length} người dùng`;
+
+                if (pageUsers.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <div class="empty-icon">👥</div>
+                                <p>Không tìm thấy người dùng nào</p>
+                            </td>
+                        </tr>
+                    `;
+                    this.renderPagination();
+                    return;
+                }
+
+                const usersHTML = pageUsers.map(user => {
+                    const userStatus = Math.random() > 0.2 ? 'active' : 'inactive';
+                    const statusText = userStatus === 'active' ? 'Hoạt động' : 'Không hoạt động';
+                    const lastActivity = this.getRandomDate();
+                    
+                    return `
+                        <tr>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        ${user.fullName ? user.fullName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="user-name">${user.fullName || user.username}</div>
+                                        <div class="user-email">${user.email}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="role-badge ${user.role}">
+                                    ${this.getRoleDisplay(user.role)}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge ${userStatus}">
+                                    ${statusText}
+                                </span>
+                            </td>
+                            <td>${uiManager.formatDate(user.createdAt || '2024-01-01')}</td>
+                            <td>${uiManager.formatDateTime(lastActivity)}</td>
+                            <td class="actions-cell">
+                                ${this.renderUserActions(user)}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.innerHTML = usersHTML;
+                this.renderPagination();
+            }
+
+            renderPagination() {
+                const totalPages = Math.ceil(this.filteredUsers.length / this.usersPerPage);
+                const startIndex = (this.currentPage - 1) * this.usersPerPage + 1;
+                const endIndex = Math.min(startIndex + this.usersPerPage - 1, this.filteredUsers.length);
+
+                // Update pagination info
+                document.getElementById('paginationInfo').textContent = 
+                    `Hiển thị ${startIndex}-${endIndex} trong tổng số ${this.filteredUsers.length} kết quả`;
+
+                // Update pagination controls
+                const controls = document.getElementById('paginationControls');
+                let paginationHTML = '';
+
+                // Previous button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} 
+                            onclick="userManager.goToPage(${this.currentPage - 1})">
+                        ‹ Trước
+                    </button>
+                `;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= this.currentPage - 2 && i <= this.currentPage + 2)) {
+                        paginationHTML += `
+                            <button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" 
+                                    onclick="userManager.goToPage(${i})">
+                                ${i}
+                            </button>
+                        `;
+                    } else if (i === this.currentPage - 3 || i === this.currentPage + 3) {
+                        paginationHTML += '<span class="pagination-ellipsis">...</span>';
+                    }
+                }
+
+                // Next button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} 
+                            onclick="userManager.goToPage(${this.currentPage + 1})">
+                        Sau ›
+                    </button>
+                `;
+
+                controls.innerHTML = paginationHTML;
+            }
+
+            goToPage(page) {
+                const totalPages = Math.ceil(this.filteredUsers.length / this.usersPerPage);
+                if (page >= 1 && page <= totalPages) {
+                    this.currentPage = page;
+                    this.renderUsers();
+                }
+            }
+
+            showAddModal() {
+                // Check permissions
+                if (!this.permissions.canCreateUser) {
+                    uiManager.showToast('Bạn không có quyền tạo người dùng mới', 'error');
+                    return;
+                }
+
+                this.editingUserId = null;
+                document.getElementById('modalTitle').textContent = 'Thêm người dùng mới';
+                document.getElementById('saveButtonText').textContent = 'Thêm người dùng';
+                document.getElementById('passwordRow').style.display = 'block';
+                this.clearModalForm();
+                
+                // Enable all fields for admin
+                document.getElementById('modalRole').disabled = false;
+                
+                uiManager.showModal('userModal');
+            }
+
+            viewUser(userId) {
+                const user = this.users.find(u => u.id === userId);
+                if (!user) return;
+
+                // Create view-only modal content
+                const userInfo = `
+                    <div style="padding: var(--spacing-lg);">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary-blue); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">
+                                ${(user.fullName || user.username).charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; margin-bottom: var(--spacing-xs);">${user.fullName || user.username}</h3>
+                                <span class="role-badge ${user.role}">${this.getRoleDisplay(user.role)}</span>
+                            </div>
+                        </div>
+                        <div style="display: grid; gap: var(--spacing-md);">
+                            <div><strong>Username:</strong> ${user.username}</div>
+                            <div><strong>Email:</strong> ${user.email}</div>
+                            <div><strong>Vai trò:</strong> ${this.getRoleDisplay(user.role)}</div>
+                            <div><strong>Ngày tạo:</strong> ${uiManager.formatDate(user.createdAt || '2024-01-01')}</div>
+                            ${user.goal ? `<div><strong>Mục tiêu:</strong> ${user.goal}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+
+                uiManager.showModal('alertModal', 'Thông tin người dùng', userInfo);
+            }
+
+            editUser(userId) {
+                const user = this.users.find(u => u.id === userId);
+                if (!user) return;
+
+                // Check permissions
+                if (!this.canEditUser(user)) {
+                    uiManager.showToast('Bạn không có quyền chỉnh sửa người dùng này', 'error');
+                    return;
+                }
+
+                this.editingUserId = userId;
+                document.getElementById('modalTitle').textContent = 'Chỉnh sửa người dùng';
+                document.getElementById('saveButtonText').textContent = 'Cập nhật';
+                document.getElementById('passwordRow').style.display = 'none';
+
+                // Populate form
+                document.getElementById('modalFullName').value = user.fullName || '';
+                document.getElementById('modalUsername').value = user.username || '';
+                document.getElementById('modalEmail').value = user.email || '';
+                document.getElementById('modalRole').value = user.role || '';
+                document.getElementById('modalGoal').value = user.goal || '';
+
+                // Disable role field for teachers
+                if (this.currentUser.role === 'teacher') {
+                    document.getElementById('modalRole').disabled = true;
+                } else {
+                    document.getElementById('modalRole').disabled = false;
+                }
+
+                uiManager.showModal('userModal');
+            }
+
+            async saveUser() {
+                const formData = {
+                    fullName: document.getElementById('modalFullName').value.trim(),
+                    username: document.getElementById('modalUsername').value.trim(),
+                    email: document.getElementById('modalEmail').value.trim(),
+                    role: document.getElementById('modalRole').value,
+                    goal: document.getElementById('modalGoal').value.trim()
+                };
+
+                if (this.editingUserId === null) {
+                    formData.password = document.getElementById('modalPassword').value;
+                }
+
+                // Validation
+                if (!this.validateUserForm(formData)) {
+                    return;
+                }
+
+                try {
+                    if (this.editingUserId === null) {
+                        // Add new user
+                        const result = await authManager.register(formData);
+                        if (result.success) {
+                            uiManager.showToast('Thêm người dùng thành công!', 'success');
+                            await this.loadUsers();
+                            this.renderUsers();
+                            uiManager.hideModal(document.getElementById('userModal'));
+                        } else {
+                            uiManager.showToast(result.error, 'error');
+                        }
+                    } else {
+                        // Update existing user
+                        const users = await authManager.loadUsers();
+                        const userIndex = users.findIndex(u => u.id === this.editingUserId);
+                        
+                        if (userIndex !== -1) {
+                            users[userIndex] = { ...users[userIndex], ...formData };
+                            localStorage.setItem('users', JSON.stringify(users));
+                            
+                            uiManager.showToast('Cập nhật người dùng thành công!', 'success');
+                            await this.loadUsers();
+                            this.renderUsers();
+                            uiManager.hideModal(document.getElementById('userModal'));
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error saving user:', error);
+                    uiManager.showToast('Có lỗi xảy ra khi lưu người dùng', 'error');
+                }
+            }
+
+            validateUserForm(data) {
+                let isValid = true;
+
+                // Clear previous errors
+                this.clearModalErrors();
+
+                if (!data.fullName) {
+                    this.showModalError('modalFullNameError', 'Vui lòng nhập họ và tên');
+                    isValid = false;
+                }
+
+                if (!data.username) {
+                    this.showModalError('modalUsernameError', 'Vui lòng nhập tên đăng nhập');
+                    isValid = false;
+                }
+
+                if (!data.email) {
+                    this.showModalError('modalEmailError', 'Vui lòng nhập email');
+                    isValid = false;
+                } else if (!uiManager.validateEmail(data.email)) {
+                    this.showModalError('modalEmailError', 'Email không hợp lệ');
+                    isValid = false;
+                }
+
+                if (!data.role) {
+                    this.showModalError('modalRoleError', 'Vui lòng chọn vai trò');
+                    isValid = false;
+                }
+
+                if (this.editingUserId === null && !data.password) {
+                    this.showModalError('modalPasswordError', 'Vui lòng nhập mật khẩu');
+                    isValid = false;
+                } else if (this.editingUserId === null && data.password.length < 6) {
+                    this.showModalError('modalPasswordError', 'Mật khẩu phải có ít nhất 6 ký tự');
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            deleteUser(userId) {
+                const user = this.users.find(u => u.id === userId);
+                if (!user) return;
+
+                // Check permissions
+                if (!this.canDeleteUser(user)) {
+                    uiManager.showToast('Bạn không có quyền xóa người dùng này', 'error');
+                    return;
+                }
+
+                uiManager.showConfirm(
+                    `Bạn có chắc muốn xóa người dùng "${user.fullName || user.username}"?`,
+                    async () => {
+                        try {
+                            const users = await authManager.loadUsers();
+                            const filteredUsers = users.filter(u => u.id !== userId);
+                            localStorage.setItem('users', JSON.stringify(filteredUsers));
+                            
+                            // Log activity
+                            authManager.logActivity('User Deleted', `Deleted user: ${user.fullName || user.username} (${user.email})`);
+                            
+                            uiManager.showToast('Xóa người dùng thành công!', 'success');
+                            await this.loadUsers();
+                            this.renderUsers();
+                        } catch (error) {
+                            console.error('Error deleting user:', error);
+                            uiManager.showToast('Có lỗi xảy ra khi xóa người dùng', 'error');
+                        }
+                    }
+                );
+            }
+
+            exportUsers() {
+                // Mock export functionality
+                uiManager.showToast('Đang xuất danh sách người dùng...', 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Xuất danh sách thành công! File đã được tải xuống.', 'success');
+                }, 2000);
+            }
+
+            clearModalForm() {
+                document.getElementById('userForm').reset();
+                this.clearModalErrors();
+            }
+
+            clearModalErrors() {
+                const errorElements = ['modalFullNameError', 'modalUsernameError', 'modalEmailError', 'modalRoleError', 'modalPasswordError'];
+                errorElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.style.display = 'none';
+                        element.textContent = '';
+                    }
+                });
+            }
+
+            showModalError(elementId, message) {
+                const errorElement = document.getElementById(elementId);
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.style.display = 'block';
+                }
+            }
+
+            getRoleDisplay(role) {
+                const roleMap = {
+                    'student': 'Học viên',
+                    'teacher': 'Giảng viên',
+                    'admin': 'Quản trị viên'
+                };
+                return roleMap[role] || role;
+            }
+
+            getRandomDate() {
+                const start = new Date(2024, 0, 1);
+                const end = new Date();
+                return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString();
+            }
+        }
+
+        // Initialize user manager when DOM is loaded
+        let userManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            userManager = new UserManager();
+        });
+    </script>
+
+    <!-- Components -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+</body>
+</html> 
+

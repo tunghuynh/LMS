@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Footer Position</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <div class="sidebar-item active">
+                    <span class="sidebar-icon">🧪</span>
+                    <span class="sidebar-text">Test Footer</span>
+                </div>
+                <div class="sidebar-item">
+                    <span class="sidebar-icon">📊</span>
+                    <span class="sidebar-text">Dashboard</span>
+                </div>
+                <div class="sidebar-item">
+                    <span class="sidebar-icon">📚</span>
+                    <span class="sidebar-text">Courses</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1>🧪 Test Footer Position</h1>
+            <p>This page tests if the footer is properly positioned at the bottom of the viewport.</p>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3>Content Area</h3>
+                <p>This content should have enough bottom padding so it's not covered by the footer.</p>
+                <p>Footer should be <strong>fixed at the bottom</strong> of the browser window.</p>
+                <p>Try scrolling to see if footer stays in place.</p>
+            </div>
+
+            <!-- Add some content to test scrolling -->
+            <div style="height: 800px; background: linear-gradient(180deg, #e3f2fd 0%, #f3e5f5 100%); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3>Long Content Section</h3>
+                <p>This is a tall section to test scrolling behavior.</p>
+                <p>Footer should remain at bottom of viewport even when scrolling.</p>
+                <div style="margin-top: 400px;">
+                    <h4>Middle of tall section</h4>
+                    <p>Footer should still be visible at bottom of screen.</p>
+                </div>
+                <div style="margin-top: 200px;">
+                    <h4>End of tall section</h4>
+                    <p>This text should not be hidden behind the footer.</p>
+                    <p>There should be adequate spacing between this text and footer.</p>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3>Final Section</h3>
+                <p>This is the last content section to verify proper footer spacing.</p>
+                <p style="margin-bottom: 0;">Footer should not cover this text!</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer (should be fixed at bottom) -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Footer Test - Should be at bottom of viewport! 🎯</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/theme.js"></script>
+
+    <script>
+        // Set up test user
+        localStorage.setItem('currentUser', JSON.stringify({
+            username: 'test',
+            role: 'admin',
+            fullName: 'Test User'
+        }));
+        
+        // Add some visual indicators
+        setTimeout(() => {
+            const footer = document.querySelector('.footer');
+            const rect = footer.getBoundingClientRect();
+            
+            console.log('Footer position:', {
+                top: rect.top,
+                bottom: rect.bottom,
+                left: rect.left,
+                right: rect.right,
+                position: getComputedStyle(footer).position,
+                bottom_style: getComputedStyle(footer).bottom
+            });
+            
+            if (getComputedStyle(footer).position === 'fixed' && getComputedStyle(footer).bottom === '0px') {
+                footer.style.borderTop = '3px solid #28a745';
+                console.log('✅ Footer is properly fixed at bottom!');
+            } else {
+                footer.style.borderTop = '3px solid #dc3545';
+                console.log('❌ Footer position issue detected!');
+            }
+        }, 500);
+    </script>
+</body>
+</html> 

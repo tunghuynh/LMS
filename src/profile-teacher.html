@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ Giảng viên - E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .avatar-section {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-large:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .avatar-large:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .profile-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .profile-stat-label {
+            font-size: var(--font-size-small);
+            opacity: 0.8;
+        }
+
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: var(--spacing-md);
+            background: none;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .content-title {
+            font-size: var(--font-size-h2);
+            margin-bottom: var(--spacing-lg);
+            color: var(--dark-gray);
+        }
+
+        /* Schedule Calendar */
+        .calendar-container {
+            background: var(--light-gray);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .calendar-nav button {
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .calendar-day.today {
+            background: var(--accent-green);
+            color: var(--white);
+        }
+
+        .calendar-day.has-class {
+            background: var(--primary-blue);
+            color: var(--white);
+            position: relative;
+        }
+
+        .calendar-day.has-class::after {
+            content: '•';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            font-size: 0.5rem;
+        }
+
+        /* Schedule List */
+        .schedule-list {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .schedule-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--white);
+            border-radius: var(--border-radius-md);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .schedule-time {
+            font-weight: 600;
+            color: var(--primary-blue);
+            min-width: 80px;
+        }
+
+        .schedule-content {
+            flex: 1;
+        }
+
+        .schedule-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .schedule-details {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .form-section h3 {
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* Achievement Cards */
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .achievement-card {
+            background: linear-gradient(135deg, var(--accent-green), #45a049);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .achievement-title {
+            font-size: var(--font-size-h3);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .achievement-value {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .achievement-desc {
+            opacity: 0.9;
+            font-size: var(--font-size-small);
+        }
+
+        /* Teaching Stats */
+        .teaching-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .teaching-stat {
+            text-align: center;
+            padding: var(--spacing-lg);
+            background: var(--light-gray);
+            border-radius: var(--border-radius-md);
+        }
+
+        .teaching-stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .teaching-stat-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .teaching-stat-label {
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .profile-tabs {
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-grid {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">T</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Teacher</span>
+                    <span class="header-role" id="userRole">Giảng viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="profile-container">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="avatar-section">
+                        <div class="avatar-large" id="profileAvatar" onclick="teacherProfile.changeAvatar()">
+                            <span id="avatarText">👨‍🏫</span>
+                            <div class="avatar-overlay">📷 Thay đổi</div>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">
+                            Tải ảnh lên
+                        </button>
+                    </div>
+                    <div class="profile-info">
+                        <h1 class="profile-name" id="profileName">Nguyễn Văn Hưng</h1>
+                        <div class="profile-role" id="profileRole">👨‍🏫 Giảng viên Lập trình Web</div>
+                        <div class="profile-email" id="profileEmail">teacher@eduplatform.com</div>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <div class="profile-stat-number" id="totalCourses">8</div>
+                                <div class="profile-stat-label">Khóa học</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-number" id="totalStudents">156</div>
+                                <div class="profile-stat-label">Học viên</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-number" id="avgRating">4.8</div>
+                                <div class="profile-stat-label">Đánh giá</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-number" id="experience">5</div>
+                                <div class="profile-stat-label">Năm kinh nghiệm</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Profile Tabs -->
+            <div class="profile-tabs">
+                <button class="tab-btn active" onclick="teacherProfile.showTab('schedule')" id="scheduleTab">
+                    📅 Lịch giảng dạy
+                </button>
+                <button class="tab-btn" onclick="teacherProfile.showTab('personal')" id="personalTab">
+                    👤 Thông tin cá nhân
+                </button>
+                <button class="tab-btn" onclick="teacherProfile.showTab('settings')" id="settingsTab">
+                    ⚙️ Cài đặt
+                </button>
+                <button class="tab-btn" onclick="teacherProfile.showTab('achievements')" id="achievementsTab">
+                    🏆 Thành tích
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+
+            <!-- Schedule Tab -->
+            <div id="scheduleContent" class="tab-content active">
+                <div class="content-card">
+                    <h2 class="content-title">📅 Lịch giảng dạy tháng này</h2>
+                    
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <h3 id="calendarMonth">Tháng 12, 2025</h3>
+                            <div class="calendar-nav">
+                                <button onclick="teacherProfile.previousMonth()">‹</button>
+                                <button onclick="teacherProfile.nextMonth()">›</button>
+                            </div>
+                        </div>
+                        
+                        <div class="calendar-grid" id="calendarGrid">
+                            <!-- Calendar will be generated here -->
+                        </div>
+                    </div>
+
+                    <h3>📋 Lịch hôm nay</h3>
+                    <div class="schedule-list" id="todaySchedule">
+                        <!-- Today's schedule will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Info Tab -->
+            <div id="personalContent" class="tab-content">
+                <div class="content-card">
+                    <h2 class="content-title">👤 Thông tin cá nhân</h2>
+                    
+                    <form class="form-grid" id="personalForm">
+                        <div class="form-section">
+                            <h3>Thông tin cơ bản</h3>
+                            <div class="form-group">
+                                <label class="form-label">Họ và tên</label>
+                                <input type="text" id="fullName" class="form-control" value="Nguyễn Văn Hưng">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="email" class="form-control" value="teacher@eduplatform.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="tel" id="phone" class="form-control" value="0123456789">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Địa chỉ</label>
+                                <textarea id="address" class="form-control" rows="3">123 Đường ABC, Quận XYZ, TP.HCM</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Thông tin giảng dạy</h3>
+                            <div class="form-group">
+                                <label class="form-label">Chuyên môn chính</label>
+                                <input type="text" id="specialization" class="form-control" value="Lập trình Web">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Kinh nghiệm (năm)</label>
+                                <input type="number" id="experienceYears" class="form-control" value="5">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bằng cấp cao nhất</label>
+                                <select id="degree" class="form-control">
+                                    <option value="bachelor">Cử nhân</option>
+                                    <option value="master" selected>Thạc sĩ</option>
+                                    <option value="phd">Tiến sĩ</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Trường tốt nghiệp</label>
+                                <input type="text" id="university" class="form-control" value="Đại học Bách Khoa">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mô tả bản thân</label>
+                                <textarea id="bio" class="form-control" rows="4">Giảng viên với 5 năm kinh nghiệm trong lĩnh vực lập trình web. Đam mê chia sẻ kiến thức và giúp đỡ học viên phát triển kỹ năng.</textarea>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div style="margin-top: var(--spacing-xl); text-align: center;">
+                        <button class="btn btn-primary" onclick="teacherProfile.saveProfile()">
+                            💾 Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settingsContent" class="tab-content">
+                <div class="content-card">
+                    <h2 class="content-title">⚙️ Cài đặt tài khoản</h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-section">
+                            <h3>Bảo mật</h3>
+                            <div class="form-group">
+                                <label class="form-label">Mật khẩu hiện tại</label>
+                                <input type="password" id="currentPassword" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mật khẩu mới</label>
+                                <input type="password" id="newPassword" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Xác nhận mật khẩu mới</label>
+                                <input type="password" id="confirmPassword" class="form-control">
+                            </div>
+                            <button class="btn btn-secondary" onclick="teacherProfile.changePassword()">
+                                🔒 Đổi mật khẩu
+                            </button>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Thông báo</h3>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    Nhận thông báo qua email
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="courseNotifications" checked>
+                                    Thông báo về khóa học mới
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="studentNotifications" checked>
+                                    Thông báo từ học viên
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: var(--spacing-xl); text-align: center;">
+                        <button class="btn btn-primary" onclick="teacherProfile.saveSettings()">
+                            💾 Lưu cài đặt
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements Tab -->
+            <div id="achievementsContent" class="tab-content">
+                <div class="content-card">
+                    <h2 class="content-title">🏆 Thành tích giảng dạy</h2>
+                    
+                    <!-- Teaching Statistics -->
+                    <div class="teaching-stats">
+                        <div class="teaching-stat">
+                            <div class="teaching-stat-icon">📚</div>
+                            <div class="teaching-stat-number" id="teachingCourses">8</div>
+                            <div class="teaching-stat-label">Khóa học đã tạo</div>
+                        </div>
+                        <div class="teaching-stat">
+                            <div class="teaching-stat-icon">👥</div>
+                            <div class="teaching-stat-number" id="teachingStudents">156</div>
+                            <div class="teaching-stat-label">Học viên đã dạy</div>
+                        </div>
+                        <div class="teaching-stat">
+                            <div class="teaching-stat-icon">🧪</div>
+                            <div class="teaching-stat-number" id="teachingQuizzes">24</div>
+                            <div class="teaching-stat-label">Quiz đã tạo</div>
+                        </div>
+                        <div class="teaching-stat">
+                            <div class="teaching-stat-icon">⭐</div>
+                            <div class="teaching-stat-number" id="teachingRating">4.8</div>
+                            <div class="teaching-stat-label">Đánh giá trung bình</div>
+                        </div>
+                    </div>
+
+                    <!-- Achievement Cards -->
+                    <div class="achievement-grid">
+                        <div class="achievement-card">
+                            <div class="achievement-icon">🥇</div>
+                            <div class="achievement-title">Giảng viên xuất sắc</div>
+                            <div class="achievement-value">TOP 10</div>
+                            <div class="achievement-desc">Trong số giảng viên có rating cao nhất</div>
+                        </div>
+                        
+                        <div class="achievement-card">
+                            <div class="achievement-icon">💎</div>
+                            <div class="achievement-title">Chất lượng bài giảng</div>
+                            <div class="achievement-value">95%</div>
+                            <div class="achievement-desc">Tỷ lệ hài lòng từ học viên</div>
+                        </div>
+                        
+                        <div class="achievement-card">
+                            <div class="achievement-icon">🎯</div>
+                            <div class="achievement-title">Tỷ lệ hoàn thành</div>
+                            <div class="achievement-value">87%</div>
+                            <div class="achievement-desc">Học viên hoàn thành khóa học</div>
+                        </div>
+                        
+                        <div class="achievement-card">
+                            <div class="achievement-icon">🚀</div>
+                            <div class="achievement-title">Khóa học phổ biến</div>
+                            <div class="achievement-value">3</div>
+                            <div class="achievement-desc">Khóa học trong TOP trending</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class TeacherProfile {
+            constructor() {
+                this.currentUser = null;
+                this.currentMonth = new Date().getMonth();
+                this.currentYear = new Date().getFullYear();
+                this.init();
+            }
+
+            init() {
+                // Check authentication
+                if (!authManager.isLoggedIn()) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                
+                if (this.currentUser.role !== 'teacher') {
+                    uiManager.showToast('Bạn không có quyền truy cập trang này', 'error');
+                    authManager.redirectToDashboard();
+                    return;
+                }
+
+                this.loadProfile();
+                this.generateCalendar();
+                this.loadTodaySchedule();
+            }
+
+            loadProfile() {
+                // Update header info
+                document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'T';
+                
+                // Update profile info
+                document.getElementById('profileName').textContent = this.currentUser.fullName || this.currentUser.username;
+                
+                // Load teacher-specific data
+                if (this.currentUser.teacherProfile) {
+                    const profile = this.currentUser.teacherProfile;
+                    document.getElementById('fullName').value = profile.fullName || this.currentUser.fullName || '';
+                    document.getElementById('email').value = profile.email || this.currentUser.email || '';
+                    document.getElementById('specialization').value = profile.specialization || '';
+                    document.getElementById('experienceYears').value = profile.experience || 0;
+                    document.getElementById('degree').value = profile.degree || 'bachelor';
+                    document.getElementById('university').value = profile.university || '';
+                    document.getElementById('bio').value = profile.bio || '';
+                }
+            }
+
+            showTab(tabName) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Show selected tab content
+                document.getElementById(tabName + 'Content').classList.add('active');
+                document.getElementById(tabName + 'Tab').classList.add('active');
+            }
+
+            generateCalendar() {
+                const grid = document.getElementById('calendarGrid');
+                const monthNames = [
+                    'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+                    'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
+                ];
+                
+                document.getElementById('calendarMonth').textContent = `${monthNames[this.currentMonth]}, ${this.currentYear}`;
+                
+                // Days of week header
+                const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+                let calendarHTML = '';
+                
+                daysOfWeek.forEach(day => {
+                    calendarHTML += `<div class="calendar-day" style="font-weight: 600; background: var(--primary-blue); color: var(--white);">${day}</div>`;
+                });
+                
+                // Generate calendar days
+                const firstDay = new Date(this.currentYear, this.currentMonth, 1);
+                const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                const today = new Date();
+                const classDays = [5, 12, 19, 26]; // Mock class days
+                
+                for (let i = 0; i < 42; i++) {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + i);
+                    
+                    const isCurrentMonth = currentDate.getMonth() === this.currentMonth;
+                    const isToday = currentDate.toDateString() === today.toDateString();
+                    const hasClass = classDays.includes(currentDate.getDate()) && isCurrentMonth;
+                    
+                    let classes = 'calendar-day';
+                    if (isToday) classes += ' today';
+                    if (hasClass) classes += ' has-class';
+                    if (!isCurrentMonth) classes += ' text-muted';
+                    
+                    calendarHTML += `<div class="${classes}">${currentDate.getDate()}</div>`;
+                }
+                
+                grid.innerHTML = calendarHTML;
+            }
+
+            loadTodaySchedule() {
+                const scheduleContainer = document.getElementById('todaySchedule');
+                const mockSchedule = [
+                    {
+                        time: '09:00',
+                        title: 'Lập trình Web Frontend',
+                        details: 'Lớp WEB101 - Phòng A101 - 25 học viên'
+                    },
+                    {
+                        time: '14:00',
+                        title: 'JavaScript Nâng cao',
+                        details: 'Lớp JS201 - Phòng B205 - 18 học viên'
+                    },
+                    {
+                        time: '16:30',
+                        title: 'Họp phụ huynh',
+                        details: 'Phòng họp C - Báo cáo tiến độ học tập'
+                    }
+                ];
+
+                const scheduleHTML = mockSchedule.map(item => `
+                    <div class="schedule-item">
+                        <div class="schedule-time">${item.time}</div>
+                        <div class="schedule-content">
+                            <div class="schedule-title">${item.title}</div>
+                            <div class="schedule-details">${item.details}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                scheduleContainer.innerHTML = scheduleHTML;
+            }
+
+            previousMonth() {
+                this.currentMonth--;
+                if (this.currentMonth < 0) {
+                    this.currentMonth = 11;
+                    this.currentYear--;
+                }
+                this.generateCalendar();
+            }
+
+            nextMonth() {
+                this.currentMonth++;
+                if (this.currentMonth > 11) {
+                    this.currentMonth = 0;
+                    this.currentYear++;
+                }
+                this.generateCalendar();
+            }
+
+            changeAvatar() {
+                const avatars = ['👨‍🏫', 'T', '👨‍💼', '🧑‍💻'];
+                const currentAvatar = document.getElementById('profileAvatar').textContent;
+                const currentIndex = avatars.indexOf(currentAvatar);
+                const nextIndex = (currentIndex + 1) % avatars.length;
+                
+                document.getElementById('profileAvatar').textContent = avatars[nextIndex];
+                document.getElementById('userAvatar').textContent = avatars[nextIndex];
+                
+                uiManager.showToast('Đã thay đổi avatar', 'success');
+            }
+
+            saveProfile() {
+                const profileData = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    specialization: document.getElementById('specialization').value,
+                    experience: parseInt(document.getElementById('experienceYears').value),
+                    degree: document.getElementById('degree').value,
+                    university: document.getElementById('university').value,
+                    bio: document.getElementById('bio').value
+                };
+
+                // Save to localStorage
+                const updatedUser = {
+                    ...this.currentUser,
+                    fullName: profileData.fullName,
+                    email: profileData.email,
+                    teacherProfile: profileData
+                };
+
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const userIndex = users.findIndex(u => u.id === this.currentUser.id);
+                if (userIndex > -1) {
+                    users[userIndex] = updatedUser;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                }
+
+                authManager.logActivity('Profile Updated', 'Updated teacher profile information');
+                uiManager.showToast('Đã lưu thông tin hồ sơ thành công!', 'success');
+            }
+
+            changePassword() {
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    uiManager.showToast('Vui lòng điền đầy đủ thông tin', 'warning');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    uiManager.showToast('Mật khẩu xác nhận không khớp', 'error');
+                    return;
+                }
+
+                if (newPassword.length < 6) {
+                    uiManager.showToast('Mật khẩu mới phải có ít nhất 6 ký tự', 'error');
+                    return;
+                }
+
+                // Mock password change
+                uiManager.showToast('Đã thay đổi mật khẩu thành công!', 'success');
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            }
+
+            saveSettings() {
+                const settings = {
+                    emailNotifications: document.getElementById('emailNotifications').checked,
+                    courseNotifications: document.getElementById('courseNotifications').checked,
+                    studentNotifications: document.getElementById('studentNotifications').checked
+                };
+
+                // Save settings (mock)
+                localStorage.setItem('teacherSettings', JSON.stringify(settings));
+                authManager.logActivity('Settings Updated', 'Updated account settings');
+                uiManager.showToast('Đã lưu cài đặt thành công!', 'success');
+            }
+        }
+
+        // Initialize teacher profile
+        let teacherProfile;
+        document.addEventListener('DOMContentLoaded', () => {
+            teacherProfile = new TeacherProfile();
+        });
+    </script>
+</body>
+</html> 
+

@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết khóa học | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .course-hero {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: var(--spacing-xl);
+            align-items: start;
+        }
+
+        .hero-info {
+            flex: 1;
+        }
+
+        .course-category {
+            font-size: var(--font-size-small);
+            opacity: 0.9;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+        }
+
+        .course-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+        }
+
+        .course-description {
+            font-size: var(--font-size-body);
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .course-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .meta-item {
+            text-align: center;
+        }
+
+        .meta-number {
+            font-size: var(--font-size-h3);
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .meta-label {
+            font-size: var(--font-size-small);
+            opacity: 0.8;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            min-width: 200px;
+        }
+
+        .price-section {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .course-price {
+            font-size: var(--font-size-h2);
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .price-note {
+            font-size: var(--font-size-small);
+            opacity: 0.8;
+        }
+
+        .enrollment-status {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .enrollment-status.enrolled {
+            background: rgba(76, 175, 80, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .enrollment-status.pending {
+            background: rgba(255, 152, 0, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .enrollment-status.not-enrolled {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .action-btn {
+            padding: var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .action-btn.primary {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .action-btn.primary:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .action-btn.secondary:hover {
+            border-color: var(--white);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tabs-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--light-gray);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: var(--font-size-body);
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+            background: var(--white);
+        }
+
+        .tab-content {
+            padding: var(--spacing-xl);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Lessons Tab */
+        .lessons-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .lessons-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-md);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lesson-item:hover {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .lesson-item.completed {
+            background: rgba(76, 175, 80, 0.05);
+            border-color: var(--accent-green);
+        }
+
+        .lesson-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: var(--spacing-md);
+            flex-shrink: 0;
+        }
+
+        .lesson-item.completed .lesson-number {
+            background: var(--accent-green);
+            color: var(--white);
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--dark-gray);
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .lesson-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: center;
+        }
+
+        .lesson-status {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .lesson-status.completed {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+        }
+
+        .lesson-status.in-progress {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .lesson-status.not-started {
+            background: rgba(158, 158, 158, 0.1);
+            color: #666;
+        }
+
+        /* Progress Tab */
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .progress-card {
+            background: var(--light-gray);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            text-align: center;
+        }
+
+        .progress-number {
+            font-size: var(--font-size-h2);
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .progress-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .progress-chart {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .progress-details {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+        }
+
+        .progress-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .progress-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .progress-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Enrollment Tab */
+        .enrollment-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-box {
+            background: var(--light-gray);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: var(--font-size-h2);
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .enrollment-filters {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            align-items: end;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .students-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .students-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .student-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .progress-bar-small {
+            width: 100px;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+
+
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+            
+            .course-meta {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tabs-nav {
+                flex-direction: column;
+            }
+            
+            .lesson-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--spacing-md);
+                text-align: center;
+            }
+            
+            .lesson-actions {
+                justify-content: center;
+            }
+            
+            .enrollment-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .course-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-overview {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">S</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Student</span>
+                    <span class="header-role" id="userRole">Sinh viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation will be populated based on user role -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <!-- Course Hero Section -->
+            <div class="course-hero">
+                <div class="hero-content">
+                    <div class="hero-info">
+                        <div class="course-category" id="courseCategory">Danh mục</div>
+                        <h1 class="course-title" id="courseTitle">Tên khóa học</h1>
+                        <p class="course-description" id="courseDescription">Mô tả khóa học</p>
+                        
+                        <div class="course-meta">
+                            <div class="meta-item">
+                                <div class="meta-number" id="totalLessons">0</div>
+                                <div class="meta-label">Bài học</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-number" id="courseDuration">0h</div>
+                                <div class="meta-label">Thời lượng</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-number" id="courseLevel">Cơ bản</div>
+                                <div class="meta-label">Cấp độ</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-number" id="courseRating">0</div>
+                                <div class="meta-label">Đánh giá</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-actions">
+                        <div class="price-section">
+                            <div class="course-price" id="coursePrice">Miễn phí</div>
+                            <div class="price-note">Giá khóa học</div>
+                        </div>
+                        
+                        <div class="enrollment-status" id="enrollmentStatus">
+                            Chưa đăng ký
+                        </div>
+                        
+                        <div id="actionButtons">
+                            <!-- Action buttons will be populated based on user role and enrollment status -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Content Tabs -->
+            <div class="tabs-container">
+                <div class="tabs-nav">
+                    <button class="tab-button active" data-tab="lessons">
+                        📖 Bài học
+                    </button>
+                    <button class="tab-button" data-tab="progress" id="progressTab">
+                        📈 Tiến độ
+                    </button>
+                    <button class="tab-button" data-tab="enrollment" id="enrollmentTab" style="display: none;">
+                        👥 Học viên
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Lessons Tab -->
+                    <div class="tab-panel active" id="lessons">
+                        <div class="lessons-header">
+                            <h3>Danh sách bài học</h3>
+                            <div class="lessons-stats">
+                                <span>📚 <span id="lessonsTotal">0</span> bài học</span>
+                                <span>✅ <span id="lessonsCompleted">0</span> hoàn thành</span>
+                                <span>⏱️ <span id="totalDuration">0</span> phút</span>
+                            </div>
+                        </div>
+                        
+                        <div id="lessonsList">
+                            <!-- Lessons will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Progress Tab -->
+                    <div class="tab-panel" id="progress">
+                        <div class="progress-overview">
+                            <div class="progress-card">
+                                <div class="progress-number" id="overallProgress">0%</div>
+                                <div class="progress-label">Hoàn thành</div>
+                            </div>
+                            <div class="progress-card">
+                                <div class="progress-number" id="timeSpent">0h</div>
+                                <div class="progress-label">Thời gian học</div>
+                            </div>
+                            <div class="progress-card">
+                                <div class="progress-number" id="avgScore">0</div>
+                                <div class="progress-label">Điểm trung bình</div>
+                            </div>
+                            <div class="progress-card">
+                                <div class="progress-number" id="streak">0</div>
+                                <div class="progress-label">Ngày liên tiếp</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-chart">
+                            <h4 style="margin-bottom: var(--spacing-md);">Biểu đồ tiến độ học tập</h4>
+                            <div class="chart-placeholder">
+                                📊 Biểu đồ tiến độ sẽ được hiển thị ở đây (Chart.js)
+                            </div>
+                        </div>
+
+                        <div class="progress-details">
+                            <table class="progress-table">
+                                <thead>
+                                    <tr>
+                                        <th>Bài học</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thời gian học</th>
+                                        <th>Điểm số</th>
+                                        <th>Hoàn thành</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="progressTableBody">
+                                    <!-- Progress details will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Enrollment Tab (Teacher/Admin only) -->
+                    <div class="tab-panel" id="enrollment">
+                        <div class="enrollment-stats">
+                            <div class="stat-box">
+                                <div class="stat-number" id="totalEnrolled">0</div>
+                                <div class="stat-label">Đã đăng ký</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-number" id="activeStudents">0</div>
+                                <div class="stat-label">Đang học</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-number" id="completedStudents">0</div>
+                                <div class="stat-label">Hoàn thành</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-number" id="avgClassProgress">0%</div>
+                                <div class="stat-label">TB Tiến độ</div>
+                            </div>
+                        </div>
+
+                        <div class="enrollment-filters">
+                            <div class="form-group">
+                                <label class="form-label">Tìm kiếm học viên</label>
+                                <input type="text" id="studentSearch" class="form-control" placeholder="Tìm theo tên, email...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Trạng thái</label>
+                                <select id="studentStatusFilter" class="form-control">
+                                    <option value="">Tất cả</option>
+                                    <option value="active">Đang học</option>
+                                    <option value="completed">Hoàn thành</option>
+                                    <option value="inactive">Không hoạt động</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-secondary" onclick="courseDetail.exportEnrollmentReport()">
+                                📤 Xuất báo cáo
+                            </button>
+                        </div>
+
+                        <div style="background: var(--white); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); overflow: hidden;">
+                            <table class="students-table">
+                                <thead>
+                                    <tr>
+                                        <th>Học viên</th>
+                                        <th>Ngày đăng ký</th>
+                                        <th>Tiến độ</th>
+                                        <th>Điểm TB</th>
+                                        <th>Hoạt động cuối</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody">
+                                    <!-- Students will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        class CourseDetail {
+            constructor() {
+                this.currentUser = null;
+                this.course = null;
+                this.courseId = null;
+                this.userProgress = null;
+                this.isEnrolled = false;
+                this.enrolledStudents = [];
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['student', 'teacher', 'admin'])) {
+                    return;
+                }
+
+                // Get course ID from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                this.courseId = urlParams.get('id');
+                
+                if (!this.courseId) {
+                    uiManager.showToast('Không tìm thấy khóa học', 'error');
+                    window.location.href = 'courses.html';
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadCourseData();
+                
+                // Only render if course data was loaded successfully
+                if (this.course) {
+                    this.renderCourse();
+                } else {
+                    console.error('Course data not loaded, cannot render');
+                }
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Tab switching
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        this.switchTab(button.dataset.tab);
+                    });
+                });
+
+                // Student search and filter (for enrollment tab)
+                const studentSearch = document.getElementById('studentSearch');
+                const statusFilter = document.getElementById('studentStatusFilter');
+                
+                if (studentSearch) {
+                    studentSearch.addEventListener('input', () => {
+                        this.filterStudents();
+                    });
+                }
+                
+                if (statusFilter) {
+                    statusFilter.addEventListener('change', () => {
+                        this.filterStudents();
+                    });
+                }
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                // Update user role display
+                const currentUser = authManager.getCurrentUser();
+                if (currentUser) {
+                    const roleMap = {
+                        'admin': ' Quản trị viên',
+                        'teacher': ' Giảng viên', 
+                        'student': ' Học viên'
+                    };
+                    document.getElementById('userRole').textContent = roleMap[currentUser.role] || ' User';
+                }
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'U';
+                }
+            }
+
+            async loadCourseData() {
+                try {
+                    // Load course data from localStorage first, fallback to JSON file
+                    let courses = [];
+                    
+                    // Try to load from localStorage
+                    const savedCourses = localStorage.getItem('courses');
+                    if (savedCourses) {
+                        courses = JSON.parse(savedCourses);
+                    } else {
+                        // Create initial mock data if localStorage is empty
+                        const mockCourses = [
+                            {
+                                courseId: 'course1',
+                                title: 'Lập trình JavaScript cơ bản',
+                                description: 'Học JavaScript từ cơ bản đến nâng cao',
+                                category: 'Lập trình',
+                                duration: '20h',
+                                level: 'Beginner',
+                                rating: 4.5,
+                                price: 0,
+                                instructor: 'Nguyễn Văn A',
+                                lessons: [
+                                    { lessonId: 'js1', title: 'Giới thiệu JavaScript', type: 'video', duration: '30' },
+                                    { lessonId: 'js2', title: 'Biến và kiểu dữ liệu', type: 'video', duration: '45' }
+                                ]
+                            },
+                            {
+                                courseId: 'course2',
+                                title: 'Thiết kế UI/UX',
+                                description: 'Học thiết kế giao diện người dùng',
+                                category: 'Thiết kế',
+                                duration: '15h',
+                                level: 'Intermediate',
+                                rating: 4.3,
+                                price: 500000,
+                                instructor: 'Trần Thị B',
+                                lessons: [
+                                    { lessonId: 'ux1', title: 'Nguyên lý thiết kế', type: 'video', duration: '40' },
+                                    { lessonId: 'ux2', title: 'Figma cơ bản', type: 'video', duration: '60' }
+                                ]
+                            }
+                        ];
+                        localStorage.setItem('courses', JSON.stringify(mockCourses));
+                        courses = mockCourses;
+                    }
+                    
+                    this.course = courses.find(course => course.courseId === this.courseId);
+                    
+                    if (!this.course) {
+                        console.warn('Course not found with ID:', this.courseId);
+                        console.warn('Available courses:', courses.map(c => c.courseId));
+                        
+                        // Create a default course for testing
+                        this.course = {
+                            courseId: this.courseId,
+                            title: 'Khóa học Demo',
+                            description: 'Đây là khóa học demo được tạo tự động',
+                            category: 'Lập trình',
+                            duration: '10h',
+                            level: 'Beginner',
+                            rating: 4.5,
+                            price: 0,
+                            instructor: 'Demo Teacher',
+                            lessons: [
+                                {
+                                    lessonId: 'lesson1',
+                                    title: 'Bài học 1: Giới thiệu',
+                                    type: 'video',
+                                    duration: '30',
+                                    description: 'Bài học giới thiệu'
+                                },
+                                {
+                                    lessonId: 'lesson2', 
+                                    title: 'Bài học 2: Thực hành',
+                                    type: 'video',
+                                    duration: '45',
+                                    description: 'Bài học thực hành'
+                                }
+                            ]
+                        };
+                        
+                        uiManager.showToast('Đang sử dụng dữ liệu demo cho khóa học', 'info');
+                    }
+
+                    // Check enrollment status
+                    if (this.currentUser.role === 'student') {
+                        this.checkEnrollmentStatus();
+                        this.loadUserProgress();
+                    }
+
+                    // Load enrolled students (for teacher/admin)
+                    if (this.currentUser.role === 'teacher' || this.currentUser.role === 'admin') {
+                        await this.loadEnrolledStudents();
+                        document.getElementById('enrollmentTab').style.display = 'block';
+                    }
+
+                } catch (error) {
+                    console.error('Error loading course data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu khóa học', 'error');
+                }
+            }
+
+            checkEnrollmentStatus() {
+                if (this.currentUser.progress && this.currentUser.progress.courses) {
+                    const enrollment = this.currentUser.progress.courses.find(c => c.courseId === this.courseId);
+                    this.isEnrolled = !!enrollment;
+                    this.userProgress = enrollment;
+                }
+            }
+
+            loadUserProgress() {
+                if (this.userProgress) {
+                    // Mock progress data
+                    this.userProgress.lessonsCompleted = Math.floor(this.course.lessons.length * (this.userProgress.completed / 100));
+                    this.userProgress.timeSpent = Math.floor(Math.random() * 20 + 5); // hours
+                    this.userProgress.avgScore = Math.floor(Math.random() * 30 + 70);
+                    this.userProgress.streak = Math.floor(Math.random() * 10 + 1);
+                }
+            }
+
+            async loadEnrolledStudents() {
+                // Mock enrolled students data
+                const users = await authManager.loadUsers();
+                const students = users.filter(user => user.role === 'student');
+                
+                // Mock enrollment data
+                this.enrolledStudents = students.slice(0, Math.floor(Math.random() * 10 + 5)).map(student => ({
+                    ...student,
+                    enrolledAt: this.getRandomDate(),
+                    progress: Math.floor(Math.random() * 100),
+                    avgScore: Math.floor(Math.random() * 30 + 70),
+                    lastActivity: this.getRandomDate(),
+                    status: Math.random() > 0.2 ? 'active' : (Math.random() > 0.5 ? 'completed' : 'inactive')
+                }));
+            }
+
+            renderCourse() {
+                // Check if course data is loaded
+                if (!this.course) {
+                    console.warn('Course data not loaded yet');
+                    return;
+                }
+
+                // Update course info
+                document.getElementById('courseCategory').textContent = this.course.category || 'Chưa có danh mục';
+                document.getElementById('courseTitle').textContent = this.course.title || 'Đang tải...';
+                document.getElementById('courseDescription').textContent = this.course.description || 'Đang tải mô tả...';
+                document.getElementById('totalLessons').textContent = this.course.lessons ? this.course.lessons.length : 0;
+                document.getElementById('courseDuration').textContent = this.course.duration || '0h';
+                document.getElementById('courseLevel').textContent = this.getLevelDisplay(this.course.level || 'Beginner');
+                document.getElementById('courseRating').textContent = this.course.rating || 0;
+                
+                // Update price
+                const priceElement = document.getElementById('coursePrice');
+                const price = this.course.price || 0;
+                if (price === 0) {
+                    priceElement.textContent = 'Miễn phí';
+                    priceElement.className = 'course-price';
+                } else {
+                    priceElement.textContent = price.toLocaleString() + ' VNĐ';
+                }
+
+                // Update enrollment status and actions
+                this.updateEnrollmentStatus();
+                this.renderActionButtons();
+                
+                // Render tabs content
+                this.renderLessons();
+                this.renderProgress();
+                
+                if (this.currentUser.role === 'teacher' || this.currentUser.role === 'admin') {
+                    this.renderEnrollment();
+                }
+            }
+
+            updateEnrollmentStatus() {
+                const statusElement = document.getElementById('enrollmentStatus');
+                
+                if (this.currentUser.role === 'student') {
+                    if (this.isEnrolled) {
+                        statusElement.textContent = 'Đã đăng ký';
+                        statusElement.className = 'enrollment-status enrolled';
+                    } else {
+                        statusElement.textContent = 'Chưa đăng ký';
+                        statusElement.className = 'enrollment-status not-enrolled';
+                    }
+                } else {
+                    statusElement.style.display = 'none';
+                }
+            }
+
+            renderActionButtons() {
+                const container = document.getElementById('actionButtons');
+                let buttonsHTML = '';
+
+                if (this.currentUser.role === 'student') {
+                    if (this.isEnrolled) {
+                        buttonsHTML = `
+                            <a href="lesson.html?courseId=${this.courseId}&lessonId=${this.course.lessons[0].lessonId}" class="action-btn primary">
+                                ▶️ ${this.userProgress.completed > 0 ? 'Tiếp tục học' : 'Bắt đầu học'}
+                            </a>
+                            <button class="action-btn secondary" onclick="courseDetail.viewCertificate()">
+                                🏆 Xem chứng chỉ
+                            </button>
+                        `;
+                    } else {
+                        buttonsHTML = `
+                            <button class="action-btn primary" onclick="courseDetail.enrollCourse()">
+                                📝 Đăng ký khóa học
+                            </button>
+                            <button class="action-btn secondary" onclick="courseDetail.previewCourse()">
+                                👀 Xem trước
+                            </button>
+                        `;
+                    }
+                } else if (this.currentUser.role === 'teacher') {
+                    buttonsHTML = `
+                        <button class="action-btn primary" onclick="courseDetail.editCourse()">
+                            ✏️ Chỉnh sửa khóa học
+                        </button>
+                        <button class="action-btn secondary" onclick="courseDetail.addLesson()">
+                            ➕ Thêm bài học
+                        </button>
+                    `;
+                } else if (this.currentUser.role === 'admin') {
+                    buttonsHTML = `
+                        <button class="action-btn primary" onclick="courseDetail.manageCourse()">
+                            ⚙️ Quản lý khóa học
+                        </button>
+                        <button class="action-btn secondary" onclick="courseDetail.viewAnalytics()">
+                            📊 Xem thống kê
+                        </button>
+                    `;
+                }
+
+                container.innerHTML = buttonsHTML;
+            }
+
+            renderLessons() {
+                const container = document.getElementById('lessonsList');
+                
+                // Check if course data is loaded
+                if (!this.course || !this.course.lessons) {
+                    container.innerHTML = '<p style="text-align: center; padding: var(--spacing-xl);">Đang tải dữ liệu bài học...</p>';
+                    return;
+                }
+                
+                // Update lessons stats
+                document.getElementById('lessonsTotal').textContent = this.course.lessons.length;
+                
+                if (this.userProgress && this.userProgress.lessonsCompleted) {
+                    document.getElementById('lessonsCompleted').textContent = this.userProgress.lessonsCompleted;
+                } else {
+                    document.getElementById('lessonsCompleted').textContent = '0';
+                }
+                
+                const totalDuration = this.course.lessons.reduce((sum, lesson) => {
+                    const duration = parseInt(lesson.duration) || 0;
+                    return sum + duration;
+                }, 0);
+                document.getElementById('totalDuration').textContent = totalDuration;
+
+                // Render lesson items
+                const lessonsHTML = this.course.lessons.map((lesson, index) => {
+                    const isCompleted = this.userProgress && index < this.userProgress.lessonsCompleted;
+                    const status = isCompleted ? 'completed' : (index === 0 || this.isEnrolled ? 'available' : 'locked');
+                    
+                    return `
+                        <div class="lesson-item ${isCompleted ? 'completed' : ''}" onclick="courseDetail.goToLesson('${lesson.lessonId}')">
+                            <div class="lesson-number">
+                                ${isCompleted ? '✓' : index + 1}
+                            </div>
+                            <div class="lesson-info">
+                                <div class="lesson-title">${lesson.title}</div>
+                                <div class="lesson-meta">
+                                    <span>📹 ${lesson.type === 'video' ? 'Video' : lesson.type === 'pdf' ? 'PDF' : 'Markdown'}</span>
+                                    <span>⏱️ ${lesson.duration} phút</span>
+                                    ${lesson.description ? `<span>📝 ${lesson.description}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="lesson-actions">
+                                <div class="lesson-status ${isCompleted ? 'completed' : 'not-started'}">
+                                    ${isCompleted ? 'Hoàn thành' : 'Chưa bắt đầu'}
+                                </div>
+                                ${status === 'available' ? 
+                                    `<button class="btn btn-primary btn-small" onclick="event.stopPropagation(); courseDetail.goToLesson('${lesson.lessonId}')">
+                                        ${isCompleted ? 'Xem lại' : 'Bắt đầu'}
+                                    </button>` : 
+                                    (status === 'locked' ? '<span style="color: #666;">🔒 Khóa</span>' : '')
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = lessonsHTML;
+            }
+
+            renderProgress() {
+                if (this.currentUser.role !== 'student' || !this.userProgress || !this.course || !this.course.lessons) {
+                    document.getElementById('progressTab').style.display = 'none';
+                    return;
+                }
+
+                // Update progress overview
+                document.getElementById('overallProgress').textContent = this.userProgress.completed + '%';
+                document.getElementById('timeSpent').textContent = this.userProgress.timeSpent + 'h';
+                document.getElementById('avgScore').textContent = this.userProgress.avgScore;
+                document.getElementById('streak').textContent = this.userProgress.streak;
+
+                // Render progress table
+                const tbody = document.getElementById('progressTableBody');
+                const progressHTML = this.course.lessons.map((lesson, index) => {
+                    const isCompleted = index < this.userProgress.lessonsCompleted;
+                    const timeSpent = isCompleted ? Math.floor(Math.random() * 20 + 10) : 0;
+                    const score = isCompleted ? Math.floor(Math.random() * 30 + 70) : '-';
+                    
+                    return `
+                        <tr>
+                            <td>${lesson.title}</td>
+                            <td>
+                                <span class="lesson-status ${isCompleted ? 'completed' : 'not-started'}">
+                                    ${isCompleted ? 'Hoàn thành' : 'Chưa bắt đầu'}
+                                </span>
+                            </td>
+                            <td>${timeSpent > 0 ? timeSpent + ' phút' : '-'}</td>
+                            <td>${score}</td>
+                            <td>${isCompleted ? uiManager.formatDate(this.getRandomDate()) : '-'}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.innerHTML = progressHTML;
+            }
+
+            renderEnrollment() {
+                // Update enrollment stats
+                const totalEnrolled = this.enrolledStudents.length;
+                const activeStudents = this.enrolledStudents.filter(s => s.status === 'active').length;
+                const completedStudents = this.enrolledStudents.filter(s => s.status === 'completed').length;
+                const avgProgress = totalEnrolled > 0 ? 
+                    Math.round(this.enrolledStudents.reduce((sum, s) => sum + s.progress, 0) / totalEnrolled) : 0;
+
+                document.getElementById('totalEnrolled').textContent = totalEnrolled;
+                document.getElementById('activeStudents').textContent = activeStudents;
+                document.getElementById('completedStudents').textContent = completedStudents;
+                document.getElementById('avgClassProgress').textContent = avgProgress + '%';
+
+                // Render students table
+                this.filterStudents();
+            }
+
+            filterStudents() {
+                const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+                const statusFilter = document.getElementById('studentStatusFilter').value;
+
+                let filteredStudents = this.enrolledStudents.filter(student => {
+                    const matchesSearch = !searchTerm || 
+                        student.fullName?.toLowerCase().includes(searchTerm) ||
+                        student.username.toLowerCase().includes(searchTerm) ||
+                        student.email.toLowerCase().includes(searchTerm);
+                    
+                    const matchesStatus = !statusFilter || student.status === statusFilter;
+
+                    return matchesSearch && matchesStatus;
+                });
+
+                const tbody = document.getElementById('studentsTableBody');
+                
+                if (filteredStudents.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: #666;">
+                                Không tìm thấy học viên nào
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                const studentsHTML = filteredStudents.map(student => {
+                    const statusClass = student.status;
+                    const statusText = {
+                        'active': 'Đang học',
+                        'completed': 'Hoàn thành',
+                        'inactive': 'Không hoạt động'
+                    }[student.status];
+
+                    return `
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <div class="student-avatar">
+                                        ${student.fullName ? student.fullName.charAt(0).toUpperCase() : student.username.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 500;">${student.fullName || student.username}</div>
+                                        <div style="font-size: var(--font-size-small); color: #666;">${student.email}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${uiManager.formatDate(student.enrolledAt)}</td>
+                            <td>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill" style="width: ${student.progress}%"></div>
+                                </div>
+                                <div style="font-size: var(--font-size-small); text-align: center; margin-top: var(--spacing-xs);">
+                                    ${student.progress}%
+                                </div>
+                            </td>
+                            <td>${student.avgScore}</td>
+                            <td>${uiManager.formatDate(student.lastActivity)}</td>
+                            <td>
+                                <span class="lesson-status ${statusClass}">${statusText}</span>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.innerHTML = studentsHTML;
+            }
+
+            switchTab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+                // Update tab panels
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+            }
+
+            goToLesson(lessonId) {
+                if (this.isEnrolled || this.currentUser.role !== 'student') {
+                    window.location.href = `lesson.html?courseId=${this.courseId}&lessonId=${lessonId}`;
+                } else {
+                    uiManager.showToast('Bạn cần đăng ký khóa học để xem bài học', 'warning');
+                }
+            }
+
+            enrollCourse() {
+                uiManager.showConfirm(
+                    `Bạn có muốn đăng ký khóa học "${this.course.title}"?`,
+                    async () => {
+                        // Mock enrollment process
+                        const currentUser = authManager.getCurrentUser();
+                        if (!currentUser.progress) currentUser.progress = { courses: [], quizzes: [] };
+                        if (!currentUser.progress.courses) currentUser.progress.courses = [];
+                        
+                        currentUser.progress.courses.push({
+                            courseId: this.courseId,
+                            courseName: this.course.title,
+                            enrolledAt: new Date().toISOString(),
+                            completed: 0
+                        });
+                        
+                        await authManager.updateProfile(currentUser);
+                        
+                        this.isEnrolled = true;
+                        this.checkEnrollmentStatus();
+                        this.updateEnrollmentStatus();
+                        this.renderActionButtons();
+                        this.renderLessons();
+                        
+                        uiManager.showToast(`Đã đăng ký khóa học "${this.course.title}" thành công!`, 'success');
+                    }
+                );
+            }
+
+            previewCourse() {
+                this.showCoursePreviewModal();
+            }
+
+            showCoursePreviewModal() {
+                const modalHtml = `
+                    <div class="modal-overlay" id="coursePreviewModal">
+                        <div class="modal-container" style="max-width: 900px;">
+                            <div class="modal-header">
+                                <h3>👁️ Xem trước khóa học</h3>
+                                <button class="modal-close" onclick="document.getElementById('coursePreviewModal').remove()">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="preview-tabs">
+                                    <button class="tab-btn active" onclick="courseDetail.showPreviewTab('intro')">📖 Giới thiệu</button>
+                                    <button class="tab-btn" onclick="courseDetail.showPreviewTab('curriculum')">📚 Nội dung</button>
+                                    <button class="tab-btn" onclick="courseDetail.showPreviewTab('instructor')">👨‍🏫 Giảng viên</button>
+                                </div>
+
+                                <div id="introTab" class="tab-content active">
+                                    <div class="course-intro-preview">
+                                        <div class="course-banner">
+                                            <img src="assets/images/course-banner-demo.jpg" alt="Course Banner" 
+                                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNvdXJzZSBCYW5uZXI8L3RleHQ+PC9zdmc+'"
+                                                 style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                                        </div>
+                                        <div class="course-info-preview">
+                                            <h3>${this.course ? this.course.title : 'Khóa học Demo'}</h3>
+                                            <p>${this.course ? this.course.description : 'Mô tả khóa học demo'}</p>
+                                            
+                                            <div class="course-highlights">
+                                                <div class="highlight-item">
+                                                    <span class="highlight-icon">🎯</span>
+                                                    <span>Học từ cơ bản đến nâng cao</span>
+                                                </div>
+                                                <div class="highlight-item">
+                                                    <span class="highlight-icon">📺</span>
+                                                    <span>Video HD chất lượng cao</span>
+                                                </div>
+                                                <div class="highlight-item">
+                                                    <span class="highlight-icon">📱</span>
+                                                    <span>Hỗ trợ mobile và tablet</span>
+                                                </div>
+                                                <div class="highlight-item">
+                                                    <span class="highlight-icon">🏆</span>
+                                                    <span>Cấp chứng chỉ hoàn thành</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="curriculumTab" class="tab-content">
+                                    <div class="curriculum-preview">
+                                        <h4>📚 Nội dung khóa học</h4>
+                                        <div class="lesson-preview-list">
+                                            ${this.course && this.course.lessons ? this.course.lessons.map((lesson, index) => `
+                                                <div class="lesson-preview-item">
+                                                    <div class="lesson-number">${index + 1}</div>
+                                                    <div class="lesson-info">
+                                                        <div class="lesson-title">${lesson.title}</div>
+                                                        <div class="lesson-meta">
+                                                            <span class="lesson-type">${lesson.type === 'video' ? '📹 Video' : lesson.type === 'pdf' ? '📄 PDF' : '📝 Text'}</span>
+                                                            <span class="lesson-duration">${lesson.duration} phút</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="lesson-preview-btn">
+                                                        <button class="btn btn-sm btn-secondary" ${lesson.type === 'video' ? `onclick="courseDetail.previewLesson('${lesson.lessonId}')"` : ''}>
+                                                            👁️ Xem trước
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            `).join('') : '<p>Chưa có nội dung bài học</p>'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="instructorTab" class="tab-content">
+                                    <div class="instructor-preview">
+                                        <div class="instructor-profile">
+                                            <div class="instructor-avatar">👨‍🏫</div>
+                                            <div class="instructor-info">
+                                                <h4>${this.course ? this.course.instructor : 'Giảng viên Demo'}</h4>
+                                                <p class="instructor-title">Senior Developer & Educator</p>
+                                                <div class="instructor-stats">
+                                                    <div class="stat">
+                                                        <span class="stat-number">5+</span>
+                                                        <span class="stat-label">Năm kinh nghiệm</span>
+                                                    </div>
+                                                    <div class="stat">
+                                                        <span class="stat-number">1,200+</span>
+                                                        <span class="stat-label">Học viên</span>
+                                                    </div>
+                                                    <div class="stat">
+                                                        <span class="stat-number">4.9</span>
+                                                        <span class="stat-label">Đánh giá</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="instructor-bio">
+                                            <h5>📝 Về giảng viên</h5>
+                                            <p>Với hơn 5 năm kinh nghiệm trong lĩnh vực công nghệ, tôi đã giúp hàng nghìn học viên 
+                                            thành công trong việc học lập trình và phát triển sự nghiệp trong ngành IT.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" onclick="document.getElementById('coursePreviewModal').remove()">
+                                    Đóng
+                                </button>
+                                <button class="btn btn-primary" onclick="courseDetail.enrollCourse()">
+                                    🎓 Đăng ký khóa học
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            }
+
+            showPreviewTab(tabName) {
+                // Hide all tabs
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Show selected tab
+                document.getElementById(tabName + 'Tab').classList.add('active');
+                event.target.classList.add('active');
+            }
+
+            previewLesson(lessonId) {
+                // Mock lesson preview
+                uiManager.showToast(`Đang tải preview bài học ${lessonId}...`, 'info');
+                
+                setTimeout(() => {
+                    uiManager.showToast('Chức năng preview video sẽ được bổ sung', 'info');
+                }, 1000);
+            }
+
+            viewCertificate() {
+                this.showCertificateModal();
+            }
+
+            showCertificateModal() {
+                const modalHtml = `
+                    <div class="modal-overlay" id="certificateModal">
+                        <div class="modal-container" style="max-width: 800px;">
+                            <div class="modal-header">
+                                <h3>🏆 Chứng chỉ hoàn thành</h3>
+                                <button class="modal-close" onclick="document.getElementById('certificateModal').remove()">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="certificate-container">
+                                    <div class="certificate-preview">
+                                        <div class="certificate-border">
+                                            <div class="certificate-header">
+                                                <h2>🎓 CHỨNG CHỈ HOÀN THÀNH</h2>
+                                                <div class="certificate-subtitle">Certificate of Completion</div>
+                                            </div>
+                                            
+                                            <div class="certificate-content">
+                                                <p class="certificate-text">Chứng nhận rằng</p>
+                                                <h3 class="student-name">${this.currentUser ? this.currentUser.fullName : 'Học viên'}</h3>
+                                                <p class="certificate-text">đã hoàn thành thành công khóa học</p>
+                                                <h4 class="course-name">${this.course ? this.course.title : 'Khóa học Demo'}</h4>
+                                                
+                                                <div class="certificate-details">
+                                                    <div class="detail-row">
+                                                        <span>📅 Ngày hoàn thành:</span>
+                                                        <span>${new Date().toLocaleDateString('vi-VN')}</span>
+                                                    </div>
+                                                    <div class="detail-row">
+                                                        <span>⏱️ Thời lượng:</span>
+                                                        <span>${this.course ? this.course.duration : '20h'}</span>
+                                                    </div>
+                                                    <div class="detail-row">
+                                                        <span>🎯 Điểm số:</span>
+                                                        <span>92/100</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="certificate-footer">
+                                                <div class="signature">
+                                                    <div class="signature-line"></div>
+                                                    <div class="signature-text">Giảng viên</div>
+                                                    <div class="instructor-name">${this.course ? this.course.instructor : 'Instructor'}</div>
+                                                </div>
+                                                <div class="certificate-seal">
+                                                    <div class="seal">🏛️</div>
+                                                    <div class="platform-name">E-Learning Platform</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" onclick="document.getElementById('certificateModal').remove()">
+                                    Đóng
+                                </button>
+                                <button class="btn btn-primary" onclick="courseDetail.downloadCertificate()">
+                                    📥 Tải xuống PDF
+                                </button>
+                                <button class="btn btn-success" onclick="courseDetail.shareCertificate()">
+                                    📤 Chia sẻ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            }
+
+            downloadCertificate() {
+                // Mock download certificate
+                uiManager.showToast('Đang tạo file PDF...', 'info');
+                
+                setTimeout(() => {
+                    // Create a simple text content for demo
+                    const certificateContent = `
+CHỨNG CHỈ HOÀN THÀNH
+Certificate of Completion
+
+Chứng nhận rằng: ${this.currentUser ? this.currentUser.fullName : 'Học viên'}
+Đã hoàn thành khóa học: ${this.course ? this.course.title : 'Khóa học Demo'}
+Ngày hoàn thành: ${new Date().toLocaleDateString('vi-VN')}
+Điểm số: 92/100
+
+E-Learning Platform
+                    `;
+                    
+                    const blob = new Blob([certificateContent], { type: 'text/plain' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'certificate.txt';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                    uiManager.showToast('Đã tải chứng chỉ (demo text file)', 'success');
+                }, 1500);
+            }
+
+            shareCertificate() {
+                // Mock share certificate
+                const shareText = `Tôi vừa hoàn thành khóa học "${this.course ? this.course.title : 'Khóa học Demo'}" trên E-Learning Platform! 🎓`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Chứng chỉ hoàn thành',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    navigator.clipboard.writeText(shareText).then(() => {
+                        uiManager.showToast('Đã copy nội dung chia sẻ vào clipboard', 'success');
+                    });
+                }
+            }
+
+            editCourse() {
+                // Redirect to course edit page
+                window.location.href = `course-edit.html?id=${this.courseId}`;
+            }
+
+            addLesson() {
+                // Redirect to course edit page with lesson tab
+                window.location.href = `course-edit.html?id=${this.courseId}&tab=content`;
+            }
+
+            manageCourse() {
+                // Show course management modal
+                this.showCourseManagementModal();
+            }
+
+            viewAnalytics() {
+                // Show analytics modal
+                this.showAnalyticsModal();
+            }
+
+            showCourseManagementModal() {
+                const enrolledStudents = this.getEnrolledStudents();
+                const modalContent = `
+                    <div style="padding: var(--spacing-lg);">
+                        <h3 style="margin-bottom: var(--spacing-lg);">📊 Quản lý khóa học</h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+                            <div style="text-align: center; padding: var(--spacing-md); background: var(--light-gray); border-radius: var(--border-radius-md);">
+                                <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary-blue);">${enrolledStudents.length}</div>
+                                <div style="font-size: var(--font-size-small); color: #666;">Học viên</div>
+                            </div>
+                            <div style="text-align: center; padding: var(--spacing-md); background: var(--light-gray); border-radius: var(--border-radius-md);">
+                                <div style="font-size: 1.5rem; font-weight: 600; color: var(--accent-green);">${this.course.lessons?.length || 0}</div>
+                                <div style="font-size: var(--font-size-small); color: #666;">Bài học</div>
+                            </div>
+                            <div style="text-align: center; padding: var(--spacing-md); background: var(--light-gray); border-radius: var(--border-radius-md);">
+                                <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary-blue);">${this.course.rating || 0}</div>
+                                <div style="font-size: var(--font-size-small); color: #666;">Đánh giá</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: var(--spacing-md); flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="courseDetail.editCourse()">
+                                ✏️ Chỉnh sửa khóa học
+                            </button>
+                            <button class="btn btn-secondary" onclick="courseDetail.addLesson()">
+                                ➕ Thêm bài học
+                            </button>
+                            <button class="btn btn-accent" onclick="courseDetail.viewAnalytics()">
+                                📈 Xem thống kê
+                            </button>
+                            <button class="btn btn-outline" onclick="courseDetail.exportEnrollmentReport()">
+                                📤 Xuất báo cáo
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                uiManager.showModal('alertModal', 'Quản lý khóa học', modalContent);
+            }
+
+            showAnalyticsModal() {
+                const enrolledStudents = this.getEnrolledStudents();
+                const completionRate = enrolledStudents.length > 0 ? 
+                    Math.round((enrolledStudents.filter(s => s.completed > 80).length / enrolledStudents.length) * 100) : 0;
+                
+                const modalContent = `
+                    <div style="padding: var(--spacing-lg);">
+                        <h3 style="margin-bottom: var(--spacing-lg);">📈 Thống kê khóa học</h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                            <div style="background: linear-gradient(135deg, var(--primary-blue), #1e5a94); color: white; padding: var(--spacing-lg); border-radius: var(--border-radius-md); text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 600; margin-bottom: var(--spacing-sm);">${enrolledStudents.length}</div>
+                                <div>Tổng học viên</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, var(--accent-green), #45a049); color: white; padding: var(--spacing-lg); border-radius: var(--border-radius-md); text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 600; margin-bottom: var(--spacing-sm);">${completionRate}%</div>
+                                <div>Tỷ lệ hoàn thành</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #ff9800, #f57c00); color: white; padding: var(--spacing-lg); border-radius: var(--border-radius-md); text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 600; margin-bottom: var(--spacing-sm);">${this.course.rating || 0}</div>
+                                <div>Đánh giá trung bình</div>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-bottom: var(--spacing-md);">📊 Tiến độ học viên</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${enrolledStudents.length > 0 ? enrolledStudents.map(student => `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm); border-bottom: 1px solid var(--border-color);">
+                                    <span>${student.fullName || student.username}</span>
+                                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                                        <div style="width: 100px; height: 6px; background: var(--light-gray); border-radius: 3px; overflow: hidden;">
+                                            <div style="width: ${student.completed}%; height: 100%; background: var(--accent-green);"></div>
+                                        </div>
+                                        <span style="font-size: var(--font-size-small); color: #666;">${student.completed}%</span>
+                                    </div>
+                                </div>
+                            `).join('') : '<p style="text-align: center; color: #666;">Chưa có học viên nào đăng ký</p>'}
+                        </div>
+                    </div>
+                `;
+                
+                uiManager.showModal('alertModal', 'Thống kê khóa học', modalContent);
+            }
+
+            getEnrolledStudents() {
+                // Get all users and filter enrolled students
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const enrolledStudents = users.filter(user => {
+                    if (user.role !== 'student' || !user.progress?.courses) return false;
+                    return user.progress.courses.some(course => course.courseId === this.courseId);
+                }).map(user => {
+                    const courseProgress = user.progress.courses.find(course => course.courseId === this.courseId);
+                    return {
+                        ...user,
+                        completed: courseProgress?.completed || 0
+                    };
+                });
+                
+                return enrolledStudents;
+            }
+
+            exportEnrollmentReport() {
+                uiManager.showToast('Đang xuất báo cáo học viên...', 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Xuất báo cáo thành công! File đã được tải xuống.', 'success');
+                }, 2000);
+            }
+
+            getLevelDisplay(level) {
+                const levelMap = {
+                    'Beginner': 'Cơ bản',
+                    'Intermediate': 'Trung bình',
+                    'Advanced': 'Nâng cao'
+                };
+                return levelMap[level] || level;
+            }
+
+            getRandomDate() {
+                const start = new Date(2024, 0, 1);
+                const end = new Date();
+                return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString();
+            }
+        }
+
+        // Initialize course detail when DOM is loaded
+        let courseDetail;
+        document.addEventListener('DOMContentLoaded', () => {
+            courseDetail = new CourseDetail();
+        });
+    </script>
+</body>
+</html> 
+
+
+
+

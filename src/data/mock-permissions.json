@@ -1,0 +1,136 @@
+{
+  "permissions": {
+    "admin": {
+      "description": "Quản trị viên - Full quyền tất cả các chức năng của hệ thống",
+      "allowedMenus": ["*"],
+      "allowedActions": ["*"],
+      "restrictions": []
+    },
+    "teacher": {
+      "description": "Giảng viên - Có quyền full vào cụm chức năng Quản lý khóa học và Quản lý bài thi",
+      "allowedMenus": [
+        "dashboard",
+        "class-management",
+        "course-management",
+        "quiz-management",
+        "profile",
+        "settings"
+      ],
+      "allowedActions": [
+        "manage-students",
+        "add-remove-students",
+        "create-category",
+        "edit-category",
+        "delete-category",
+        "create-course",
+        "edit-course",
+        "delete-course",
+        "view-students",
+        "manage-enrollments",
+        "create-lesson",
+        "edit-lesson",
+        "delete-lesson",
+        "view-quiz-list",
+        "approve-quiz-registration",
+        "create-quiz",
+        "edit-quiz",
+        "delete-quiz"
+      ],
+      "restrictions": [
+        "user-management",
+        "user-permissions"
+      ]
+    },
+    "student": {
+      "description": "Học viên - Chỉ xem và tham gia học tập, thi cử",
+      "allowedMenus": [
+        "dashboard",
+        "course-management",
+        "quiz-management",
+        "profile",
+        "settings"
+      ],
+      "allowedActions": [
+        "enroll-course",
+        "study-lesson",
+        "view-quiz-list",
+        "register-quiz",
+        "take-quiz"
+      ],
+      "restrictions": [
+        "user-management",
+        "class-management",
+        "create-category",
+        "edit-category",
+        "delete-category",
+        "create-course",
+        "edit-course",
+        "delete-course",
+        "view-students",
+        "manage-enrollments",
+        "create-lesson",
+        "edit-lesson",
+        "delete-lesson",
+        "approve-quiz-registration",
+        "create-quiz",
+        "edit-quiz",
+        "delete-quiz"
+      ],
+      "readOnlyAccess": [
+        "courses",
+        "lessons",
+        "quizzes"
+      ],
+      "notes": [
+        "Xem, tìm kiếm danh sách khóa học, bài học. Không được sửa xóa",
+        "Xem, tìm kiếm danh sách bài thi. Không được sửa xóa",
+        "Đăng ký tham gia bài học, bài thi. Không được xem danh sách sinh viên khác đã đăng ký",
+        "Có thể vào bài học, vào bài thi, Làm bài thi",
+        "Xem kết quả thi"
+      ]
+    }
+  },
+  "menuAccess": {
+    "dashboard": ["admin", "teacher", "student"],
+    "class-management": ["admin", "teacher"],
+    "user-management": ["admin"],
+    "user-list": ["admin"],
+    "user-permissions": ["admin"],
+    "course-management": ["admin", "teacher", "student"],
+    "course-categories": ["admin", "teacher"],
+    "courses": ["admin", "teacher", "student"],
+    "lessons": ["admin", "teacher", "student"],
+    "quiz-management": ["admin", "teacher", "student"],
+    "quizzes": ["admin", "teacher", "student"],
+    "quiz-results": ["admin", "teacher", "student"],
+    "profile": ["admin", "teacher", "student"],
+    "settings": ["admin", "teacher", "student"]
+  },
+  "actionAccess": {
+    "manage-students": ["admin", "teacher"],
+    "add-remove-students": ["admin", "teacher"],
+    "add-user": ["admin"],
+    "edit-user": ["admin"],
+    "delete-user": ["admin"],
+    "create-category": ["admin", "teacher"],
+    "edit-category": ["admin", "teacher"],
+    "delete-category": ["admin", "teacher"],
+    "create-course": ["admin", "teacher"],
+    "edit-course": ["admin", "teacher"],
+    "delete-course": ["admin", "teacher"],
+    "view-students": ["admin", "teacher"],
+    "manage-enrollments": ["admin", "teacher"],
+    "enroll-course": ["student"],
+    "create-lesson": ["admin", "teacher"],
+    "edit-lesson": ["admin", "teacher"],
+    "delete-lesson": ["admin", "teacher"],
+    "study-lesson": ["student"],
+    "view-quiz-list": ["admin", "teacher", "student"],
+    "register-quiz": ["student"],
+    "approve-quiz-registration": ["admin", "teacher"],
+    "take-quiz": ["student"],
+    "create-quiz": ["admin", "teacher"],
+    "edit-quiz": ["admin", "teacher"],
+    "delete-quiz": ["admin", "teacher"]
+  }
+} 

@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả Quiz | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Result Header */
+        .result-header {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .result-subtitle {
+            color: #666;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .result-meta {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            flex-wrap: wrap;
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        /* Score Card */
+        .score-card {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            border-radius: var(--border-radius-xl);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .score-main {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .score-label {
+            font-size: var(--font-size-h3);
+            margin-bottom: var(--spacing-lg);
+            opacity: 0.9;
+        }
+
+        .score-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .score-stat {
+            text-align: center;
+        }
+
+        .score-stat-number {
+            font-size: var(--font-size-h2);
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .score-stat-label {
+            font-size: var(--font-size-small);
+            opacity: 0.8;
+        }
+
+        /* Grade Badge */
+        .grade-badge {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            font-size: var(--font-size-h3);
+            font-weight: bold;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .grade-badge.excellent {
+            background: var(--accent-green);
+            color: var(--white);
+        }
+
+        .grade-badge.good {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .grade-badge.average {
+            background: #ff9800;
+            color: var(--white);
+        }
+
+        .grade-badge.poor {
+            background: #f44336;
+            color: var(--white);
+        }
+
+        /* Analysis Section */
+        .analysis-section {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .analysis-main {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .analysis-sidebar {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            padding: var(--spacing-lg);
+        }
+
+        .section-header {
+            background: var(--light-gray);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        /* Question Review */
+        .question-review {
+            padding: var(--spacing-lg);
+        }
+
+        .question-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+        }
+
+        .question-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-number {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .question-result {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-small);
+        }
+
+        .result-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--white);
+        }
+
+        .result-icon.correct {
+            background: var(--accent-green);
+        }
+
+        .result-icon.incorrect {
+            background: #f44336;
+        }
+
+        .result-icon.partial {
+            background: #ff9800;
+        }
+
+        .question-content {
+            padding: var(--spacing-lg);
+        }
+
+        .question-text {
+            font-weight: 500;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        .answer-section {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .answer-label {
+            font-size: var(--font-size-small);
+            font-weight: 600;
+            color: #666;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .answer-content {
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .answer-content.correct {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: var(--accent-green);
+        }
+
+        .answer-content.incorrect {
+            background: rgba(244, 67, 54, 0.1);
+            border-color: #f44336;
+        }
+
+        .answer-content.text {
+            background: var(--light-gray);
+        }
+
+        .option-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option-item {
+            padding: var(--spacing-xs) 0;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .option-item.selected {
+            font-weight: 600;
+        }
+
+        .option-item.correct {
+            color: var(--accent-green);
+        }
+
+        .option-item.incorrect {
+            color: #f44336;
+        }
+
+        /* Statistics Sidebar */
+        .stat-widget {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat-widget:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .widget-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .stat-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-xs) 0;
+            font-size: var(--font-size-small);
+        }
+
+        .performance-meter {
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            height: 20px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .performance-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f44336, #ff9800, var(--accent-green));
+            transition: width 0.3s ease;
+        }
+
+        /* Teacher/Admin Results Table */
+        .results-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .filters-section {
+            background: var(--light-gray);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr 200px 200px 200px auto;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .results-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .results-table tr:hover {
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .student-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .student-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .student-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .student-id {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .score-cell {
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: var(--font-size-h3);
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .score-percentage {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .time-cell {
+            text-align: center;
+            font-size: var(--font-size-small);
+        }
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            color: var(--primary-blue);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: var(--spacing-xs);
+            font-size: var(--font-size-small);
+        }
+
+        .action-btn:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        /* Pagination */
+        .pagination-container {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .pagination-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .analysis-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .analysis-sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .result-meta {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            
+            .score-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .score-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-main {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">T</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Teacher</span>
+                    <span class="header-role" id="userRole">Giảng viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation will be populated based on user role -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <!-- Student View -->
+            <div id="studentView" style="display: none;">
+                <!-- Result Header -->
+                <div class="result-header">
+                    <h1 class="result-title" id="resultTitle">🎯 Kết quả Quiz</h1>
+                    <p class="result-subtitle" id="resultSubtitle">Quiz JavaScript Cơ bản</p>
+                    <div class="result-meta">
+                        <span id="completedTime">📅 Hoàn thành: --</span>
+                        <span id="timeSpent">⏱️ Thời gian: --</span>
+                        <span id="totalQuestions">❓ Tổng câu hỏi: --</span>
+                    </div>
+                </div>
+
+                <!-- Score Card -->
+                <div class="score-card">
+                    <div class="grade-badge" id="gradeBadge">Xuất sắc</div>
+                    <div class="score-main" id="scoreMain">--</div>
+                    <div class="score-label">/ 100 điểm</div>
+                    
+                    <div class="score-stats">
+                        <div class="score-stat">
+                            <div class="score-stat-number" id="correctAnswers">--</div>
+                            <div class="score-stat-label">Đúng</div>
+                        </div>
+                        <div class="score-stat">
+                            <div class="score-stat-number" id="incorrectAnswers">--</div>
+                            <div class="score-stat-label">Sai</div>
+                        </div>
+                        <div class="score-stat">
+                            <div class="score-stat-number" id="accuracyPercent">--%</div>
+                            <div class="score-stat-label">Độ chính xác</div>
+                        </div>
+                        <div class="score-stat">
+                            <div class="score-stat-number" id="classRank">--</div>
+                            <div class="score-stat-label">Xếp hạng</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Section -->
+                <div class="analysis-section">
+                    <div class="analysis-main">
+                        <div class="section-header">
+                            <h2 class="section-title">📊 Chi tiết từng câu hỏi</h2>
+                            <div class="section-actions">
+                                <button class="btn btn-secondary btn-small" onclick="resultsPage.exportResults()">
+                                    📤 Xuất kết quả
+                                </button>
+                                <button class="btn btn-secondary btn-small" onclick="resultsPage.printResults()">
+                                    🖨️ In kết quả
+                                </button>
+                            </div>
+                        </div>
+                        <div class="question-review" id="questionReview">
+                            <!-- Question reviews will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="analysis-sidebar">
+                        <div class="stat-widget">
+                            <h3 class="widget-title">📈 Phân tích điểm số</h3>
+                            <div class="chart-container">
+                                <canvas id="scoreChart"></canvas>
+                            </div>
+                            <ul class="stat-list">
+                                <li>
+                                    <span>Điểm cao nhất lớp</span>
+                                    <strong id="classHighest">--</strong>
+                                </li>
+                                <li>
+                                    <span>Điểm trung bình lớp</span>
+                                    <strong id="classAverage">--</strong>
+                                </li>
+                                <li>
+                                    <span>Điểm thấp nhất lớp</span>
+                                    <strong id="classLowest">--</strong>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="stat-widget">
+                            <h3 class="widget-title">🎯 Hiệu suất</h3>
+                            <div class="performance-meter">
+                                <div class="performance-fill" id="performanceFill" style="width: 0%"></div>
+                            </div>
+                            <ul class="stat-list">
+                                <li>
+                                    <span>Tỷ lệ chính xác</span>
+                                    <strong id="accuracyRate">--%</strong>
+                                </li>
+                                <li>
+                                    <span>Thời gian trung bình/câu</span>
+                                    <strong id="timePerQuestion">--</strong>
+                                </li>
+                                <li>
+                                    <span>So với lần trước</span>
+                                    <strong id="improvement">--</strong>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="stat-widget">
+                            <h3 class="widget-title">📚 Đề xuất</h3>
+                            <ul class="stat-list" id="recommendations">
+                                <!-- Recommendations will be loaded here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher/Admin View -->
+            <div id="teacherView" style="display: none;">
+                <div class="result-header">
+                    <h1 class="result-title">📊 Thống kê kết quả Quiz</h1>
+                    <p class="result-subtitle" id="teacherResultSubtitle">Tổng quan kết quả các học viên</p>
+                </div>
+
+                <div class="results-container">
+                    <div class="section-header">
+                        <h2 class="section-title">📋 Kết quả học viên</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-secondary btn-small" onclick="resultsPage.exportAllResults()">
+                                📤 Xuất tất cả
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="resultsPage.generateReport()">
+                                📈 Tạo báo cáo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filters-section">
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label class="form-label">Tìm kiếm học viên</label>
+                                <input 
+                                    type="text" 
+                                    id="searchInput" 
+                                    class="form-control" 
+                                    placeholder="Tên, email, ID học viên..."
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Quiz</label>
+                                <select id="quizFilter" class="form-control">
+                                    <option value="">Tất cả Quiz</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Khoảng điểm</label>
+                                <select id="scoreFilter" class="form-control">
+                                    <option value="">Tất cả điểm</option>
+                                    <option value="90-100">90-100 (Xuất sắc)</option>
+                                    <option value="80-89">80-89 (Tốt)</option>
+                                    <option value="60-79">60-79 (Trung bình)</option>
+                                    <option value="0-59">0-59 (Yếu)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Thời gian</label>
+                                <input type="date" id="dateFilter" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-secondary" onclick="resultsPage.clearFilters()">
+                                    🔄 Xóa bộ lọc
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Table -->
+                    <div class="table-wrapper">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Học viên</th>
+                                    <th>Quiz</th>
+                                    <th>Điểm số</th>
+                                    <th>Độ chính xác</th>
+                                    <th>Thời gian</th>
+                                    <th>Ngày làm</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                                <!-- Results will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-info" id="paginationInfo">
+                            Hiển thị 1-10 trong tổng số 0 kết quả
+                        </div>
+                        <div class="pagination-controls" id="paginationControls">
+                            <!-- Pagination buttons will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class ResultsPage {
+            constructor() {
+                this.currentUser = null;
+                this.quiz = null;
+                this.result = null;
+                this.results = [];
+                this.filteredResults = [];
+                this.currentPage = 1;
+                this.resultsPerPage = 10;
+                this.scoreChart = null;
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['student', 'teacher', 'admin'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.renderView();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Filters (for teacher/admin view)
+                if (this.currentUser.role !== 'student') {
+                    const searchInput = document.getElementById('searchInput');
+                    const quizFilter = document.getElementById('quizFilter');
+                    const scoreFilter = document.getElementById('scoreFilter');
+                    const dateFilter = document.getElementById('dateFilter');
+
+                    searchInput.addEventListener('input', () => this.filterResults());
+                    quizFilter.addEventListener('change', () => this.filterResults());
+                    scoreFilter.addEventListener('change', () => this.filterResults());
+                    dateFilter.addEventListener('change', () => this.filterResults());
+                }
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'U';
+                    document.getElementById('userRole').textContent = this.currentUser.role === 'admin' ? '👨‍💻 Quản trị viên' : this.currentUser.role === 'teacher' ? '👨‍🏫 Giáo viên' : '👨‍🎓 Học viên';
+                }
+            }
+
+            async loadData() {
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    
+                    if (this.currentUser.role === 'student') {
+                        // Student view - load specific result
+                        const quizId = urlParams.get('id');
+                        const score = parseInt(urlParams.get('score')) || 85;
+                        const timeSpent = parseInt(urlParams.get('time')) || 25;
+                        
+                        await this.loadStudentResult(quizId, score, timeSpent);
+                    } else {
+                        // Teacher/Admin view - load all results
+                        const specificQuiz = urlParams.get('quiz');
+                        await this.loadAllResults(specificQuiz);
+                    }
+
+                } catch (error) {
+                    console.error('Error loading results:', error);
+                    uiManager.showToast('Có lỗi khi tải kết quả quiz', 'error');
+                }
+            }
+
+            async loadStudentResult(quizId, score, timeSpent) {
+                // Load quiz data
+                const quizResponse = await fetch('data/mock-quizzes.json');
+                const quizzes = await quizResponse.json();
+                this.quiz = quizzes.find(q => q.id === quizId) || quizzes[0];
+
+                // Mock result data
+                this.result = {
+                    quizId: this.quiz.id,
+                    quizTitle: this.quiz.title,
+                    score: score,
+                    totalQuestions: this.quiz.questions.length,
+                    correctAnswers: Math.round((score / 100) * this.quiz.questions.length),
+                    timeSpent: timeSpent,
+                    completedAt: new Date().toISOString(),
+                    answers: this.generateMockAnswers(),
+                    classStats: {
+                        highest: 98,
+                        average: 76,
+                        lowest: 45,
+                        rank: Math.floor(Math.random() * 20) + 1
+                    }
+                };
+
+                this.result.incorrectAnswers = this.result.totalQuestions - this.result.correctAnswers;
+                this.result.accuracy = Math.round((this.result.correctAnswers / this.result.totalQuestions) * 100);
+            }
+
+            async loadAllResults(specificQuiz = null) {
+                // Load quiz data
+                const quizResponse = await fetch('data/mock-quizzes.json');
+                const quizzes = await quizResponse.json();
+
+                // Load user data
+                const userResponse = await fetch('data/mock-users.json');
+                const users = await userResponse.json();
+                const students = users.filter(user => user.role === 'student');
+
+                // Generate mock results
+                this.results = [];
+                quizzes.forEach(quiz => {
+                    if (specificQuiz && quiz.id !== specificQuiz) return;
+                    
+                    // Generate random number of results per quiz
+                    const resultCount = Math.floor(Math.random() * students.length * 0.7) + 5;
+                    const selectedStudents = this.shuffleArray([...students]).slice(0, resultCount);
+                    
+                    selectedStudents.forEach(student => {
+                        this.results.push({
+                            id: `result_${quiz.id}_${student.id}`,
+                            studentId: student.id,
+                            studentName: student.fullName || student.username,
+                            studentEmail: student.email,
+                            quizId: quiz.id,
+                            quizTitle: quiz.title,
+                            score: this.generateRandomScore(),
+                            totalQuestions: quiz.questions.length,
+                            timeSpent: Math.floor(Math.random() * quiz.duration) + 10,
+                            completedAt: this.getRandomDate(),
+                            accuracy: 0 // Will be calculated
+                        });
+                    });
+                });
+
+                // Calculate accuracy
+                this.results.forEach(result => {
+                    result.correctAnswers = Math.round((result.score / 100) * result.totalQuestions);
+                    result.accuracy = Math.round((result.correctAnswers / result.totalQuestions) * 100);
+                });
+
+                // Sort by completion date (newest first)
+                this.results.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+                
+                this.filteredResults = [...this.results];
+
+                // Populate quiz filter
+                this.populateQuizFilter(quizzes);
+            }
+
+            populateQuizFilter(quizzes) {
+                const quizFilter = document.getElementById('quizFilter');
+                if (!quizFilter) return;
+
+                quizFilter.innerHTML = '<option value="">Tất cả Quiz</option>';
+                quizzes.forEach(quiz => {
+                    quizFilter.innerHTML += `<option value="${quiz.id}">${quiz.title}</option>`;
+                });
+            }
+
+            renderView() {
+                if (this.currentUser.role === 'student') {
+                    this.renderStudentView();
+                } else {
+                    this.renderTeacherView();
+                }
+            }
+
+            renderStudentView() {
+                document.getElementById('studentView').style.display = 'block';
+                document.getElementById('teacherView').style.display = 'none';
+
+                // Update result info
+                document.getElementById('resultSubtitle').textContent = this.result.quizTitle;
+                document.getElementById('completedTime').textContent = `📅 Hoàn thành: ${uiManager.formatDate(this.result.completedAt)}`;
+                document.getElementById('timeSpent').textContent = `⏱️ Thời gian: ${this.result.timeSpent} phút`;
+                document.getElementById('totalQuestions').textContent = `❓ Tổng câu hỏi: ${this.result.totalQuestions}`;
+
+                // Update score card
+                document.getElementById('scoreMain').textContent = this.result.score;
+                document.getElementById('correctAnswers').textContent = this.result.correctAnswers;
+                document.getElementById('incorrectAnswers').textContent = this.result.incorrectAnswers;
+                document.getElementById('accuracyPercent').textContent = this.result.accuracy + '%';
+                document.getElementById('classRank').textContent = `#${this.result.classStats.rank}`;
+
+                // Update grade badge
+                const gradeBadge = document.getElementById('gradeBadge');
+                const gradeInfo = this.getGradeInfo(this.result.score);
+                gradeBadge.textContent = gradeInfo.text;
+                gradeBadge.className = `grade-badge ${gradeInfo.class}`;
+
+                // Update statistics sidebar
+                this.updateStatsSidebar();
+
+                // Render question review
+                this.renderQuestionReview();
+
+                // Initialize chart
+                this.initScoreChart();
+            }
+
+            renderTeacherView() {
+                document.getElementById('studentView').style.display = 'none';
+                document.getElementById('teacherView').style.display = 'block';
+
+                this.renderResultsTable();
+            }
+
+            updateStatsSidebar() {
+                document.getElementById('classHighest').textContent = this.result.classStats.highest;
+                document.getElementById('classAverage').textContent = this.result.classStats.average;
+                document.getElementById('classLowest').textContent = this.result.classStats.lowest;
+                document.getElementById('accuracyRate').textContent = this.result.accuracy + '%';
+                document.getElementById('timePerQuestion').textContent = Math.round(this.result.timeSpent / this.result.totalQuestions) + 's';
+                document.getElementById('improvement').textContent = '+' + Math.floor(Math.random() * 10) + '%';
+
+                // Update performance meter
+                const performanceFill = document.getElementById('performanceFill');
+                performanceFill.style.width = this.result.accuracy + '%';
+
+                // Generate recommendations
+                this.renderRecommendations();
+            }
+
+            renderRecommendations() {
+                const container = document.getElementById('recommendations');
+                const recommendations = this.generateRecommendations();
+                
+                container.innerHTML = recommendations.map(rec => 
+                    `<li>${rec}</li>`
+                ).join('');
+            }
+
+            generateRecommendations() {
+                const accuracy = this.result.accuracy;
+                const recommendations = [];
+
+                if (accuracy >= 90) {
+                    recommendations.push('🎉 Xuất sắc! Tiếp tục duy trì');
+                    recommendations.push('📚 Thử các quiz nâng cao');
+                } else if (accuracy >= 80) {
+                    recommendations.push('👍 Tốt! Cải thiện thêm một chút');
+                    recommendations.push('📖 Ôn lại 1-2 chủ đề');
+                } else if (accuracy >= 60) {
+                    recommendations.push('⚠️ Cần cải thiện');
+                    recommendations.push('📚 Ôn tập kỹ lưỡng');
+                    recommendations.push('🎯 Tập trung vào điểm yếu');
+                } else {
+                    recommendations.push('🚨 Cần học lại');
+                    recommendations.push('📖 Ôn từ đầu');
+                    recommendations.push('👨‍🏫 Nhờ giáo viên hỗ trợ');
+                }
+
+                return recommendations;
+            }
+
+            renderQuestionReview() {
+                const container = document.getElementById('questionReview');
+                
+                const reviewHTML = this.quiz.questions.map((question, index) => {
+                    const userAnswer = this.result.answers[index];
+                    const isCorrect = this.checkAnswer(question, userAnswer);
+                    
+                    return `
+                        <div class="question-item">
+                            <div class="question-header">
+                                <div class="question-number">Câu ${index + 1}</div>
+                                <div class="question-result">
+                                    <div class="result-icon ${isCorrect ? 'correct' : 'incorrect'}">
+                                        ${isCorrect ? '✓' : '✗'}
+                                    </div>
+                                    <span>${isCorrect ? 'Đúng' : 'Sai'} (+${isCorrect ? question.points || 10 : 0} điểm)</span>
+                                </div>
+                            </div>
+                            <div class="question-content">
+                                <div class="question-text">${question.question}</div>
+                                
+                                ${this.renderAnswerSection(question, userAnswer, isCorrect)}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = reviewHTML;
+            }
+
+            renderAnswerSection(question, userAnswer, isCorrect) {
+                if (question.type === 'text') {
+                    return `
+                        <div class="answer-section">
+                            <div class="answer-label">Câu trả lời của bạn:</div>
+                            <div class="answer-content text">
+                                ${userAnswer || '<em>Không có câu trả lời</em>'}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const correctOptions = question.options
+                    .map((opt, idx) => ({ ...opt, index: idx }))
+                    .filter(opt => opt.correct);
+
+                return `
+                    <div class="answer-section">
+                        <div class="answer-label">Câu trả lời của bạn:</div>
+                        <div class="answer-content ${isCorrect ? 'correct' : 'incorrect'}">
+                            ${this.formatUserAnswer(question, userAnswer)}
+                        </div>
+                    </div>
+                    
+                    <div class="answer-section">
+                        <div class="answer-label">Đáp án đúng:</div>
+                        <div class="answer-content correct">
+                            <ul class="option-list">
+                                ${correctOptions.map(opt => 
+                                    `<li class="option-item correct">
+                                        ${String.fromCharCode(65 + opt.index)}. ${opt.text}
+                                    </li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            formatUserAnswer(question, userAnswer) {
+                if (userAnswer === null || userAnswer === undefined) {
+                    return '<em>Không có câu trả lời</em>';
+                }
+
+                if (question.type === 'radio') {
+                    const option = question.options[userAnswer];
+                    return option ? `${String.fromCharCode(65 + userAnswer)}. ${option.text}` : '<em>Không hợp lệ</em>';
+                }
+
+                if (question.type === 'checkbox' && Array.isArray(userAnswer)) {
+                    if (userAnswer.length === 0) {
+                        return '<em>Không có câu trả lời</em>';
+                    }
+                    
+                    return `<ul class="option-list">
+                        ${userAnswer.map(idx => {
+                            const option = question.options[idx];
+                            return option ? 
+                                `<li class="option-item">${String.fromCharCode(65 + idx)}. ${option.text}</li>` : 
+                                '';
+                        }).join('')}
+                    </ul>`;
+                }
+
+                return userAnswer;
+            }
+
+            renderResultsTable() {
+                const tbody = document.getElementById('resultsTableBody');
+                const startIndex = (this.currentPage - 1) * this.resultsPerPage;
+                const endIndex = startIndex + this.resultsPerPage;
+                const pageResults = this.filteredResults.slice(startIndex, endIndex);
+
+                if (pageResults.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <div class="empty-icon">📊</div>
+                                <p>Không tìm thấy kết quả nào</p>
+                            </td>
+                        </tr>
+                    `;
+                    this.renderPagination();
+                    return;
+                }
+
+                const resultsHTML = pageResults.map(result => {
+                    const gradeInfo = this.getGradeInfo(result.score);
+                    
+                    return `
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <div class="student-avatar">
+                                        ${result.studentName.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div class="student-details">
+                                        <div class="student-name">${result.studentName}</div>
+                                        <div class="student-id">${result.studentEmail}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${result.quizTitle}</td>
+                            <td class="score-cell">
+                                <div class="score-number" style="color: ${gradeInfo.color}">${result.score}</div>
+                                <div class="score-percentage">${gradeInfo.text}</div>
+                            </td>
+                            <td class="score-cell">${result.accuracy}%</td>
+                            <td class="time-cell">
+                                <div>${result.timeSpent} phút</div>
+                                <div style="color: #666;">${Math.round(result.timeSpent / result.totalQuestions)}s/câu</div>
+                            </td>
+                            <td class="time-cell">${uiManager.formatDate(result.completedAt)}</td>
+                            <td class="actions-cell">
+                                <button class="action-btn" onclick="resultsPage.viewDetailResult('${result.id}')">
+                                    👁️ Xem chi tiết
+                                </button>
+                                <button class="action-btn" onclick="resultsPage.exportStudentResult('${result.id}')">
+                                    📤 Xuất
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.innerHTML = resultsHTML;
+                this.renderPagination();
+            }
+
+            renderPagination() {
+                const totalPages = Math.ceil(this.filteredResults.length / this.resultsPerPage);
+                const startIndex = (this.currentPage - 1) * this.resultsPerPage + 1;
+                const endIndex = Math.min(startIndex + this.resultsPerPage - 1, this.filteredResults.length);
+
+                // Update pagination info
+                document.getElementById('paginationInfo').textContent = 
+                    `Hiển thị ${startIndex}-${endIndex} trong tổng số ${this.filteredResults.length} kết quả`;
+
+                // Update pagination controls
+                const controls = document.getElementById('paginationControls');
+                let paginationHTML = '';
+
+                // Previous button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} 
+                            onclick="resultsPage.goToPage(${this.currentPage - 1})">
+                        ‹ Trước
+                    </button>
+                `;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= this.currentPage - 2 && i <= this.currentPage + 2)) {
+                        paginationHTML += `
+                            <button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" 
+                                    onclick="resultsPage.goToPage(${i})">
+                                ${i}
+                            </button>
+                        `;
+                    } else if (i === this.currentPage - 3 || i === this.currentPage + 3) {
+                        paginationHTML += '<span class="pagination-ellipsis">...</span>';
+                    }
+                }
+
+                // Next button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} 
+                            onclick="resultsPage.goToPage(${this.currentPage + 1})">
+                        Sau ›
+                    </button>
+                `;
+
+                controls.innerHTML = paginationHTML;
+            }
+
+            initScoreChart() {
+                const ctx = document.getElementById('scoreChart').getContext('2d');
+                
+                this.scoreChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Điểm của bạn', 'Còn lại'],
+                        datasets: [{
+                            data: [this.result.score, 100 - this.result.score],
+                            backgroundColor: [
+                                this.getGradeInfo(this.result.score).color,
+                                '#e0e0e0'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        cutout: '70%'
+                    }
+                });
+            }
+
+            // Utility methods
+            getGradeInfo(score) {
+                if (score >= 90) return { text: 'Xuất sắc', class: 'excellent', color: '#4CAF50' };
+                if (score >= 80) return { text: 'Tốt', class: 'good', color: '#2C6EAA' };
+                if (score >= 60) return { text: 'Trung bình', class: 'average', color: '#FF9800' };
+                return { text: 'Yếu', class: 'poor', color: '#F44336' };
+            }
+
+            generateMockAnswers() {
+                return this.quiz.questions.map((question, index) => {
+                    const correctRate = this.result.score / 100;
+                    const isCorrect = Math.random() < correctRate;
+                    
+                    if (question.type === 'text') {
+                        return isCorrect ? 'Đây là câu trả lời mẫu cho câu hỏi tự luận.' : 'Câu trả lời không chính xác.';
+                    }
+                    
+                    if (isCorrect) {
+                        const correctOptions = question.options
+                            .map((opt, idx) => ({ ...opt, index: idx }))
+                            .filter(opt => opt.correct);
+                        
+                        if (question.type === 'radio') {
+                            return correctOptions[0].index;
+                        } else {
+                            return correctOptions.map(opt => opt.index);
+                        }
+                    } else {
+                        const incorrectOptions = question.options
+                            .map((opt, idx) => ({ ...opt, index: idx }))
+                            .filter(opt => !opt.correct);
+                        
+                        if (question.type === 'radio') {
+                            return incorrectOptions[Math.floor(Math.random() * incorrectOptions.length)]?.index || 0;
+                        } else {
+                            return [incorrectOptions[Math.floor(Math.random() * incorrectOptions.length)]?.index || 0];
+                        }
+                    }
+                });
+            }
+
+            checkAnswer(question, userAnswer) {
+                if (question.type === 'text') {
+                    return Math.random() > 0.3; // Mock text evaluation
+                }
+                
+                const correctOptions = question.options
+                    .map((opt, idx) => ({ ...opt, index: idx }))
+                    .filter(opt => opt.correct)
+                    .map(opt => opt.index);
+                
+                if (question.type === 'radio') {
+                    return correctOptions.includes(userAnswer);
+                }
+                
+                if (question.type === 'checkbox' && Array.isArray(userAnswer)) {
+                    return userAnswer.length === correctOptions.length &&
+                           userAnswer.every(ans => correctOptions.includes(ans));
+                }
+                
+                return false;
+            }
+
+            generateRandomScore() {
+                // Generate score with normal distribution around 75
+                const mean = 75;
+                const stdDev = 15;
+                let score = Math.round(mean + (Math.random() + Math.random() + Math.random() + Math.random() - 2) * stdDev);
+                return Math.max(0, Math.min(100, score));
+            }
+
+            getRandomDate() {
+                const start = new Date(2024, 0, 1);
+                const end = new Date();
+                return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString();
+            }
+
+            shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+
+            // Filter and navigation methods
+            filterResults() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const quizFilter = document.getElementById('quizFilter').value;
+                const scoreFilter = document.getElementById('scoreFilter').value;
+                const dateFilter = document.getElementById('dateFilter').value;
+
+                this.filteredResults = this.results.filter(result => {
+                    const matchesSearch = !searchTerm || 
+                        result.studentName.toLowerCase().includes(searchTerm) ||
+                        result.studentEmail.toLowerCase().includes(searchTerm);
+                    
+                    const matchesQuiz = !quizFilter || result.quizId === quizFilter;
+                    
+                    let matchesScore = true;
+                    if (scoreFilter) {
+                        const [min, max] = scoreFilter.split('-').map(Number);
+                        matchesScore = result.score >= min && result.score <= max;
+                    }
+                    
+                    const matchesDate = !dateFilter || result.completedAt.startsWith(dateFilter);
+
+                    return matchesSearch && matchesQuiz && matchesScore && matchesDate;
+                });
+
+                this.currentPage = 1;
+                this.renderResultsTable();
+            }
+
+            clearFilters() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('quizFilter').value = '';
+                document.getElementById('scoreFilter').value = '';
+                document.getElementById('dateFilter').value = '';
+                this.filterResults();
+            }
+
+            goToPage(page) {
+                const totalPages = Math.ceil(this.filteredResults.length / this.resultsPerPage);
+                if (page >= 1 && page <= totalPages) {
+                    this.currentPage = page;
+                    this.renderResultsTable();
+                }
+            }
+
+            // Action methods
+            viewDetailResult(resultId) {
+                const result = this.results.find(r => r.id === resultId);
+                if (!result) return;
+
+                // Load quiz questions for detailed view
+                const quiz = this.loadQuizData(result.quizId);
+                if (!quiz) {
+                    uiManager.showToast('Không tìm thấy thông tin quiz', 'error');
+                    return;
+                }
+
+                this.showDetailedResultModal(result, quiz);
+            }
+
+            loadQuizData(quizId) {
+                // Load quiz data from localStorage
+                const quizzes = JSON.parse(localStorage.getItem('quizzes') || '[]');
+                return quizzes.find(q => q.id === quizId);
+            }
+
+            showDetailedResultModal(result, quiz) {
+                // Generate detailed answer breakdown
+                const questionsHTML = quiz.questions.map((question, index) => {
+                    const userAnswer = result.answers[index];
+                    const isCorrect = userAnswer === question.correctAnswer;
+                    const correctAnswerText = question.options[question.correctAnswer];
+                    const userAnswerText = userAnswer !== undefined ? question.options[userAnswer] : 'Không trả lời';
+                    
+                    return `
+                        <div class="question-detail" style="margin-bottom: var(--spacing-lg); padding: var(--spacing-lg); border: 1px solid var(--border-color); border-radius: var(--border-radius-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--spacing-md);">
+                                <h4 style="flex: 1; margin: 0;">Câu ${index + 1}: ${question.text}</h4>
+                                <span class="score-badge ${isCorrect ? 'correct' : 'incorrect'}" style="padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--border-radius-sm); font-weight: 600; white-space: nowrap;">
+                                    ${isCorrect ? '✅ Đúng' : '❌ Sai'} (${isCorrect ? question.points : 0}/${question.points} điểm)
+                                </span>
+                            </div>
+                            
+                            <div style="display: grid; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+                                ${question.options.map((option, optIndex) => {
+                                    let className = 'option-item';
+                                    let icon = '';
+                                    
+                                    if (optIndex === question.correctAnswer) {
+                                        className += ' correct-answer';
+                                        icon = '✅ ';
+                                    }
+                                    if (optIndex === userAnswer && !isCorrect) {
+                                        className += ' user-wrong-answer';
+                                        icon = '❌ ';
+                                    }
+                                    if (optIndex === userAnswer && isCorrect) {
+                                        icon = '✅ ';
+                                    }
+                                    
+                                    return `
+                                        <div class="${className}" style="padding: var(--spacing-sm); border-radius: var(--border-radius-sm); border: 1px solid var(--border-color);">
+                                            ${icon}${String.fromCharCode(65 + optIndex)}. ${option}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md); font-size: var(--font-size-small);">
+                                <div><strong>Câu trả lời của học viên:</strong> <span style="color: ${isCorrect ? 'var(--accent-green)' : '#dc3545'};">${userAnswerText}</span></div>
+                                <div><strong>Đáp án đúng:</strong> <span style="color: var(--accent-green);">${correctAnswerText}</span></div>
+                                ${question.explanation ? `<div style="grid-column: 1 / -1;"><strong>Giải thích:</strong> <span style="color: #666;">${question.explanation}</span></div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Calculate statistics
+                const totalQuestions = quiz.questions.length;
+                const correctAnswers = quiz.questions.filter((q, index) => result.answers[index] === q.correctAnswer).length;
+                const wrongAnswers = totalQuestions - correctAnswers;
+                const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
+                const avgTimePerQuestion = Math.round((result.timeSpent * 60) / totalQuestions);
+
+                const modalContent = `
+                    <div style="max-height: 80vh; overflow-y: auto; padding: var(--spacing-md);">
+                        <!-- Result Summary -->
+                        <div style="background: linear-gradient(135deg, var(--primary-blue), #1e5a94); color: white; padding: var(--spacing-lg); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg);">
+                            <h3 style="margin: 0 0 var(--spacing-md) 0;">📊 Kết quả chi tiết: ${quiz.title}</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-md);">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 1.5rem; font-weight: 600;">${result.score}/${result.totalScore}</div>
+                                    <div style="font-size: var(--font-size-small); opacity: 0.9;">Điểm số</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 1.5rem; font-weight: 600;">${accuracy}%</div>
+                                    <div style="font-size: var(--font-size-small); opacity: 0.9;">Độ chính xác</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 1.5rem; font-weight: 600;">${result.timeSpent}p</div>
+                                    <div style="font-size: var(--font-size-small); opacity: 0.9;">Thời gian</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 1.5rem; font-weight: 600;">${avgTimePerQuestion}s</div>
+                                    <div style="font-size: var(--font-size-small); opacity: 0.9;">Trung bình/câu</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student Info -->
+                        <div style="background: var(--light-gray); padding: var(--spacing-lg); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg);">
+                            <h4 style="margin: 0 0 var(--spacing-md) 0;">👨‍🎓 Thông tin học viên</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md);">
+                                <div><strong>Tên:</strong> ${result.studentName}</div>
+                                <div><strong>Ngày làm bài:</strong> ${uiManager.formatDate(result.completedAt)}</div>
+                                <div><strong>Số câu đúng:</strong> <span style="color: var(--accent-green);">${correctAnswers}/${totalQuestions}</span></div>
+                                <div><strong>Số câu sai:</strong> <span style="color: #dc3545;">${wrongAnswers}/${totalQuestions}</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Analysis -->
+                        <div style="background: var(--light-gray); padding: var(--spacing-lg); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg);">
+                            <h4 style="margin: 0 0 var(--spacing-md) 0;">📈 Phân tích kết quả</h4>
+                            <div style="display: grid; gap: var(--spacing-sm);">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Điểm đạt được:</span>
+                                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                                        <div style="width: 100px; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                                            <div style="width: ${(result.score / result.totalScore) * 100}%; height: 100%; background: ${result.score >= result.totalScore * 0.8 ? 'var(--accent-green)' : result.score >= result.totalScore * 0.6 ? '#ff9800' : '#dc3545'};"></div>
+                                        </div>
+                                        <span style="font-weight: 600;">${Math.round((result.score / result.totalScore) * 100)}%</span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Độ chính xác:</span>
+                                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                                        <div style="width: 100px; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                                            <div style="width: ${accuracy}%; height: 100%; background: ${accuracy >= 80 ? 'var(--accent-green)' : accuracy >= 60 ? '#ff9800' : '#dc3545'};"></div>
+                                        </div>
+                                        <span style="font-weight: 600;">${accuracy}%</span>
+                                    </div>
+                                </div>
+                                <div style="color: #666; font-size: var(--font-size-small); margin-top: var(--spacing-sm);">
+                                    ${this.getPerformanceMessage(accuracy, result.score / result.totalScore)}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Questions Breakdown -->
+                        <div>
+                            <h4 style="margin: 0 0 var(--spacing-lg) 0;">📝 Chi tiết từng câu hỏi</h4>
+                            ${questionsHTML}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: var(--spacing-md); justify-content: center; margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color);">
+                            <button class="btn btn-primary" onclick="resultsPage.exportDetailedResult('${result.id}')">
+                                📄 Xuất báo cáo chi tiết
+                            </button>
+                            <button class="btn btn-secondary" onclick="resultsPage.printDetailedResult('${result.id}')">
+                                🖨️ In kết quả
+                            </button>
+                            ${this.currentUser.role !== 'student' ? `
+                                <button class="btn btn-accent" onclick="resultsPage.sendResultToStudent('${result.id}')">
+                                    📧 Gửi kết quả cho học viên
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <style>
+                        .score-badge.correct {
+                            background: #d4edda;
+                            color: #155724;
+                        }
+                        .score-badge.incorrect {
+                            background: #f8d7da;
+                            color: #721c24;
+                        }
+                        .option-item.correct-answer {
+                            background: #d4edda;
+                            border-color: #c3e6cb;
+                            color: #155724;
+                        }
+                        .option-item.user-wrong-answer {
+                            background: #f8d7da;
+                            border-color: #f5c6cb;
+                            color: #721c24;
+                        }
+                    </style>
+                `;
+
+                uiManager.showModal('alertModal', `📊 Chi tiết kết quả Quiz: ${quiz.title}`, modalContent);
+            }
+
+            getPerformanceMessage(accuracy, scoreRatio) {
+                if (accuracy >= 90 && scoreRatio >= 0.9) {
+                    return "🎉 Xuất sắc! Bạn đã làm bài rất tốt và hiểu sâu về chủ đề này.";
+                } else if (accuracy >= 80 && scoreRatio >= 0.8) {
+                    return "👍 Tốt! Bạn đã nắm vững phần lớn kiến thức, chỉ cần ôn lại một số điểm nhỏ.";
+                } else if (accuracy >= 70 && scoreRatio >= 0.7) {
+                    return "📚 Khá tốt! Bạn cần ôn tập thêm để nắm vững hơn kiến thức.";
+                } else if (accuracy >= 60 && scoreRatio >= 0.6) {
+                    return "⚠️ Trung bình. Bạn nên dành thời gian ôn lại và làm thêm bài tập.";
+                } else {
+                    return "📖 Cần cải thiện. Hãy ôn lại kiến thức cơ bản và thực hành nhiều hơn.";
+                }
+            }
+
+            exportDetailedResult(resultId) {
+                const result = this.results.find(r => r.id === resultId);
+                if (!result) return;
+
+                // Generate detailed export data
+                const exportData = {
+                    studentName: result.studentName,
+                    quizTitle: result.quizTitle,
+                    score: result.score,
+                    totalScore: result.totalScore,
+                    accuracy: Math.round((result.score / result.totalScore) * 100),
+                    timeSpent: result.timeSpent,
+                    completedAt: result.completedAt,
+                    answers: result.answers
+                };
+
+                // Convert to JSON and download
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `quiz_result_${result.studentName}_${result.quizTitle}_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+
+                uiManager.showToast('Đã xuất báo cáo chi tiết thành công!', 'success');
+                authManager.logActivity('Export Result', `Exported detailed result for ${result.studentName}`);
+            }
+
+            printDetailedResult(resultId) {
+                // For now, just print the current modal content
+                window.print();
+                authManager.logActivity('Print Result', 'Printed detailed quiz result');
+            }
+
+            sendResultToStudent(resultId) {
+                const result = this.results.find(r => r.id === resultId);
+                if (!result) return;
+
+                // Mock sending email to student
+                uiManager.showToast(`Đang gửi kết quả chi tiết đến ${result.studentName}...`, 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Đã gửi kết quả thành công!', 'success');
+                    authManager.logActivity('Send Result', `Sent result to ${result.studentName}`);
+                }, 2000);
+            }
+
+            exportResults() {
+                uiManager.showToast('Đang xuất kết quả cá nhân...', 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Xuất kết quả thành công! File đã được tải xuống.', 'success');
+                }, 2000);
+            }
+
+            exportStudentResult(resultId) {
+                const result = this.results.find(r => r.id === resultId);
+                if (result) {
+                    uiManager.showToast(`Đang xuất kết quả của ${result.studentName}...`, 'info');
+                    setTimeout(() => {
+                        uiManager.showToast('Xuất kết quả thành công!', 'success');
+                    }, 1500);
+                }
+            }
+
+            exportAllResults() {
+                uiManager.showToast('Đang xuất tất cả kết quả...', 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Xuất tất cả kết quả thành công! File Excel đã được tải xuống.', 'success');
+                }, 3000);
+            }
+
+            generateReport() {
+                uiManager.showToast('Đang tạo báo cáo tổng hợp...', 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Tạo báo cáo thành công! File PDF đã được tải xuống.', 'success');
+                }, 3000);
+            }
+
+            printResults() {
+                window.print();
+            }
+        }
+
+        // Initialize results page when DOM is loaded
+        let resultsPage;
+        document.addEventListener('DOMContentLoaded', () => {
+            resultsPage = new ResultsPage();
+        });
+    </script>
+</body>
+</html> 

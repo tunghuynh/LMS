@@ -1,0 +1,287 @@
+{
+  "menuItems": [
+    {
+      "id": "dashboard",
+      "text": "Dashboard",
+      "icon": "📊",
+      "type": "page",
+      "href": "dashboard-{role}.html",
+      "permissions": ["admin", "teacher", "student"]
+    },
+    {
+      "id": "class-management",
+      "text": "Quản lý lớp học",
+      "icon": "🏫",
+      "type": "page",
+      "href": "classes.html",
+      "permissions": ["admin", "teacher"],
+      "actions": [
+        {
+          "id": "manage-students",
+          "text": "Học viên",
+          "type": "button",
+          "permissions": ["admin", "teacher"]
+        },
+        {
+          "id": "add-remove-students",
+          "text": "Thêm/Xóa học viên",
+          "type": "button",
+          "permissions": ["admin", "teacher"]
+        }
+      ]
+    },
+    {
+      "id": "user-management",
+      "text": "Quản lý người dùng",
+      "icon": "👥",
+      "type": "group",
+      "permissions": ["admin"],
+      "children": [
+        {
+          "id": "user-list",
+          "text": "Danh sách người dùng",
+          "icon": "📝",
+          "type": "page",
+          "href": "users.html",
+          "permissions": ["admin"],
+          "actions": [
+            {
+              "id": "add-user",
+              "text": "Thêm người dùng",
+              "type": "button",
+              "permissions": ["admin"]
+            },
+            {
+              "id": "edit-user",
+              "text": "Sửa người dùng",
+              "type": "button",
+              "permissions": ["admin"]
+            },
+            {
+              "id": "delete-user",
+              "text": "Xóa người dùng",
+              "type": "button",
+              "permissions": ["admin"]
+            }
+          ]
+        },
+        {
+          "id": "user-permissions",
+          "text": "Phân quyền người dùng",
+          "icon": "🔐",
+          "type": "page",
+          "href": "permissions.html",
+          "permissions": ["admin"]
+        }
+      ]
+    },
+    {
+      "id": "course-management",
+      "text": "Quản lý khóa học",
+      "icon": "📚",
+      "type": "group",
+      "permissions": ["admin", "teacher", "student"],
+      "children": [
+        {
+          "id": "course-categories",
+          "text": "Danh mục loại khóa học",
+          "icon": "📂",
+          "type": "page",
+          "href": "categories.html",
+          "permissions": ["admin", "teacher"],
+          "actions": [
+            {
+              "id": "create-category",
+              "text": "Tạo danh mục",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "edit-category",
+              "text": "Sửa danh mục",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "delete-category",
+              "text": "Xóa danh mục",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            }
+          ]
+        },
+        {
+          "id": "courses",
+          "text": "Khóa học",
+          "icon": "📖",
+          "type": "page",
+          "href": "courses.html",
+          "permissions": ["admin", "teacher", "student"],
+          "actions": [
+            {
+              "id": "create-course",
+              "text": "Tạo khóa học",
+              "type": "button",
+              "href": "course-create.html",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "edit-course",
+              "text": "Sửa khóa học",
+              "type": "button",
+              "href": "course-edit.html",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "delete-course",
+              "text": "Xóa khóa học",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "view-students",
+              "text": "Xem học viên",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "manage-enrollments",
+              "text": "Phê duyệt đăng ký học",
+              "type": "button",
+              "href": "enrollments.html",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "enroll-course",
+              "text": "Đăng ký học",
+              "type": "button",
+              "permissions": ["student"]
+            }
+          ]
+        },
+        {
+          "id": "lessons",
+          "text": "Bài học",
+          "icon": "📖",
+          "type": "page",
+          "href": "lesson.html",
+          "permissions": ["admin", "teacher", "student"],
+          "actions": [
+            {
+              "id": "create-lesson",
+              "text": "Tạo bài học",
+              "type": "button",
+              "href": "lesson-create.html",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "edit-lesson",
+              "text": "Sửa bài học",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "delete-lesson",
+              "text": "Xóa bài học",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "study-lesson",
+              "text": "Vào học",
+              "type": "button",
+              "permissions": ["student"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quiz-management",
+      "text": "Quản lý bài thi",
+      "icon": "🧪",
+      "type": "group",
+      "permissions": ["admin", "teacher", "student"],
+      "children": [
+        {
+          "id": "quizzes",
+          "text": "Bài thi",
+          "icon": "📝",
+          "type": "page",
+          "href": "quizzes.html",
+          "permissions": ["admin", "teacher", "student"],
+          "actions": [
+            {
+              "id": "view-quiz-list",
+              "text": "Danh sách bài thi",
+              "type": "button",
+              "permissions": ["admin", "teacher", "student"]
+            },
+            {
+              "id": "register-quiz",
+              "text": "Đăng ký thi",
+              "type": "button",
+              "permissions": ["student"]
+            },
+            {
+              "id": "approve-quiz-registration",
+              "text": "Phê duyệt đăng ký thi",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "take-quiz",
+              "text": "Làm bài thi",
+              "type": "button",
+              "href": "quiz-attempt.html",
+              "permissions": ["student"]
+            },
+            {
+              "id": "create-quiz",
+              "text": "Tạo bài thi",
+              "type": "button",
+              "href": "quiz-builder.html",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "edit-quiz",
+              "text": "Sửa bài thi",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            },
+            {
+              "id": "delete-quiz",
+              "text": "Xóa bài thi",
+              "type": "button",
+              "permissions": ["admin", "teacher"]
+            }
+          ]
+        },
+        {
+          "id": "quiz-results",
+          "text": "Kết quả thi",
+          "icon": "📈",
+          "type": "page",
+          "href": "quiz-results.html",
+          "permissions": ["admin", "teacher", "student"]
+        }
+      ]
+    },
+    {
+      "id": "profile",
+      "text": "Profile",
+      "icon": "👤",
+      "type": "page",
+      "href": "profile-{role}.html",
+      "permissions": ["admin", "teacher", "student"]
+    },
+    {
+      "id": "settings",
+      "text": "Cài đặt",
+      "icon": "⚙️",
+      "type": "modal",
+      "onclick": "window.commonMenuManager ? window.commonMenuManager.showSettings() : console.log('No menu manager')",
+      "permissions": ["admin", "teacher", "student"]
+    }
+  ]
+} 

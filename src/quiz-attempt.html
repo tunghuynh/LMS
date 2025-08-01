@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Làm bài Quiz | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        body {
+            background: var(--light-gray);
+        }
+
+        /* Quiz Header */
+        .quiz-header {
+            background: var(--white);
+            box-shadow: var(--shadow-light);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .quiz-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .quiz-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .quiz-title {
+            font-size: var(--font-size-h2);
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .quiz-meta {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .timer {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            font-size: var(--font-size-h3);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .timer.warning {
+            background: #ff9800;
+            animation: pulse 1s infinite;
+        }
+
+        .timer.danger {
+            background: #f44336;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        /* Main Quiz Layout */
+        .quiz-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: var(--spacing-lg);
+            padding: 0 var(--spacing-lg);
+        }
+
+        /* Navigation Panel */
+        .nav-panel {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            padding: var(--spacing-lg);
+            height: fit-content;
+            position: sticky;
+            top: 140px;
+        }
+
+        .nav-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .progress-overview {
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: var(--light-gray);
+            border-radius: var(--border-radius-md);
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            font-size: var(--font-size-small);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: var(--font-size-h3);
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: var(--border-radius-sm);
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .progress-fill {
+            background: var(--accent-green);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--spacing-xs);
+        }
+
+        .nav-btn {
+            aspect-ratio: 1;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.1);
+        }
+
+        .nav-btn.current {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .nav-btn.answered {
+            background: var(--accent-green);
+            color: var(--white);
+            border-color: var(--accent-green);
+        }
+
+        .nav-btn.flagged::after {
+            content: "🚩";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 10px;
+        }
+
+        /* Question Panel */
+        .question-panel {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            padding: var(--spacing-xl);
+            min-height: 600px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .question-number {
+            font-size: var(--font-size-h2);
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .question-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .flag-btn {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .flag-btn.flagged {
+            background: #fff3e0;
+            border-color: #ff9800;
+            color: #ff9800;
+        }
+
+        .question-content {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .question-text {
+            font-size: var(--font-size-body);
+            line-height: 1.6;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .question-points {
+            font-size: var(--font-size-small);
+            color: #666;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* Answer Options */
+        .answer-options {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .option-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-md);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .option-item.selected {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.1);
+        }
+
+        .option-content {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+        }
+
+        .option-input {
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: var(--font-size-body);
+            color: var(--dark-gray);
+        }
+
+        .option-label {
+            background: var(--light-gray);
+            color: #666;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        /* Text Answer */
+        .text-answer {
+            width: 100%;
+            min-height: 120px;
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            resize: vertical;
+            font-family: inherit;
+            font-size: var(--font-size-body);
+            line-height: 1.5;
+        }
+
+        .text-answer:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(44, 110, 170, 0.1);
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: var(--font-size-small);
+            color: #666;
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Question Navigation */
+        .question-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .nav-group {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        /* Submit Section */
+        .submit-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            padding: var(--spacing-xl);
+            margin-top: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .submit-warning {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            color: #e65100;
+        }
+
+        .submit-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .submit-stat {
+            text-align: center;
+        }
+
+        .submit-stat-number {
+            font-size: var(--font-size-h2);
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .submit-stat-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .submit-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+        }
+
+        /* Auto-save indicator */
+        .autosave-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-green);
+            color: var(--white);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .autosave-indicator.show {
+            transform: translateX(0);
+        }
+
+        /* Modal styles */
+        .modal-content {
+            max-width: 500px;
+        }
+
+        .warning-icon {
+            font-size: 3rem;
+            color: #ff9800;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quiz-layout {
+                grid-template-columns: 1fr;
+                padding: 0 var(--spacing-md);
+            }
+            
+            .nav-panel {
+                position: static;
+                order: 2;
+            }
+            
+            .quiz-header-content {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            
+            .timer-container {
+                justify-content: center;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                align-items: stretch;
+            }
+            
+            .question-nav {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            
+            .nav-group {
+                justify-content: center;
+            }
+            
+            .submit-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quiz-actions {
+                flex-direction: column;
+            }
+            
+            .progress-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Quiz Header -->
+    <header class="quiz-header">
+        <div class="quiz-header-content">
+            <div class="quiz-info">
+                <h1 class="quiz-title" id="quizTitle">Đang tải...</h1>
+                <div class="quiz-meta">
+                    <span id="quizCourse">📚 Khóa học</span>
+                    <span id="quizQuestionCount">❓ 0 câu hỏi</span>
+                    <span id="quizMaxScore">🎯 0 điểm</span>
+                </div>
+            </div>
+            
+            <div class="timer-container">
+                <div class="timer" id="timer">
+                    ⏰ <span id="timeRemaining">00:00</span>
+                </div>
+            </div>
+            
+            <div class="quiz-actions">
+                <button class="btn btn-secondary" onclick="quizAttempt.showSubmitConfirm()">
+                    📤 Nộp bài
+                </button>
+                <button class="btn btn-secondary" onclick="quizAttempt.showInstructions()">
+                    ❓ Hướng dẫn
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Quiz Layout -->
+    <div class="quiz-layout">
+        <!-- Navigation Panel -->
+        <div class="nav-panel">
+            <div class="nav-title">
+                🧭 Điều hướng câu hỏi
+            </div>
+            
+            <div class="progress-overview">
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="answeredCount">0</div>
+                        <div class="stat-label">Đã trả lời</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="remainingCount">0</div>
+                        <div class="stat-label">Còn lại</div>
+                    </div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">0% hoàn thành</div>
+            </div>
+            
+            <div class="nav-grid" id="navGrid">
+                <!-- Navigation buttons will be generated here -->
+            </div>
+        </div>
+
+        <!-- Question Panel -->
+        <div class="question-panel">
+            <div class="question-header">
+                <div class="question-number" id="questionNumber">Câu hỏi 1</div>
+                <div class="question-actions">
+                    <button class="flag-btn" id="flagBtn" onclick="quizAttempt.toggleFlag()">
+                        🚩 Đánh dấu
+                    </button>
+                </div>
+            </div>
+            
+            <div class="question-content" id="questionContent">
+                <!-- Question content will be loaded here -->
+            </div>
+            
+            <div class="question-nav">
+                <div class="nav-group">
+                    <button class="btn btn-secondary" id="prevBtn" onclick="quizAttempt.previousQuestion()">
+                        ← Câu trước
+                    </button>
+                </div>
+                
+                <div class="nav-group">
+                    <button class="btn btn-secondary" onclick="quizAttempt.clearAnswer()">
+                        🗑️ Xóa đáp án
+                    </button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="quizAttempt.nextQuestion()">
+                        Câu sau →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="quiz-layout">
+        <div></div> <!-- Empty space for nav panel -->
+        <div class="submit-section" id="submitSection" style="display: none;">
+            <h2>📤 Nộp bài Quiz</h2>
+            
+            <div class="submit-warning">
+                ⚠️ <strong>Lưu ý:</strong> Sau khi nộp bài, bạn không thể thay đổi câu trả lời. Hãy kiểm tra kỹ trước khi nộp!
+            </div>
+            
+            <div class="submit-stats">
+                <div class="submit-stat">
+                    <div class="submit-stat-number" id="submitAnswered">0</div>
+                    <div class="submit-stat-label">Câu đã trả lời</div>
+                </div>
+                <div class="submit-stat">
+                    <div class="submit-stat-number" id="submitUnanswered">0</div>
+                    <div class="submit-stat-label">Câu chưa trả lời</div>
+                </div>
+                <div class="submit-stat">
+                    <div class="submit-stat-number" id="submitFlagged">0</div>
+                    <div class="submit-stat-label">Câu đánh dấu</div>
+                </div>
+            </div>
+            
+            <div class="submit-actions">
+                <button class="btn btn-secondary" onclick="quizAttempt.hideSubmitSection()">
+                    ← Quay lại làm bài
+                </button>
+                <button class="btn btn-primary" onclick="quizAttempt.submitQuiz()">
+                    🚀 Nộp bài Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auto-save Indicator -->
+    <div class="autosave-indicator" id="autosaveIndicator">
+        💾 Đã lưu tự động
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div class="modal" id="submitModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">📤 Xác nhận nộp bài</h3>
+                <button class="modal-close" onclick="uiManager.hideModal(document.getElementById('submitModal'))">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div class="warning-icon">⚠️</div>
+                <p style="margin-bottom: var(--spacing-lg);">
+                    <strong>Bạn có chắc chắn muốn nộp bài?</strong>
+                </p>
+                <p style="margin-bottom: var(--spacing-lg); color: #666;">
+                    Sau khi nộp bài, bạn không thể thay đổi câu trả lời. 
+                    <span id="modalStats"></span>
+                </p>
+                <div style="background: #fff3e0; padding: var(--spacing-md); border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-lg);">
+                    Thời gian còn lại: <strong id="modalTimeRemaining">--:--</strong>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="uiManager.hideModal(document.getElementById('submitModal'))">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-primary" onclick="quizAttempt.confirmSubmit()">
+                    Nộp bài ngay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="modal" id="instructionsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">❓ Hướng dẫn làm bài</h3>
+                <button class="modal-close" onclick="uiManager.hideModal(document.getElementById('instructionsModal'))">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: left;">
+                    <h4 style="margin-bottom: var(--spacing-md);">📋 Quy tắc làm bài:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: var(--spacing-xs) 0;">• Thời gian làm bài có giới hạn và được hiển thị ở góc trên</li>
+                        <li style="padding: var(--spacing-xs) 0;">• Bài làm sẽ tự động lưu sau mỗi thay đổi</li>
+                        <li style="padding: var(--spacing-xs) 0;">• Sử dụng điều hướng để chuyển giữa các câu hỏi</li>
+                        <li style="padding: var(--spacing-xs) 0;">• Đánh dấu câu hỏi khó để xem lại sau</li>
+                        <li style="padding: var(--spacing-xs) 0;">• Bài sẽ tự động nộp khi hết thời gian</li>
+                    </ul>
+                    
+                    <h4 style="margin: var(--spacing-lg) 0 var(--spacing-md) 0;">🎯 Ký hiệu màu sắc:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: var(--spacing-xs) 0;">🔵 Xanh: Câu hỏi hiện tại</li>
+                        <li style="padding: var(--spacing-xs) 0;">🟢 Xanh lá: Đã trả lời</li>
+                        <li style="padding: var(--spacing-xs) 0;">⚪ Trắng: Chưa trả lời</li>
+                        <li style="padding: var(--spacing-xs) 0;">🚩 Cờ đỏ: Đánh dấu để xem lại</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary" onclick="uiManager.hideModal(document.getElementById('instructionsModal'))">
+                    Đã hiểu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class QuizAttempt {
+            constructor() {
+                this.currentUser = null;
+                this.quiz = null;
+                this.userAnswers = {};
+                this.flaggedQuestions = new Set();
+                this.currentQuestionIndex = 0;
+                this.timeRemaining = 0;
+                this.timer = null;
+                this.autoSaveTimer = null;
+                this.startTime = new Date();
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication - only students can take quiz
+                if (!authManager.checkPageAccess(['student'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                
+                // Get quiz ID from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const quizId = urlParams.get('id');
+                
+                if (!quizId) {
+                    uiManager.showToast('Không tìm thấy ID quiz', 'error');
+                    window.location.href = 'quizzes.html';
+                    return;
+                }
+
+                await this.loadQuiz(quizId);
+                
+                // Only initialize if quiz was loaded successfully
+                if (this.quiz && this.quiz.questions && Array.isArray(this.quiz.questions)) {
+                    this.initializeQuiz();
+                    this.startTimer();
+                    this.bindEvents();
+                    this.startAutoSave();
+                } else {
+                    console.error('Quiz not loaded properly, cannot initialize');
+                    uiManager.showToast('Lỗi tải quiz', 'error');
+                }
+            }
+
+            bindEvents() {
+                // Prevent page reload/close without warning
+                window.addEventListener('beforeunload', (e) => {
+                    if (this.timer) {
+                        e.preventDefault();
+                        e.returnValue = 'Bạn có chắc muốn thoát? Bài làm có thể bị mất.';
+                        return e.returnValue;
+                    }
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey || e.metaKey) return; // Ignore ctrl/cmd combinations
+                    
+                    switch(e.key) {
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            this.previousQuestion();
+                            break;
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            this.nextQuestion();
+                            break;
+                        case 'f':
+                        case 'F':
+                            e.preventDefault();
+                            this.toggleFlag();
+                            break;
+                    }
+                });
+
+                // Prevent context menu (right click)
+                document.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                });
+
+                // Disable text selection on certain elements
+                document.addEventListener('selectstart', (e) => {
+                    if (e.target.classList.contains('nav-btn') || e.target.classList.contains('option-label')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            async loadQuiz(quizId) {
+                try {
+                    // Load quiz data from localStorage first, fallback to mock data
+                    let quizzes = [];
+                    
+                    // Try to load from localStorage
+                    const savedQuizzes = localStorage.getItem('quizzes');
+                    if (savedQuizzes) {
+                        quizzes = JSON.parse(savedQuizzes);
+                    } else {
+                        // Create initial mock quiz data if localStorage is empty
+                        const mockQuizzes = [
+                            {
+                                id: 'quiz1',
+                                title: 'Kiểm tra JavaScript cơ bản',
+                                description: 'Quiz kiểm tra kiến thức JavaScript',
+                                courseId: 'course1',
+                                duration: 30,
+                                maxScore: 100,
+                                questions: [
+                                    {
+                                        id: 'q1',
+                                        question: 'JavaScript là gì?',
+                                        type: 'multiple-choice',
+                                        options: [
+                                            'Ngôn ngữ lập trình',
+                                            'Framework',
+                                            'Database',
+                                            'Hệ điều hành'
+                                        ],
+                                        correctAnswer: 0,
+                                        explanation: 'JavaScript là một ngôn ngữ lập trình phổ biến.'
+                                    },
+                                    {
+                                        id: 'q2',
+                                        question: 'Cách khai báo biến trong JavaScript?',
+                                        type: 'multiple-choice',
+                                        options: [
+                                            'var name;',
+                                            'variable name;',
+                                            'string name;',
+                                            'declare name;'
+                                        ],
+                                        correctAnswer: 0,
+                                        explanation: 'Sử dụng var, let hoặc const để khai báo biến.'
+                                    }
+                                ]
+                            },
+                            {
+                                id: 'quiz2',
+                                title: 'Kiểm tra UI/UX Design',
+                                description: 'Quiz về thiết kế giao diện',
+                                courseId: 'course2',
+                                duration: 25,
+                                maxScore: 100,
+                                questions: [
+                                    {
+                                        id: 'q1',
+                                        question: 'UX là viết tắt của gì?',
+                                        type: 'multiple-choice',
+                                        options: [
+                                            'User Experience',
+                                            'User Extension',
+                                            'Universal Experience',
+                                            'User Explorer'
+                                        ],
+                                        correctAnswer: 0,
+                                        explanation: 'UX là User Experience - Trải nghiệm người dùng.'
+                                    }
+                                ]
+                            }
+                        ];
+                        localStorage.setItem('quizzes', JSON.stringify(mockQuizzes));
+                        quizzes = mockQuizzes;
+                    }
+                    
+                    this.quiz = quizzes.find(q => q.id === quizId);
+                    
+                    if (!this.quiz) {
+                        console.warn('Quiz not found with ID:', quizId);
+                        
+                        // Create a default quiz for testing
+                        this.quiz = {
+                            id: quizId,
+                            title: 'Quiz Demo',
+                            description: 'Quiz demo được tạo tự động',
+                            courseId: 'demo',
+                            duration: 15,
+                            maxScore: 100,
+                            questions: [
+                                {
+                                    id: 'demo1',
+                                    question: 'Đây là câu hỏi demo?',
+                                    type: 'multiple-choice',
+                                    options: [
+                                        'Đúng',
+                                        'Sai',
+                                        'Có thể',
+                                        'Không biết'
+                                    ],
+                                    correctAnswer: 0,
+                                    explanation: 'Đây là câu hỏi demo để test quiz system.'
+                                }
+                            ]
+                        };
+                        
+                        uiManager.showToast('Đang sử dụng quiz demo', 'info');
+                    }
+
+                    // Load course info from localStorage
+                    let courses = [];
+                    const savedCourses = localStorage.getItem('courses');
+                    if (savedCourses) {
+                        courses = JSON.parse(savedCourses);
+                    }
+                    
+                    const course = courses.find(c => c.courseId === this.quiz.courseId);
+                    this.quiz.courseName = course ? course.title : 'Khóa học Demo';
+                    this.timeRemaining = this.quiz.duration * 60; // Convert to seconds
+
+                } catch (error) {
+                    console.error('Error loading quiz:', error);
+                    
+                    // Create fallback quiz to prevent crashes
+                    this.quiz = {
+                        id: quizId || 'fallback',
+                        title: 'Quiz Fallback',
+                        description: 'Quiz fallback do lỗi tải dữ liệu',
+                        courseId: 'fallback',
+                        courseName: 'Demo Course',
+                        duration: 10,
+                        maxScore: 100,
+                        questions: [
+                            {
+                                id: 'fallback1',
+                                question: 'Câu hỏi fallback?',
+                                type: 'multiple-choice',
+                                options: ['A', 'B', 'C', 'D'],
+                                correctAnswer: 0,
+                                explanation: 'Câu hỏi fallback do lỗi tải dữ liệu.'
+                            }
+                        ]
+                    };
+                    this.timeRemaining = 600; // 10 minutes
+                    
+                    uiManager.showToast('Đã tạo quiz fallback do lỗi tải dữ liệu', 'warning');
+                }
+            }
+
+            initializeQuiz() {
+                // Check if quiz data is loaded
+                if (!this.quiz) {
+                    console.error('Quiz data not loaded in initializeQuiz');
+                    return;
+                }
+
+                // Update header info with fallbacks
+                document.getElementById('quizTitle').textContent = this.quiz.title || 'Quiz Demo';
+                document.getElementById('quizCourse').textContent = `📚 ${this.quiz.courseName || 'Demo Course'}`;
+                document.getElementById('quizQuestionCount').textContent = `❓ ${(this.quiz.questions || []).length} câu hỏi`;
+                document.getElementById('quizMaxScore').textContent = `🎯 ${this.quiz.maxScore || 100} điểm`;
+
+                // Initialize user answers
+                if (this.quiz.questions && Array.isArray(this.quiz.questions)) {
+                    this.quiz.questions.forEach((_, index) => {
+                        this.userAnswers[index] = null;
+                                    });
+                    
+                    // Generate navigation
+                    this.generateNavigation();
+                    
+                    // Load first question
+                    this.loadQuestion(0);
+                    
+                    // Update progress
+                    this.updateProgress();
+                } else {
+                    console.error('Quiz questions not available');
+                    uiManager.showToast('Lỗi: Không có câu hỏi trong quiz', 'error');
+                }
+
+                // Log quiz start
+                authManager.logActivity('Quiz Started', `Started quiz: ${this.quiz.title || 'Unknown Quiz'}`);
+            }
+
+            generateNavigation() {
+                const navGrid = document.getElementById('navGrid');
+                
+                if (!this.quiz || !this.quiz.questions || !Array.isArray(this.quiz.questions)) {
+                    navGrid.innerHTML = '<p>Không có câu hỏi</p>';
+                    return;
+                }
+                
+                const buttons = this.quiz.questions.map((_, index) => 
+                    `<button class="nav-btn ${index === 0 ? 'current' : ''}" onclick="quizAttempt.goToQuestion(${index})">${index + 1}</button>`
+                ).join('');
+                
+                navGrid.innerHTML = buttons;
+            }
+
+            loadQuestion(index) {
+                if (!this.quiz || !this.quiz.questions || !Array.isArray(this.quiz.questions)) {
+                    console.error('Quiz questions not available in loadQuestion');
+                    return;
+                }
+                
+                if (index < 0 || index >= this.quiz.questions.length) return;
+
+                this.currentQuestionIndex = index;
+                const question = this.quiz.questions[index];
+
+                // Update question number
+                document.getElementById('questionNumber').textContent = `Câu hỏi ${index + 1}`;
+
+                // Update flag button
+                const flagBtn = document.getElementById('flagBtn');
+                if (this.flaggedQuestions.has(index)) {
+                    flagBtn.classList.add('flagged');
+                    flagBtn.innerHTML = '🚩 Đã đánh dấu';
+                } else {
+                    flagBtn.classList.remove('flagged');
+                    flagBtn.innerHTML = '🚩 Đánh dấu';
+                }
+
+                // Load question content
+                const content = document.getElementById('questionContent');
+                content.innerHTML = this.renderQuestion(question, index);
+
+                // Update navigation buttons
+                this.updateNavigation();
+
+                // Update prev/next buttons
+                document.getElementById('prevBtn').disabled = index === 0;
+                document.getElementById('nextBtn').textContent = 
+                    index === this.quiz.questions.length - 1 ? 'Hoàn thành' : 'Câu sau →';
+
+                // Restore user answer
+                this.restoreAnswer(index);
+            }
+
+            renderQuestion(question, index) {
+                let content = `
+                    <div class="question-text">${question.question}</div>
+                    <div class="question-points">💎 ${question.points || 10} điểm</div>
+                `;
+
+                if (question.type === 'text') {
+                    content += `
+                        <textarea 
+                            class="text-answer" 
+                            id="textAnswer_${index}"
+                            placeholder="Nhập câu trả lời của bạn..."
+                            onchange="quizAttempt.saveAnswer(${index}, this.value)"
+                            oninput="quizAttempt.updateCharCount(${index}, this.value)"
+                        ></textarea>
+                        <div class="char-count" id="charCount_${index}">0 ký tự</div>
+                    `;
+                } else {
+                    content += '<div class="answer-options">';
+                    
+                    question.options.forEach((option, optIndex) => {
+                        const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                        const inputName = question.type === 'radio' ? `question_${index}` : `question_${index}_${optIndex}`;
+                        
+                        content += `
+                            <div class="option-item" onclick="quizAttempt.selectOption(${index}, ${optIndex}, '${question.type}')">
+                                <div class="option-content">
+                                    <input 
+                                        type="${inputType}" 
+                                        name="${inputName}" 
+                                        value="${optIndex}"
+                                        class="option-input"
+                                        id="option_${index}_${optIndex}"
+                                        onchange="quizAttempt.saveAnswer(${index}, this.value, '${question.type}', ${optIndex})"
+                                    >
+                                    <div class="option-text">${option.text}</div>
+                                    <div class="option-label">${String.fromCharCode(65 + optIndex)}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    content += '</div>';
+                }
+
+                return content;
+            }
+
+            selectOption(questionIndex, optionIndex, questionType) {
+                const option = document.getElementById(`option_${questionIndex}_${optionIndex}`);
+                
+                if (questionType === 'radio') {
+                    // Clear all other options
+                    const allOptions = document.querySelectorAll(`input[name="question_${questionIndex}"]`);
+                    allOptions.forEach(opt => {
+                        opt.checked = false;
+                        opt.closest('.option-item').classList.remove('selected');
+                    });
+                    
+                    option.checked = true;
+                    option.closest('.option-item').classList.add('selected');
+                    this.saveAnswer(questionIndex, optionIndex, questionType);
+                } else {
+                    // Toggle checkbox
+                    option.checked = !option.checked;
+                    if (option.checked) {
+                        option.closest('.option-item').classList.add('selected');
+                    } else {
+                        option.closest('.option-item').classList.remove('selected');
+                    }
+                    this.saveAnswer(questionIndex, optionIndex, questionType, optionIndex);
+                }
+            }
+
+            saveAnswer(questionIndex, value, questionType = null, optionIndex = null) {
+                const question = this.quiz.questions[questionIndex];
+                
+                if (question.type === 'text') {
+                    this.userAnswers[questionIndex] = value;
+                } else if (questionType === 'radio') {
+                    this.userAnswers[questionIndex] = parseInt(value);
+                } else if (questionType === 'checkbox') {
+                    if (!this.userAnswers[questionIndex]) {
+                        this.userAnswers[questionIndex] = [];
+                    }
+                    
+                    const answerArray = this.userAnswers[questionIndex];
+                    const optIndex = answerArray.indexOf(optionIndex);
+                    
+                    if (optIndex > -1) {
+                        answerArray.splice(optIndex, 1);
+                    } else {
+                        answerArray.push(optionIndex);
+                    }
+                }
+
+                this.updateProgress();
+                this.showAutoSaveIndicator();
+            }
+
+            restoreAnswer(questionIndex) {
+                const answer = this.userAnswers[questionIndex];
+                const question = this.quiz.questions[questionIndex];
+                
+                if (answer === null || answer === undefined) return;
+
+                if (question.type === 'text') {
+                    const textArea = document.getElementById(`textAnswer_${questionIndex}`);
+                    if (textArea) {
+                        textArea.value = answer;
+                        this.updateCharCount(questionIndex, answer);
+                    }
+                } else if (question.type === 'radio') {
+                    const option = document.getElementById(`option_${questionIndex}_${answer}`);
+                    if (option) {
+                        option.checked = true;
+                        option.closest('.option-item').classList.add('selected');
+                    }
+                } else if (question.type === 'checkbox' && Array.isArray(answer)) {
+                    answer.forEach(optIndex => {
+                        const option = document.getElementById(`option_${questionIndex}_${optIndex}`);
+                        if (option) {
+                            option.checked = true;
+                            option.closest('.option-item').classList.add('selected');
+                        }
+                    });
+                }
+            }
+
+            updateCharCount(questionIndex, text) {
+                const charCount = document.getElementById(`charCount_${questionIndex}`);
+                if (charCount) {
+                    charCount.textContent = `${text.length} ký tự`;
+                }
+            }
+
+            goToQuestion(index) {
+                this.loadQuestion(index);
+            }
+
+            previousQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.loadQuestion(this.currentQuestionIndex - 1);
+                }
+            }
+
+            nextQuestion() {
+                if (!this.quiz || !this.quiz.questions || !Array.isArray(this.quiz.questions)) {
+                    console.error('Quiz questions not available in nextQuestion');
+                    return;
+                }
+                
+                if (this.currentQuestionIndex < this.quiz.questions.length - 1) {
+                    this.loadQuestion(this.currentQuestionIndex + 1);
+                } else {
+                    this.showSubmitSection();
+                }
+            }
+
+            toggleFlag() {
+                const index = this.currentQuestionIndex;
+                if (this.flaggedQuestions.has(index)) {
+                    this.flaggedQuestions.delete(index);
+                } else {
+                    this.flaggedQuestions.add(index);
+                }
+                
+                this.loadQuestion(index); // Refresh to update flag button
+                this.updateProgress();
+            }
+
+            clearAnswer() {
+                if (!this.quiz || !this.quiz.questions || !Array.isArray(this.quiz.questions)) {
+                    console.error('Quiz questions not available in clearAnswer');
+                    return;
+                }
+                
+                const index = this.currentQuestionIndex;
+                const question = this.quiz.questions[index];
+                
+                uiManager.showConfirm(
+                    'Bạn có chắc muốn xóa câu trả lời này?',
+                    () => {
+                        this.userAnswers[index] = question.type === 'checkbox' ? [] : null;
+                        this.loadQuestion(index);
+                        this.updateProgress();
+                        uiManager.showToast('Đã xóa câu trả lời', 'success');
+                    }
+                );
+            }
+
+            updateNavigation() {
+                const navButtons = document.querySelectorAll('.nav-btn');
+                navButtons.forEach((btn, index) => {
+                    btn.classList.remove('current', 'answered', 'flagged');
+                    
+                    if (index === this.currentQuestionIndex) {
+                        btn.classList.add('current');
+                    } else if (this.isAnswered(index)) {
+                        btn.classList.add('answered');
+                    }
+                    
+                    if (this.flaggedQuestions.has(index)) {
+                        btn.classList.add('flagged');
+                    }
+                });
+            }
+
+            updateProgress() {
+                const answeredCount = this.getAnsweredCount();
+                const totalCount = this.quiz.questions.length;
+                const flaggedCount = this.flaggedQuestions.size;
+                const remainingCount = totalCount - answeredCount;
+                const progressPercent = Math.round((answeredCount / totalCount) * 100);
+
+                // Update navigation panel
+                document.getElementById('answeredCount').textContent = answeredCount;
+                document.getElementById('remainingCount').textContent = remainingCount;
+                document.getElementById('progressFill').style.width = `${progressPercent}%`;
+                document.getElementById('progressText').textContent = `${progressPercent}% hoàn thành`;
+
+                // Update submit section stats
+                document.getElementById('submitAnswered').textContent = answeredCount;
+                document.getElementById('submitUnanswered').textContent = remainingCount;
+                document.getElementById('submitFlagged').textContent = flaggedCount;
+
+                this.updateNavigation();
+            }
+
+            isAnswered(index) {
+                const answer = this.userAnswers[index];
+                const question = this.quiz.questions[index];
+                
+                if (question.type === 'text') {
+                    return answer && answer.trim().length > 0;
+                } else if (question.type === 'checkbox') {
+                    return Array.isArray(answer) && answer.length > 0;
+                } else {
+                    return answer !== null && answer !== undefined;
+                }
+            }
+
+            getAnsweredCount() {
+                if (!this.quiz || !this.quiz.questions || !Array.isArray(this.quiz.questions)) {
+                    return 0;
+                }
+                return this.quiz.questions.filter((_, index) => this.isAnswered(index)).length;
+            }
+
+            startTimer() {
+                this.updateTimerDisplay();
+                
+                this.timer = setInterval(() => {
+                    this.timeRemaining--;
+                    this.updateTimerDisplay();
+                    
+                    if (this.timeRemaining <= 0) {
+                        this.timeUp();
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeRemaining / 60);
+                const seconds = this.timeRemaining % 60;
+                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('timeRemaining').textContent = timeString;
+                
+                const timerElement = document.getElementById('timer');
+                timerElement.classList.remove('warning', 'danger');
+                
+                if (this.timeRemaining <= 300) { // 5 minutes
+                    timerElement.classList.add('danger');
+                } else if (this.timeRemaining <= 600) { // 10 minutes
+                    timerElement.classList.add('warning');
+                }
+            }
+
+            timeUp() {
+                clearInterval(this.timer);
+                this.timer = null;
+                
+                uiManager.showToast('Hết thời gian làm bài! Bài sẽ được nộp tự động.', 'warning');
+                
+                setTimeout(() => {
+                    this.submitQuiz(true);
+                }, 2000);
+            }
+
+            showSubmitSection() {
+                document.getElementById('submitSection').style.display = 'block';
+                document.getElementById('submitSection').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            hideSubmitSection() {
+                document.getElementById('submitSection').style.display = 'none';
+            }
+
+            showSubmitConfirm() {
+                this.updateProgress();
+                
+                const answeredCount = this.getAnsweredCount();
+                const totalCount = this.quiz.questions.length;
+                const unansweredCount = totalCount - answeredCount;
+                
+                const statsText = unansweredCount > 0 ? 
+                    `Bạn còn ${unansweredCount} câu chưa trả lời.` : 
+                    'Bạn đã trả lời tất cả câu hỏi.';
+                
+                document.getElementById('modalStats').textContent = statsText;
+                
+                const minutes = Math.floor(this.timeRemaining / 60);
+                const seconds = this.timeRemaining % 60;
+                document.getElementById('modalTimeRemaining').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                uiManager.showModal('submitModal');
+            }
+
+            confirmSubmit() {
+                uiManager.hideModal(document.getElementById('submitModal'));
+                this.submitQuiz();
+            }
+
+            submitQuiz(autoSubmit = false) {
+                // Stop timer
+                if (this.timer) {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                }
+
+                // Stop auto-save
+                if (this.autoSaveTimer) {
+                    clearInterval(this.autoSaveTimer);
+                    this.autoSaveTimer = null;
+                }
+
+                // Calculate results (mock)
+                const totalQuestions = this.quiz.questions.length;
+                const answeredQuestions = this.getAnsweredCount();
+                const score = Math.round((answeredQuestions / totalQuestions) * 100);
+                const timeSpent = Math.round((new Date() - this.startTime) / 1000 / 60);
+
+                // Log submission
+                authManager.logActivity('Quiz Submitted', `Submitted quiz: ${this.quiz.title} (Score: ${score}%)`);
+
+                // Show loading
+                uiManager.showToast('Đang nộp bài...', 'info');
+
+                // Mock submission delay
+                setTimeout(() => {
+                    if (autoSubmit) {
+                        uiManager.showToast('Bài đã được nộp tự động do hết thời gian', 'warning');
+                    } else {
+                        uiManager.showToast('Nộp bài thành công!', 'success');
+                    }
+
+                    // Redirect to results
+                    setTimeout(() => {
+                        window.location.href = `quiz-results.html?id=${this.quiz.id}&score=${score}&time=${timeSpent}`;
+                    }, 2000);
+                }, 1500);
+            }
+
+            showInstructions() {
+                uiManager.showModal('instructionsModal');
+            }
+
+            startAutoSave() {
+                this.autoSaveTimer = setInterval(() => {
+                    // Mock auto-save
+                    console.log('Auto-saving answers...', this.userAnswers);
+                }, 30000); // Every 30 seconds
+            }
+
+            showAutoSaveIndicator() {
+                const indicator = document.getElementById('autosaveIndicator');
+                indicator.classList.add('show');
+                
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        // Initialize quiz attempt when DOM is loaded
+        let quizAttempt;
+        document.addEventListener('DOMContentLoaded', () => {
+            quizAttempt = new QuizAttempt();
+        });
+    </script>
+</body>
+</html> 

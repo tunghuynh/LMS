@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiến độ học tập | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .progress-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            border-left: 4px solid var(--primary-blue);
+            transition: transform 0.2s ease;
+        }
+
+        .progress-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .progress-card.courses {
+            border-left-color: var(--primary-blue);
+        }
+
+        .progress-card.time {
+            border-left-color: var(--accent-green);
+        }
+
+        .progress-card.quizzes {
+            border-left-color: #ff9800;
+        }
+
+        .progress-card.achievements {
+            border-left-color: #9c27b0;
+        }
+
+        .progress-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress-number {
+            font-size: var(--font-size-h1);
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .progress-card.time .progress-number {
+            color: var(--accent-green);
+        }
+
+        .progress-card.quizzes .progress-number {
+            color: #ff9800;
+        }
+
+        .progress-card.achievements .progress-number {
+            color: #9c27b0;
+        }
+
+        .progress-label {
+            font-size: var(--font-size-body);
+            color: #666;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .progress-change {
+            font-size: var(--font-size-small);
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .chart-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-light);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .chart-title {
+            font-size: var(--font-size-h3);
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .chart-filter {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .filter-btn {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: var(--font-size-small);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .chart-canvas {
+            max-height: 400px;
+        }
+
+        .detailed-progress {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .progress-header {
+            background: var(--light-gray);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-title {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .progress-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--light-gray);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: var(--font-size-body);
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+            background: var(--white);
+        }
+
+        .tab-content {
+            padding: var(--spacing-lg);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .course-progress-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-md);
+            transition: all 0.2s ease;
+        }
+
+        .course-progress-item:hover {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .course-thumbnail {
+            width: 80px;
+            height: 60px;
+            border-radius: var(--border-radius-sm);
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .course-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .course-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--dark-gray);
+        }
+
+        .course-instructor {
+            font-size: var(--font-size-small);
+            color: #666;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .course-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .course-progress {
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        .progress-percentage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .percentage-text {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .progress-fill {
+            background: var(--accent-green);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-details {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .course-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            align-items: flex-end;
+        }
+
+        .quiz-progress-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: var(--spacing-md);
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .quiz-progress-item:last-child {
+            border-bottom: none;
+        }
+
+        .quiz-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff9800;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .quiz-info {
+            min-width: 0;
+        }
+
+        .quiz-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .quiz-course {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .quiz-score {
+            text-align: center;
+        }
+
+        .score-number {
+            font-weight: bold;
+            font-size: var(--font-size-h3);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .score-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .quiz-date {
+            font-size: var(--font-size-small);
+            color: #666;
+            text-align: center;
+        }
+
+        .quiz-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .quiz-badge.excellent {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+        }
+
+        .quiz-badge.good {
+            background: rgba(44, 110, 170, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .quiz-badge.average {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .quiz-badge.poor {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .achievement-card {
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-card.earned {
+            border-color: var(--accent-green);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .achievement-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .achievement-desc {
+            font-size: var(--font-size-small);
+            color: #666;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .achievement-progress {
+            font-size: var(--font-size-small);
+            color: var(--primary-blue);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        @media (max-width: 1024px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .progress-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .course-progress-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .course-progress {
+                width: 100%;
+            }
+            
+            .quiz-progress-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: var(--spacing-sm);
+            }
+            
+            .achievements-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .progress-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">S</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Student</span>
+                    <span class="header-role" id="userRole">Sinh viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <div class="content-header">
+                <h1 class="content-title">📈 Tiến độ học tập</h1>
+                <p class="content-subtitle">Theo dõi quá trình học tập và thành tích của bạn</p>
+            </div>
+
+            <!-- Progress Overview -->
+            <div class="progress-overview">
+                <div class="progress-card courses">
+                    <div class="progress-icon">📚</div>
+                    <div class="progress-number" id="totalCourses">0</div>
+                    <div class="progress-label">Khóa học tham gia</div>
+                    <div class="progress-change">
+                        <span>↗</span> +1 khóa học tuần này
+                    </div>
+                </div>
+
+                <div class="progress-card time">
+                    <div class="progress-icon">⏱️</div>
+                    <div class="progress-number" id="totalHours">0h</div>
+                    <div class="progress-label">Tổng thời gian học</div>
+                    <div class="progress-change">
+                        <span>↗</span> +5h tuần này
+                    </div>
+                </div>
+
+                <div class="progress-card quizzes">
+                    <div class="progress-icon">🧪</div>
+                    <div class="progress-number" id="totalQuizzes">0</div>
+                    <div class="progress-label">Quiz đã hoàn thành</div>
+                    <div class="progress-change">
+                        <span>↗</span> +2 quiz tuần này
+                    </div>
+                </div>
+
+                <div class="progress-card achievements">
+                    <div class="progress-icon">🏆</div>
+                    <div class="progress-number" id="totalAchievements">0</div>
+                    <div class="progress-label">Thành tích đạt được</div>
+                    <div class="progress-change">
+                        <span>↗</span> +1 thành tích mới
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <!-- Progress Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Tiến độ học tập theo thời gian</h3>
+                        <div class="chart-filter">
+                            <button class="filter-btn active" data-period="7days" onclick="progressDashboard.changeChartPeriod('7days')">7 ngày</button>
+                            <button class="filter-btn" data-period="30days" onclick="progressDashboard.changeChartPeriod('30days')">30 ngày</button>
+                            <button class="filter-btn" data-period="90days" onclick="progressDashboard.changeChartPeriod('90days')">3 tháng</button>
+                        </div>
+                    </div>
+                    <canvas id="progressChart" class="chart-canvas"></canvas>
+                </div>
+
+                <!-- Activity Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Hoạt động học tập</h3>
+                    </div>
+                    <canvas id="activityChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Detailed Progress -->
+            <div class="detailed-progress">
+                <div class="progress-header">
+                    <h3 class="progress-title">Chi tiết tiến độ</h3>
+                    <div class="progress-actions">
+                        <button class="btn btn-secondary btn-small" onclick="progressDashboard.exportProgress()">
+                            📤 Xuất báo cáo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tabs-nav">
+                    <button class="tab-button active" data-tab="courses" onclick="progressDashboard.switchTab('courses')">
+                        📚 Khóa học
+                    </button>
+                    <button class="tab-button" data-tab="quizzes" onclick="progressDashboard.switchTab('quizzes')">
+                        🧪 Quiz
+                    </button>
+                    <button class="tab-button" data-tab="achievements" onclick="progressDashboard.switchTab('achievements')">
+                        🏆 Thành tích
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Courses Tab -->
+                    <div class="tab-panel active" id="courses">
+                        <div id="courseProgressList">
+                            <!-- Course progress items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Quizzes Tab -->
+                    <div class="tab-panel" id="quizzes">
+                        <div id="quizProgressList">
+                            <!-- Quiz progress items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Achievements Tab -->
+                    <div class="tab-panel" id="achievements">
+                        <div class="achievements-grid" id="achievementsList">
+                            <!-- Achievements will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class ProgressDashboard {
+            constructor() {
+                this.currentUser = null;
+                this.userProgress = null;
+                this.courses = [];
+                this.progressChart = null;
+                this.activityChart = null;
+                this.currentPeriod = '7days';
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication - only students can access this page
+                if (!authManager.checkPageAccess(['student'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.renderDashboard();
+                this.initCharts();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Responsive sidebar
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth > 768) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                        document.getElementById('content').classList.remove('sidebar-collapsed');
+                        document.getElementById('footer').classList.remove('sidebar-collapsed');
+                    }
+                });
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'S';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load courses data
+                    const coursesResponse = await fetch('data/mock-courses.json');
+                    const allCourses = await coursesResponse.json();
+                    
+                    // Get user progress
+                    this.userProgress = this.currentUser.progress || { courses: [], quizzes: [] };
+                    
+                    // Filter enrolled courses
+                    this.courses = allCourses.filter(course => 
+                        this.userProgress.courses.some(userCourse => userCourse.courseId === course.courseId)
+                    );
+
+                    // Enhance course data with user progress
+                    this.courses = this.courses.map(course => {
+                        const userCourse = this.userProgress.courses.find(uc => uc.courseId === course.courseId);
+                        return {
+                            ...course,
+                            userProgress: userCourse ? userCourse.completed : 0,
+                            enrolledAt: userCourse ? userCourse.enrolledAt : null,
+                            lessonsCompleted: Math.floor(course.lessons.length * (userCourse ? userCourse.completed : 0) / 100)
+                        };
+                    });
+
+                } catch (error) {
+                    console.error('Error loading progress data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu tiến độ', 'error');
+                }
+            }
+
+            renderDashboard() {
+                this.updateOverviewStats();
+                this.renderCourseProgress();
+                this.renderQuizProgress();
+                this.renderAchievements();
+            }
+
+            updateOverviewStats() {
+                // Total courses
+                document.getElementById('totalCourses').textContent = this.courses.length;
+
+                // Total hours (mock calculation)
+                const totalHours = this.courses.reduce((sum, course) => {
+                    const courseHours = parseInt(course.duration) || 0;
+                    const completionRate = course.userProgress / 100;
+                    return sum + (courseHours * completionRate);
+                }, 0);
+                document.getElementById('totalHours').textContent = Math.round(totalHours) + 'h';
+
+                // Total quizzes
+                document.getElementById('totalQuizzes').textContent = this.userProgress.quizzes.length;
+
+                // Total achievements (mock)
+                const totalAchievements = this.calculateAchievements();
+                document.getElementById('totalAchievements').textContent = totalAchievements;
+            }
+
+            renderCourseProgress() {
+                const container = document.getElementById('courseProgressList');
+                
+                if (this.courses.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📚</div>
+                            <p>Bạn chưa tham gia khóa học nào.</p>
+                            <a href="courses.html" class="btn btn-primary" style="margin-top: var(--spacing-md);">
+                                Khám phá khóa học
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const coursesHTML = this.courses.map(course => `
+                    <div class="course-progress-item">
+                        <div class="course-thumbnail">📚</div>
+                        <div class="course-info">
+                            <div class="course-name">${course.title}</div>
+                            <div class="course-instructor">👨‍🏫 ${course.instructor}</div>
+                            <div class="course-stats">
+                                <span>📖 ${course.lessonsCompleted}/${course.lessons.length} bài học</span>
+                                <span>⏱️ ${course.duration}</span>
+                                <span>📅 Tham gia: ${course.enrolledAt ? uiManager.formatDate(course.enrolledAt) : 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-percentage">
+                                <span>Tiến độ</span>
+                                <span class="percentage-text">${course.userProgress}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${course.userProgress}%"></div>
+                            </div>
+                            <div class="progress-details">
+                                ${course.userProgress === 100 ? 'Đã hoàn thành' : `Còn ${course.lessons.length - course.lessonsCompleted} bài học`}
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <a href="course-detail.html?id=${course.courseId}" class="btn btn-primary btn-small">
+                                ${course.userProgress > 0 ? 'Tiếp tục học' : 'Bắt đầu học'}
+                            </a>
+                            ${course.userProgress === 100 ? `
+                                <button class="btn btn-secondary btn-small" onclick="progressDashboard.viewCertificate('${course.courseId}')">
+                                    🏆 Chứng chỉ
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = coursesHTML;
+            }
+
+            renderQuizProgress() {
+                const container = document.getElementById('quizProgressList');
+                
+                if (this.userProgress.quizzes.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">🧪</div>
+                            <p>Bạn chưa hoàn thành quiz nào.</p>
+                            <a href="quizzes.html" class="btn btn-primary" style="margin-top: var(--spacing-md);">
+                                Làm quiz ngay
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const quizzesHTML = this.userProgress.quizzes.map(quiz => {
+                    const gradeClass = this.getGradeClass(quiz.score);
+                    const gradeText = this.getGradeText(quiz.score);
+                    
+                    return `
+                        <div class="quiz-progress-item">
+                            <div class="quiz-icon">🧪</div>
+                            <div class="quiz-info">
+                                <div class="quiz-name">${quiz.quizName}</div>
+                                <div class="quiz-course">Khóa học: ${this.getCourseNameById(quiz.courseId)}</div>
+                            </div>
+                            <div class="quiz-score">
+                                <div class="score-number" style="color: ${this.getScoreColor(quiz.score)}">${quiz.score}</div>
+                                <div class="score-label">/ 100 điểm</div>
+                            </div>
+                            <div class="quiz-date">
+                                ${uiManager.formatDate(quiz.takenAt)}
+                            </div>
+                            <div class="quiz-badge ${gradeClass}">
+                                ${gradeText}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = quizzesHTML;
+            }
+
+            renderAchievements() {
+                const container = document.getElementById('achievementsList');
+                
+                // Mock achievements data
+                const achievements = [
+                    {
+                        id: 'first_course',
+                        icon: '🎓',
+                        name: 'Người học tích cực',
+                        description: 'Hoàn thành khóa học đầu tiên',
+                        earned: this.courses.some(c => c.userProgress === 100),
+                        progress: this.courses.length > 0 ? 100 : 0
+                    },
+                    {
+                        id: 'quiz_master',
+                        icon: '🏆',
+                        name: 'Thủ khoa',
+                        description: 'Đạt điểm 100 trong quiz',
+                        earned: this.userProgress.quizzes.some(q => q.score === 100),
+                        progress: this.userProgress.quizzes.length > 0 ? 
+                            Math.max(...this.userProgress.quizzes.map(q => q.score)) : 0
+                    },
+                    {
+                        id: 'course_collector',
+                        icon: '📚',
+                        name: 'Học giả',
+                        description: 'Hoàn thành 5 khóa học',
+                        earned: this.courses.filter(c => c.userProgress === 100).length >= 5,
+                        progress: Math.min(this.courses.filter(c => c.userProgress === 100).length * 20, 100)
+                    },
+                    {
+                        id: 'speed_learner',
+                        icon: '⚡',
+                        name: 'Tốc độ ánh sáng',
+                        description: 'Hoàn thành khóa học trong 1 tuần',
+                        earned: this.courses.some(c => c.userProgress === 100), // Mock condition
+                        progress: this.courses.length > 0 ? 100 : 0
+                    },
+                    {
+                        id: 'consistent_learner',
+                        icon: '🔥',
+                        name: 'Chuỗi chiến thắng',
+                        description: 'Học liên tiếp 7 ngày',
+                        earned: true, // Mock condition
+                        progress: 100
+                    },
+                    {
+                        id: 'perfectionist',
+                        icon: '🎯',
+                        name: 'Người cầu toàn',
+                        description: 'Đạt 90% trong 3 quiz liên tiếp',
+                        earned: false,
+                        progress: this.userProgress.quizzes.filter(q => q.score >= 90).length * 33.33
+                    }
+                ];
+
+                const achievementsHTML = achievements.map(achievement => `
+                    <div class="achievement-card ${achievement.earned ? 'earned' : ''}">
+                        <div class="achievement-icon">${achievement.icon}</div>
+                        <div class="achievement-name">${achievement.name}</div>
+                        <div class="achievement-desc">${achievement.description}</div>
+                        <div class="achievement-progress">
+                            ${achievement.earned ? 
+                                '✅ Đã đạt được' : 
+                                `${Math.round(achievement.progress)}% hoàn thành`
+                            }
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = achievementsHTML;
+            }
+
+            initCharts() {
+                this.initProgressChart();
+                this.initActivityChart();
+            }
+
+            initProgressChart() {
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                
+                // Generate mock data for progress over time
+                const data = this.generateProgressData();
+                
+                this.progressChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Tiến độ học tập (%)',
+                            data: data.values,
+                            borderColor: '#2C6EAA',
+                            backgroundColor: 'rgba(44, 110, 170, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            initActivityChart() {
+                const ctx = document.getElementById('activityChart').getContext('2d');
+                
+                this.activityChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Bài học', 'Quiz', 'Đọc tài liệu'],
+                        datasets: [{
+                            data: [60, 25, 15],
+                            backgroundColor: [
+                                '#2C6EAA',
+                                '#4CAF50',
+                                '#FF9800'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            generateProgressData() {
+                const data = { labels: [], values: [] };
+                const days = this.currentPeriod === '7days' ? 7 : 
+                            this.currentPeriod === '30days' ? 30 : 90;
+                
+                for (let i = days - 1; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    
+                    if (days <= 7) {
+                        data.labels.push(date.toLocaleDateString('vi-VN', { weekday: 'short' }));
+                    } else if (days <= 30) {
+                        data.labels.push(date.getDate());
+                    } else {
+                        data.labels.push(date.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' }));
+                    }
+                    
+                    // Generate mock progress values
+                    const baseProgress = Math.min(60 + (days - i) * 2, 95);
+                    const randomVariation = Math.random() * 10 - 5;
+                    data.values.push(Math.max(0, Math.min(100, baseProgress + randomVariation)));
+                }
+                
+                return data;
+            }
+
+            changeChartPeriod(period) {
+                this.currentPeriod = period;
+                
+                // Update active button
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-period="${period}"]`).classList.add('active');
+                
+                // Update chart data
+                const newData = this.generateProgressData();
+                this.progressChart.data.labels = newData.labels;
+                this.progressChart.data.datasets[0].data = newData.values;
+                this.progressChart.update();
+            }
+
+            switchTab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+                // Update tab panels
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+            }
+
+            getCourseNameById(courseId) {
+                const course = this.courses.find(c => c.courseId === courseId);
+                return course ? course.title : 'Khóa học không xác định';
+            }
+
+            getGradeClass(score) {
+                if (score >= 90) return 'excellent';
+                if (score >= 80) return 'good';
+                if (score >= 60) return 'average';
+                return 'poor';
+            }
+
+            getGradeText(score) {
+                if (score >= 90) return 'Xuất sắc';
+                if (score >= 80) return 'Tốt';
+                if (score >= 60) return 'Trung bình';
+                return 'Cần cải thiện';
+            }
+
+            getScoreColor(score) {
+                if (score >= 90) return '#4CAF50';
+                if (score >= 80) return '#2C6EAA';
+                if (score >= 60) return '#FF9800';
+                return '#F44336';
+            }
+
+            calculateAchievements() {
+                let count = 0;
+                
+                // Check various achievement conditions
+                if (this.courses.some(c => c.userProgress === 100)) count++;
+                if (this.userProgress.quizzes.some(q => q.score === 100)) count++;
+                if (this.courses.filter(c => c.userProgress === 100).length >= 5) count++;
+                if (this.courses.length > 0) count++; // Speed learner mock
+                count++; // Consistent learner mock
+                
+                return count;
+            }
+
+            viewCertificate(courseId) {
+                const course = this.courses.find(c => c.courseId === courseId);
+                if (course) {
+                    uiManager.showToast(`Xem chứng chỉ cho khóa học: ${course.title}`, 'info');
+                }
+            }
+
+            exportProgress() {
+                uiManager.showToast('Đang xuất báo cáo tiến độ...', 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Xuất báo cáo thành công! File đã được tải xuống.', 'success');
+                }, 2000);
+            }
+        }
+
+        // Initialize progress dashboard when DOM is loaded
+        let progressDashboard;
+        document.addEventListener('DOMContentLoaded', () => {
+            progressDashboard = new ProgressDashboard();
+        });
+    </script>
+</body>
+</html> 

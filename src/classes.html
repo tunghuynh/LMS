@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý lớp học | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .page-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .class-selector {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .selector-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+
+        .class-info {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+        }
+
+        .class-info.show {
+            display: block;
+        }
+
+        .class-name {
+            font-size: var(--font-size-h2);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .class-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+        }
+
+        .class-stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-small);
+            opacity: 0.9;
+        }
+
+        .members-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: var(--light-gray);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .member-count {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .members-filters {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .members-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .members-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .members-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .members-table tr:hover {
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .member-details {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .member-id {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .progress-cell {
+            min-width: 120px;
+        }
+
+        .progress-bar-small {
+            width: 100%;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-green);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: var(--font-size-small);
+            color: #666;
+            text-align: center;
+        }
+
+        .status-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+        }
+
+        .status-badge.inactive {
+            background: rgba(158, 158, 158, 0.1);
+            color: #9e9e9e;
+        }
+
+        .action-btn {
+            padding: var(--spacing-xs);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+            margin-right: var(--spacing-xs);
+        }
+
+        .action-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .action-btn.remove {
+            color: #f44336;
+        }
+
+        .action-btn.message {
+            color: var(--primary-blue);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            max-width: 600px;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .student-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .student-item:hover {
+            background: var(--light-gray);
+        }
+
+        .student-item.selected {
+            background: rgba(44, 110, 170, 0.1);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .student-checkbox {
+            margin-right: var(--spacing-md);
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .student-email {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: flex-end;
+            margin-top: var(--spacing-lg);
+        }
+
+        .selected-count {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .selector-row {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .class-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .members-filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .members-table {
+                font-size: var(--font-size-small);
+            }
+            
+            .members-table th,
+            .members-table td {
+                padding: var(--spacing-sm);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .class-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">T</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Teacher</span>
+                    <span class="header-role" id="userRole">Giảng viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation will be populated based on user role -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">🏫 Quản lý lớp học</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="classManager.showCreateClassModal()">
+                        ➕ Tạo lớp mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Class Selector -->
+            <div class="class-selector">
+                <div class="selector-row">
+                    <div class="form-group">
+                        <label class="form-label">Chọn lớp học</label>
+                        <select id="classSelect" class="form-control">
+                            <option value="">Chọn lớp để quản lý</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" onclick="classManager.refreshClasses()">
+                        🔄 Làm mới
+                    </button>
+                    <button class="btn btn-primary" onclick="classManager.showAddStudentsModal()" id="addStudentsBtn" disabled>
+                        👥 Thêm học viên
+                    </button>
+                </div>
+            </div>
+
+            <!-- Class Info -->
+            <div class="class-info" id="classInfo">
+                <div class="class-name" id="className">Tên lớp học</div>
+                <div class="class-details">
+                    <div class="class-stat">
+                        <div class="stat-number" id="totalStudents">0</div>
+                        <div class="stat-label">Tổng học viên</div>
+                    </div>
+                    <div class="class-stat">
+                        <div class="stat-number" id="activeStudents">0</div>
+                        <div class="stat-label">Đang hoạt động</div>
+                    </div>
+                    <div class="class-stat">
+                        <div class="stat-number" id="avgProgress">0%</div>
+                        <div class="stat-label">Tiến độ trung bình</div>
+                    </div>
+                    <div class="class-stat">
+                        <div class="stat-number" id="avgScore">0</div>
+                        <div class="stat-label">Điểm trung bình</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Members Section -->
+            <div class="members-section">
+                <div class="section-header">
+                    <div class="section-title">Danh sách thành viên</div>
+                    <div class="member-count" id="memberCount">0 thành viên</div>
+                </div>
+
+                <div class="members-filters">
+                    <div class="form-group">
+                        <label class="form-label">Tìm kiếm thành viên</label>
+                        <input 
+                            type="text" 
+                            id="memberSearch" 
+                            class="form-control" 
+                            placeholder="Tìm theo tên, email..."
+                        >
+                    </div>
+                    <button class="btn btn-secondary" onclick="classManager.exportClassReport()" id="exportBtn" disabled>
+                        📤 Xuất báo cáo
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="members-table">
+                        <thead>
+                            <tr>
+                                <th>Học viên</th>
+                                <th>Email</th>
+                                <th>Tiến độ</th>
+                                <th>Điểm TB</th>
+                                <th>Trạng thái</th>
+                                <th>Tham gia</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="membersTableBody">
+                            <!-- Members will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Students Modal -->
+    <div class="modal" id="addStudentsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Thêm học viên vào lớp</h3>
+                <button class="modal-close" onclick="uiManager.hideModal(document.getElementById('addStudentsModal'))">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Tìm kiếm học viên</label>
+                    <input 
+                        type="text" 
+                        id="studentSearch" 
+                        class="form-control" 
+                        placeholder="Tìm theo tên, email..."
+                    >
+                </div>
+                
+                <div class="selected-count" id="selectedCount">
+                    Đã chọn: 0 học viên
+                </div>
+
+                <div class="student-list" id="studentList">
+                    <!-- Available students will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="uiManager.hideModal(document.getElementById('addStudentsModal'))">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-primary" onclick="classManager.addSelectedStudents()">
+                    Thêm học viên
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Class Modal -->
+    <div class="modal" id="createClassModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Tạo lớp học mới</h3>
+                <button class="modal-close" onclick="uiManager.hideModal(document.getElementById('createClassModal'))">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" id="createClassForm">
+                    <div class="form-group">
+                        <label class="form-label">Tên lớp học *</label>
+                        <input type="text" id="newClassName" class="form-control" required placeholder="Ví dụ: Lập trình Web 2024">
+                        <div class="form-error" id="newClassNameError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Mô tả lớp học</label>
+                        <textarea id="newClassDescription" class="form-control" rows="3" placeholder="Mô tả ngắn về lớp học..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Khóa học liên kết</label>
+                        <select id="newClassCourse" class="form-control">
+                            <option value="">Chọn khóa học (không bắt buộc)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="uiManager.hideModal(document.getElementById('createClassModal'))">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-primary" onclick="classManager.createClass()">
+                    Tạo lớp học
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class ClassManager {
+            constructor() {
+                this.currentUser = null;
+                this.classes = [];
+                this.selectedClass = null;
+                this.classMembers = [];
+                this.availableStudents = [];
+                this.selectedStudents = new Set();
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['admin', 'teacher'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.populateClassSelect();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Class selection
+                document.getElementById('classSelect').addEventListener('change', (e) => {
+                    this.selectClass(e.target.value);
+                });
+
+                // Member search
+                document.getElementById('memberSearch').addEventListener('input', () => {
+                    this.filterMembers();
+                });
+
+                // Student search in modal
+                document.getElementById('studentSearch').addEventListener('input', () => {
+                    this.filterAvailableStudents();
+                });
+
+                // Create class form
+                document.getElementById('createClassForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createClass();
+                });
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'U';
+                    document.getElementById('userRole').textContent = this.currentUser.role === 'admin' ? '👨‍💻 Quản trị viên' : '👨‍🏫 Giảng viên';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load users (for students)
+                    const users = await authManager.loadUsers();
+                    this.availableStudents = users.filter(user => user.role === 'student');
+                    
+                    // Load courses
+                    const coursesResponse = await fetch('data/mock-courses.json');
+                    const courses = await coursesResponse.json();
+                    
+                    // Populate course select
+                    const courseSelect = document.getElementById('newClassCourse');
+                    courseSelect.innerHTML = '<option value="">Chọn khóa học (không bắt buộc)</option>';
+                    courses.forEach(course => {
+                        courseSelect.innerHTML += `<option value="${course.courseId}">${course.title}</option>`;
+                    });
+
+                    // Load/create mock classes
+                    this.loadClasses();
+                    
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu', 'error');
+                }
+            }
+
+            loadClasses() {
+                // Load from localStorage or create mock data
+                const savedClasses = localStorage.getItem('classes');
+                if (savedClasses) {
+                    this.classes = JSON.parse(savedClasses);
+                } else {
+                    // Create mock classes
+                    this.classes = [
+                        {
+                            id: 1,
+                            name: 'Lập trình Web Frontend 2024',
+                            description: 'Lớp học về phát triển giao diện người dùng',
+                            courseId: 'course-001',
+                            createdAt: '2024-01-15',
+                            createdBy: this.currentUser.username,
+                            members: [1, 2, 3, 4, 5] // User IDs
+                        },
+                        {
+                            id: 2,
+                            name: 'Cấu trúc dữ liệu và Giải thuật',
+                            description: 'Lớp học về cấu trúc dữ liệu cơ bản',
+                            courseId: 'course-002',
+                            createdAt: '2024-02-01',
+                            createdBy: this.currentUser.username,
+                            members: [2, 4, 6, 8] // User IDs
+                        },
+                        {
+                            id: 3,
+                            name: 'Lập trình Python cơ bản',
+                            description: 'Học lập trình Python từ cơ bản',
+                            courseId: null,
+                            createdAt: '2024-03-01',
+                            createdBy: this.currentUser.username,
+                            members: [1, 3, 5, 7, 9] // User IDs
+                        }
+                    ];
+                    this.saveClasses();
+                }
+            }
+
+            saveClasses() {
+                localStorage.setItem('classes', JSON.stringify(this.classes));
+            }
+
+            populateClassSelect() {
+                const select = document.getElementById('classSelect');
+                select.innerHTML = '<option value="">Chọn lớp để quản lý</option>';
+                
+                this.classes.forEach(cls => {
+                    select.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
+                });
+            }
+
+            selectClass(classId) {
+                if (!classId) {
+                    this.selectedClass = null;
+                    document.getElementById('classInfo').classList.remove('show');
+                    document.getElementById('addStudentsBtn').disabled = true;
+                    document.getElementById('exportBtn').disabled = true;
+                    this.clearMembersTable();
+                    return;
+                }
+
+                this.selectedClass = this.classes.find(cls => cls.id == classId);
+                if (!this.selectedClass) return;
+
+                // Show class info
+                document.getElementById('classInfo').classList.add('show');
+                document.getElementById('addStudentsBtn').disabled = false;
+                document.getElementById('exportBtn').disabled = false;
+                
+                // Update class info
+                document.getElementById('className').textContent = this.selectedClass.name;
+                
+                // Load class members
+                this.loadClassMembers();
+            }
+
+            loadClassMembers() {
+                if (!this.selectedClass) return;
+
+                // Get member details from available students
+                this.classMembers = this.availableStudents.filter(student => 
+                    this.selectedClass.members.includes(student.id)
+                );
+
+                // Update statistics
+                const totalStudents = this.classMembers.length;
+                const activeStudents = Math.floor(totalStudents * 0.8); // Mock active count
+                const avgProgress = totalStudents > 0 ? Math.floor(Math.random() * 40 + 40) : 0; // Mock progress
+                const avgScore = totalStudents > 0 ? Math.floor(Math.random() * 20 + 70) : 0; // Mock score
+
+                document.getElementById('totalStudents').textContent = totalStudents;
+                document.getElementById('activeStudents').textContent = activeStudents;
+                document.getElementById('avgProgress').textContent = avgProgress + '%';
+                document.getElementById('avgScore').textContent = avgScore;
+
+                this.renderMembers();
+            }
+
+            renderMembers() {
+                const tbody = document.getElementById('membersTableBody');
+                document.getElementById('memberCount').textContent = `${this.classMembers.length} thành viên`;
+
+                if (this.classMembers.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <div class="empty-icon">👥</div>
+                                <p>Lớp học chưa có thành viên nào</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                const membersHTML = this.classMembers.map(member => {
+                    const progress = Math.floor(Math.random() * 50 + 30); // Mock progress
+                    const avgScore = Math.floor(Math.random() * 30 + 60); // Mock score
+                    const status = Math.random() > 0.2 ? 'active' : 'inactive';
+                    const statusText = status === 'active' ? 'Hoạt động' : 'Không hoạt động';
+                    const joinDate = new Date(2024, Math.floor(Math.random() * 3), Math.floor(Math.random() * 28) + 1);
+                    
+                    return `
+                        <tr>
+                            <td>
+                                <div class="member-info">
+                                    <div class="member-avatar">
+                                        ${member.fullName ? member.fullName.charAt(0).toUpperCase() : member.username.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div class="member-details">
+                                        <div class="member-name">${member.fullName || member.username}</div>
+                                        <div class="member-id">ID: ${member.id}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${member.email}</td>
+                            <td class="progress-cell">
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill" style="width: ${progress}%"></div>
+                                </div>
+                                <div class="progress-text">${progress}%</div>
+                            </td>
+                            <td>${avgScore}</td>
+                            <td>
+                                <span class="status-badge ${status}">${statusText}</span>
+                            </td>
+                            <td>${uiManager.formatDate(joinDate.toISOString())}</td>
+                            <td>
+                                <button class="action-btn message" onclick="classManager.sendMessage(${member.id})" title="Gửi tin nhắn">
+                                    💬
+                                </button>
+                                <button class="action-btn remove" onclick="classManager.removeMember(${member.id})" title="Xóa khỏi lớp">
+                                    🗑️
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.innerHTML = membersHTML;
+            }
+
+            filterMembers() {
+                const searchTerm = document.getElementById('memberSearch').value.toLowerCase();
+                
+                if (!searchTerm) {
+                    this.renderMembers();
+                    return;
+                }
+
+                const filteredMembers = this.classMembers.filter(member =>
+                    member.fullName?.toLowerCase().includes(searchTerm) ||
+                    member.username?.toLowerCase().includes(searchTerm) ||
+                    member.email?.toLowerCase().includes(searchTerm)
+                );
+
+                // Temporarily replace classMembers for rendering
+                const originalMembers = this.classMembers;
+                this.classMembers = filteredMembers;
+                this.renderMembers();
+                this.classMembers = originalMembers;
+            }
+
+            showAddStudentsModal() {
+                if (!this.selectedClass) return;
+
+                // Filter out students already in class
+                const availableStudents = this.availableStudents.filter(student => 
+                    !this.selectedClass.members.includes(student.id)
+                );
+
+                this.selectedStudents.clear();
+                this.renderAvailableStudents(availableStudents);
+                this.updateSelectedCount();
+                
+                uiManager.showModal('addStudentsModal');
+            }
+
+            renderAvailableStudents(students) {
+                const container = document.getElementById('studentList');
+                
+                if (students.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">👥</div>
+                            <p>Không có học viên nào khả dụng</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const studentsHTML = students.map(student => `
+                    <div class="student-item" onclick="classManager.toggleStudent(${student.id})">
+                        <input type="checkbox" class="student-checkbox" id="student-${student.id}">
+                        <div class="student-info">
+                            <div class="student-name">${student.fullName || student.username}</div>
+                            <div class="student-email">${student.email}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = studentsHTML;
+            }
+
+            filterAvailableStudents() {
+                const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+                const availableStudents = this.availableStudents.filter(student => 
+                    !this.selectedClass.members.includes(student.id)
+                );
+
+                if (!searchTerm) {
+                    this.renderAvailableStudents(availableStudents);
+                    return;
+                }
+
+                const filteredStudents = availableStudents.filter(student =>
+                    student.fullName?.toLowerCase().includes(searchTerm) ||
+                    student.username?.toLowerCase().includes(searchTerm) ||
+                    student.email?.toLowerCase().includes(searchTerm)
+                );
+
+                this.renderAvailableStudents(filteredStudents);
+            }
+
+            toggleStudent(studentId) {
+                const checkbox = document.getElementById(`student-${studentId}`);
+                const item = checkbox.closest('.student-item');
+                
+                if (this.selectedStudents.has(studentId)) {
+                    this.selectedStudents.delete(studentId);
+                    checkbox.checked = false;
+                    item.classList.remove('selected');
+                } else {
+                    this.selectedStudents.add(studentId);
+                    checkbox.checked = true;
+                    item.classList.add('selected');
+                }
+                
+                this.updateSelectedCount();
+            }
+
+            updateSelectedCount() {
+                document.getElementById('selectedCount').textContent = 
+                    `Đã chọn: ${this.selectedStudents.size} học viên`;
+            }
+
+            addSelectedStudents() {
+                if (this.selectedStudents.size === 0) {
+                    uiManager.showToast('Vui lòng chọn ít nhất một học viên', 'warning');
+                    return;
+                }
+
+                // Add selected students to class
+                this.selectedStudents.forEach(studentId => {
+                    if (!this.selectedClass.members.includes(studentId)) {
+                        this.selectedClass.members.push(studentId);
+                    }
+                });
+
+                // Save changes
+                this.saveClasses();
+                
+                // Reload class members
+                this.loadClassMembers();
+                
+                // Close modal
+                uiManager.hideModal(document.getElementById('addStudentsModal'));
+                
+                uiManager.showToast(`Đã thêm ${this.selectedStudents.size} học viên vào lớp`, 'success');
+            }
+
+            removeMember(memberId) {
+                const member = this.classMembers.find(m => m.id === memberId);
+                if (!member) return;
+
+                uiManager.showConfirm(
+                    `Bạn có chắc muốn xóa "${member.fullName || member.username}" khỏi lớp?`,
+                    () => {
+                        // Remove from class members
+                        this.selectedClass.members = this.selectedClass.members.filter(id => id !== memberId);
+                        
+                        // Save changes
+                        this.saveClasses();
+                        
+                        // Reload class members
+                        this.loadClassMembers();
+                        
+                        uiManager.showToast('Đã xóa học viên khỏi lớp', 'success');
+                    }
+                );
+            }
+
+            sendMessage(memberId) {
+                const member = this.classMembers.find(m => m.id === memberId);
+                if (!member) return;
+                
+                this.showMessageModal(member);
+            }
+
+            showMessageModal(member) {
+                const modalHtml = `
+                    <div class="modal-overlay" id="messageModal">
+                        <div class="modal-container" style="max-width: 600px;">
+                            <div class="modal-header">
+                                <h3>💬 Gửi tin nhắn</h3>
+                                <button class="modal-close" onclick="document.getElementById('messageModal').remove()">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="recipient-info">
+                                    <div class="recipient-avatar">👤</div>
+                                    <div class="recipient-details">
+                                        <h4>${member.fullName || member.username}</h4>
+                                        <p>${member.email}</p>
+                                        <span class="badge ${member.role}">${member.role}</span>
+                                    </div>
+                                </div>
+
+                                <form id="messageForm">
+                                    <div class="form-group">
+                                        <label class="form-label">📧 Chủ đề</label>
+                                        <input type="text" class="form-control" id="messageSubject" placeholder="Nhập chủ đề tin nhắn...">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">💭 Nội dung</label>
+                                        <textarea class="form-control" id="messageContent" rows="6" placeholder="Nhập nội dung tin nhắn..."></textarea>
+                                    </div>
+
+                                    <div class="message-templates">
+                                        <label class="form-label">📝 Mẫu tin nhắn nhanh:</label>
+                                        <div class="template-buttons">
+                                            <button type="button" class="btn btn-sm btn-secondary" onclick="classManager.applyTemplate('reminder')">
+                                                ⏰ Nhắc nhở bài tập
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-secondary" onclick="classManager.applyTemplate('congratulation')">
+                                                🎉 Chúc mừng
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-secondary" onclick="classManager.applyTemplate('feedback')">
+                                                📝 Góp ý
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="message-options">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="markAsImportant"> Đánh dấu quan trọng
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="requestReadReceipt"> Yêu cầu xác nhận đã đọc
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" onclick="document.getElementById('messageModal').remove()">
+                                    Hủy
+                                </button>
+                                <button class="btn btn-success" onclick="classManager.sendMessage('${member.id}')">
+                                    📤 Gửi tin nhắn
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            }
+
+            applyTemplate(templateType) {
+                const templates = {
+                    reminder: {
+                        subject: 'Nhắc nhở hoàn thành bài tập',
+                        content: 'Chào bạn,\n\nTôi muốn nhắc nhở bạn về bài tập đã được giao. Vui lòng hoàn thành và nộp bài trước hạn chót.\n\nNếu có thắc mắc gì, đừng ngần ngại liên hệ với tôi.\n\nTrân trọng!'
+                    },
+                    congratulation: {
+                        subject: 'Chúc mừng thành tích xuất sắc!',
+                        content: 'Chào bạn,\n\nTôi muốn chúc mừng bạn về thành tích xuất sắc trong khóa học. Kết quả của bạn thật đáng ngưỡng mộ!\n\nHãy tiếp tục phát huy và duy trì phong độ này nhé.\n\nChúc mừng!'
+                    },
+                    feedback: {
+                        subject: 'Góp ý về bài làm',
+                        content: 'Chào bạn,\n\nTôi đã xem xét bài làm của bạn và có một số góp ý:\n\n- [Điểm tốt]: ...\n- [Cần cải thiện]: ...\n- [Gợi ý]: ...\n\nHy vọng những góp ý này sẽ giúp bạn cải thiện trong những lần tiếp theo.\n\nTrân trọng!'
+                    }
+                };
+
+                const template = templates[templateType];
+                if (template) {
+                    document.getElementById('messageSubject').value = template.subject;
+                    document.getElementById('messageContent').value = template.content;
+                }
+            }
+
+            sendMessage(memberId) {
+                const subject = document.getElementById('messageSubject').value.trim();
+                const content = document.getElementById('messageContent').value.trim();
+
+                if (!subject || !content) {
+                    uiManager.showToast('Vui lòng nhập đầy đủ chủ đề và nội dung', 'error');
+                    return;
+                }
+
+                // Mock sending message
+                uiManager.showToast('Đang gửi tin nhắn...', 'info');
+
+                setTimeout(() => {
+                    const member = this.classMembers.find(m => m.id === memberId);
+                    
+                    // Save to localStorage (mock)
+                    const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+                    const newMessage = {
+                        id: Date.now(),
+                        from: this.currentUser.id,
+                        to: memberId,
+                        subject: subject,
+                        content: content,
+                        timestamp: new Date().toISOString(),
+                        isImportant: document.getElementById('markAsImportant').checked,
+                        readReceipt: document.getElementById('requestReadReceipt').checked,
+                        status: 'sent'
+                    };
+                    
+                    messages.push(newMessage);
+                    localStorage.setItem('messages', JSON.stringify(messages));
+
+                    document.getElementById('messageModal').remove();
+                    uiManager.showToast(`Đã gửi tin nhắn cho ${member.fullName || member.username}`, 'success');
+                }, 1500);
+            }
+
+            showCreateClassModal() {
+                document.getElementById('createClassForm').reset();
+                document.getElementById('newClassNameError').style.display = 'none';
+                uiManager.showModal('createClassModal');
+            }
+
+            createClass() {
+                const name = document.getElementById('newClassName').value.trim();
+                const description = document.getElementById('newClassDescription').value.trim();
+                const courseId = document.getElementById('newClassCourse').value;
+
+                // Validation
+                if (!name) {
+                    document.getElementById('newClassNameError').textContent = 'Vui lòng nhập tên lớp học';
+                    document.getElementById('newClassNameError').style.display = 'block';
+                    return;
+                }
+
+                // Create new class
+                const newClass = {
+                    id: Date.now(),
+                    name: name,
+                    description: description,
+                    courseId: courseId || null,
+                    createdAt: new Date().toISOString().split('T')[0],
+                    createdBy: this.currentUser.username,
+                    members: []
+                };
+
+                this.classes.push(newClass);
+                this.saveClasses();
+                this.populateClassSelect();
+                
+                uiManager.hideModal(document.getElementById('createClassModal'));
+                uiManager.showToast('Tạo lớp học thành công!', 'success');
+            }
+
+            exportClassReport() {
+                if (!this.selectedClass) return;
+                
+                uiManager.showToast('Đang xuất báo cáo lớp học...', 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Xuất báo cáo thành công! File đã được tải xuống.', 'success');
+                }, 2000);
+            }
+
+            refreshClasses() {
+                this.loadClasses();
+                this.populateClassSelect();
+                uiManager.showToast('Đã làm mới danh sách lớp học', 'success');
+            }
+
+            clearMembersTable() {
+                document.getElementById('membersTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <div class="empty-icon">🏫</div>
+                            <p>Vui lòng chọn lớp học để xem thành viên</p>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('memberCount').textContent = '0 thành viên';
+            }
+        }
+
+        // Initialize class manager when DOM is loaded
+        let classManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            classManager = new ClassManager();
+        });
+    </script>
+</body>
+</html> 
+

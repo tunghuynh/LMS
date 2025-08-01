@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý đăng ký | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .page-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        /* Student View */
+        .enrollment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .course-enrollment-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .course-enrollment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .course-header {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            position: relative;
+        }
+
+        .enrollment-status {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .enrollment-status.enrolled {
+            background: rgba(76, 175, 80, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .enrollment-status.pending {
+            background: rgba(255, 152, 0, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .enrollment-status.available {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .course-title {
+            font-size: var(--font-size-h3);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .course-instructor {
+            font-size: var(--font-size-small);
+            opacity: 0.9;
+        }
+
+        .course-content {
+            padding: var(--spacing-lg);
+        }
+
+        .course-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .course-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .enrollment-progress {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-small);
+        }
+
+        .progress-bar {
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--accent-green);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        /* Teacher/Admin View */
+        .filters-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr 200px 200px 200px auto;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .stat-card.pending {
+            border-left-color: #ff9800;
+        }
+
+        .stat-card.approved {
+            border-left-color: var(--accent-green);
+        }
+
+        .stat-card.rejected {
+            border-left-color: #f44336;
+        }
+
+        .stat-number {
+            font-size: var(--font-size-h2);
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-card.pending .stat-number {
+            color: #ff9800;
+        }
+
+        .stat-card.approved .stat-number {
+            color: var(--accent-green);
+        }
+
+        .stat-card.rejected .stat-number {
+            color: #f44336;
+        }
+
+        .stat-label {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .enrollments-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .enrollments-header {
+            background: var(--light-gray);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .enrollments-title {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .enrollments-count {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .enrollments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .enrollments-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-gray);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .enrollments-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .enrollments-table tr:hover {
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .student-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .student-details {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .student-email {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .status-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .status-badge.approved {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+        }
+
+        .status-badge.rejected {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            padding: var(--spacing-xs);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+            margin-right: var(--spacing-xs);
+        }
+
+        .action-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .action-btn.approve {
+            color: var(--accent-green);
+        }
+
+        .action-btn.reject {
+            color: #f44336;
+        }
+
+        .action-btn.view {
+            color: var(--primary-blue);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .pagination-container {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .pagination-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal styles */
+        .modal-content {
+            max-width: 500px;
+        }
+
+        .course-info-section {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .course-info-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .course-info-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .enrollment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .course-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .course-actions {
+                flex-direction: column;
+            }
+            
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">T</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Teacher</span>
+                    <span class="header-role" id="userRole">Giảng viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Navigation will be populated based on user role -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" id="pageTitle">📝 Quản lý đăng ký</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="enrollmentManager.refreshData()" id="refreshBtn">
+                        🔄 Làm mới
+                    </button>
+                    <button class="btn btn-primary" onclick="enrollmentManager.exportReport()" id="exportBtn" style="display: none;">
+                        📤 Xuất báo cáo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Student View -->
+            <div id="studentView" style="display: none;">
+                <div class="enrollment-grid" id="availableCourses">
+                    <!-- Available courses will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Teacher/Admin View -->
+            <div id="teacherView" style="display: none;">
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalEnrollments">0</div>
+                        <div class="stat-label">Tổng đăng ký</div>
+                    </div>
+                    <div class="stat-card pending">
+                        <div class="stat-number" id="pendingEnrollments">0</div>
+                        <div class="stat-label">Chờ duyệt</div>
+                    </div>
+                    <div class="stat-card approved">
+                        <div class="stat-number" id="approvedEnrollments">0</div>
+                        <div class="stat-label">Đã duyệt</div>
+                    </div>
+                    <div class="stat-card rejected">
+                        <div class="stat-number" id="rejectedEnrollments">0</div>
+                        <div class="stat-label">Từ chối</div>
+                    </div>
+                </div>
+
+                <!-- Filters Section -->
+                <div class="filters-section">
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label class="form-label">Tìm kiếm</label>
+                            <input 
+                                type="text" 
+                                id="searchInput" 
+                                class="form-control" 
+                                placeholder="Tìm theo tên học viên, email..."
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Khóa học</label>
+                            <select id="courseFilter" class="form-control">
+                                <option value="">Tất cả khóa học</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Trạng thái</label>
+                            <select id="statusFilter" class="form-control">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="pending">Chờ duyệt</option>
+                                <option value="approved">Đã duyệt</option>
+                                <option value="rejected">Từ chối</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Thời gian</label>
+                            <input type="date" id="dateFilter" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-secondary" onclick="enrollmentManager.clearFilters()">
+                                🔄 Xóa bộ lọc
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enrollments Table -->
+                <div class="enrollments-container">
+                    <div class="enrollments-header">
+                        <div class="enrollments-title">Danh sách đăng ký</div>
+                        <div class="enrollments-count" id="enrollmentsCount">Tổng: 0 đăng ký</div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="enrollments-table">
+                            <thead>
+                                <tr>
+                                    <th>Học viên</th>
+                                    <th>Khóa học</th>
+                                    <th>Ngày đăng ký</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="enrollmentsTableBody">
+                                <!-- Enrollments will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-info" id="paginationInfo">
+                            Hiển thị 1-10 trong tổng số 0 kết quả
+                        </div>
+                        <div class="pagination-controls" id="paginationControls">
+                            <!-- Pagination buttons will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Enrollment Modal -->
+    <div class="modal" id="enrollmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Đăng ký khóa học</h3>
+                <button class="modal-close" onclick="uiManager.hideModal(document.getElementById('enrollmentModal'))">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="course-info-section">
+                    <div class="course-info-title" id="modalCourseTitle">Tên khóa học</div>
+                    <div class="course-info-meta">
+                        <div><strong>Giảng viên:</strong> <span id="modalCourseInstructor">-</span></div>
+                        <div><strong>Thời lượng:</strong> <span id="modalCourseDuration">-</span></div>
+                        <div><strong>Cấp độ:</strong> <span id="modalCourseLevel">-</span></div>
+                        <div><strong>Giá:</strong> <span id="modalCoursePrice">-</span></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Lý do đăng ký</label>
+                    <textarea 
+                        id="enrollmentReason" 
+                        class="form-control" 
+                        rows="4" 
+                        placeholder="Vui lòng chia sẻ lý do bạn muốn tham gia khóa học này..."
+                    ></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="uiManager.hideModal(document.getElementById('enrollmentModal'))">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-primary" onclick="enrollmentManager.submitEnrollment()">
+                    Đăng ký khóa học
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class EnrollmentManager {
+            constructor() {
+                this.currentUser = null;
+                this.courses = [];
+                this.enrollments = [];
+                this.filteredEnrollments = [];
+                this.currentPage = 1;
+                this.enrollmentsPerPage = 10;
+                this.selectedCourse = null;
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['student', 'teacher', 'admin'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.renderView();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Filters (for teacher/admin view)
+                const searchInput = document.getElementById('searchInput');
+                const courseFilter = document.getElementById('courseFilter');
+                const statusFilter = document.getElementById('statusFilter');
+                const dateFilter = document.getElementById('dateFilter');
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', () => this.filterEnrollments());
+                }
+                if (courseFilter) {
+                    courseFilter.addEventListener('change', () => this.filterEnrollments());
+                }
+                if (statusFilter) {
+                    statusFilter.addEventListener('change', () => this.filterEnrollments());
+                }
+                if (dateFilter) {
+                    dateFilter.addEventListener('change', () => this.filterEnrollments());
+                }
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userRole').textContent = this.currentUser.role === 'admin' ? '👨‍💻 Quản trị viên' : (this.currentUser.role === 'teacher' ? '👨‍🏫 Giảng viên' : '👨‍🎓 Học viên');
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'U';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load courses
+                    const coursesResponse = await fetch('data/mock-courses.json');
+                    this.courses = await coursesResponse.json();
+
+                    // Load enrollments data based on user role
+                    if (this.currentUser.role === 'student') {
+                        await this.loadStudentData();
+                    } else {
+                        await this.loadTeacherData();
+                    }
+
+                } catch (error) {
+                    console.error('Error loading enrollment data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu đăng ký', 'error');
+                }
+            }
+
+            async loadStudentData() {
+                // Get student's enrolled courses
+                const enrolledCourseIds = this.currentUser.progress?.courses?.map(c => c.courseId) || [];
+                
+                // Filter available courses
+                this.courses = this.courses.filter(course => !enrolledCourseIds.includes(course.courseId));
+            }
+
+            async loadTeacherData() {
+                // Filter courses taught by this teacher
+                if (this.currentUser.role === 'teacher') {
+                    this.courses = this.courses.filter(course => course.instructor === this.currentUser.username);
+                }
+
+                // Generate mock enrollment data
+                this.generateMockEnrollments();
+                this.filteredEnrollments = [...this.enrollments];
+
+                // Populate course filter
+                const courseFilter = document.getElementById('courseFilter');
+                if (courseFilter) {
+                    courseFilter.innerHTML = '<option value="">Tất cả khóa học</option>';
+                    this.courses.forEach(course => {
+                        courseFilter.innerHTML += `<option value="${course.courseId}">${course.title}</option>`;
+                    });
+                }
+            }
+
+            generateMockEnrollments() {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const students = users.filter(user => user.role === 'student');
+                
+                this.enrollments = [];
+                
+                this.courses.forEach(course => {
+                    // Generate random number of enrollments per course
+                    const enrollmentCount = Math.floor(Math.random() * 8) + 2;
+                    const selectedStudents = this.shuffleArray([...students]).slice(0, enrollmentCount);
+                    
+                    selectedStudents.forEach(student => {
+                        this.enrollments.push({
+                            id: `enroll_${course.courseId}_${student.id}`,
+                            studentId: student.id,
+                            studentName: student.fullName || student.username,
+                            studentEmail: student.email,
+                            courseId: course.courseId,
+                            courseName: course.title,
+                            enrolledAt: this.getRandomDate(),
+                            status: this.getRandomStatus(),
+                            reason: this.getRandomReason()
+                        });
+                    });
+                });
+
+                // Sort by date (newest first)
+                this.enrollments.sort((a, b) => new Date(b.enrolledAt) - new Date(a.enrolledAt));
+            }
+
+            renderView() {
+                if (this.currentUser.role === 'student') {
+                    this.renderStudentView();
+                } else {
+                    this.renderTeacherView();
+                }
+            }
+
+            renderStudentView() {
+                document.getElementById('pageTitle').textContent = '📝 Đăng ký khóa học';
+                document.getElementById('studentView').style.display = 'block';
+                document.getElementById('teacherView').style.display = 'none';
+
+                this.renderAvailableCourses();
+            }
+
+            renderAvailableCourses() {
+                const container = document.getElementById('availableCourses');
+                
+                if (this.courses.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1;" class="empty-state">
+                            <div class="empty-icon">🎓</div>
+                            <p>Bạn đã đăng ký tất cả các khóa học có sẵn!</p>
+                            <a href="courses.html" class="btn btn-primary" style="margin-top: var(--spacing-md);">
+                                Xem khóa học đã đăng ký
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const coursesHTML = this.courses.map(course => {
+                    // Get enrollment status (mock)
+                    const enrollmentStatus = 'available'; // Can be 'enrolled', 'pending', 'available'
+                    const progress = 0; // For enrolled courses
+                    
+                    return `
+                        <div class="course-enrollment-card">
+                            <div class="course-header">
+                                <div class="enrollment-status ${enrollmentStatus}">
+                                    ${this.getStatusText(enrollmentStatus)}
+                                </div>
+                                <h3 class="course-title">${course.title}</h3>
+                                <div class="course-instructor">👨‍🏫 ${course.instructor}</div>
+                            </div>
+                            <div class="course-content">
+                                <div class="course-meta">
+                                    <div class="meta-item">
+                                        <span>⏱️</span> ${course.duration}
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>🏷️</span> ${course.level}
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>👥</span> ${course.studentsEnrolled} học viên
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>⭐</span> ${course.rating}
+                                    </div>
+                                </div>
+                                
+                                <div class="course-description">
+                                    ${course.description}
+                                </div>
+                                
+                                ${enrollmentStatus === 'enrolled' ? `
+                                    <div class="enrollment-progress">
+                                        <div class="progress-label">
+                                            <span>Tiến độ học tập</span>
+                                            <span>${progress}%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: ${progress}%"></div>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="course-actions">
+                                    ${this.renderCourseActions(course, enrollmentStatus)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = coursesHTML;
+            }
+
+            renderCourseActions(course, status) {
+                switch (status) {
+                    case 'enrolled':
+                        return `
+                            <a href="course-detail.html?id=${course.courseId}" class="btn btn-primary">
+                                📚 Vào học
+                            </a>
+                            <a href="course-detail.html?id=${course.courseId}" class="btn btn-secondary">
+                                📊 Xem tiến độ
+                            </a>
+                        `;
+                    case 'pending':
+                        return `
+                            <button class="btn btn-secondary" disabled>
+                                ⏳ Đang chờ duyệt
+                            </button>
+                            <button class="btn btn-secondary" onclick="enrollmentManager.cancelEnrollment('${course.courseId}')">
+                                ❌ Hủy đăng ký
+                            </button>
+                        `;
+                    case 'available':
+                    default:
+                        return `
+                            <button class="btn btn-primary" onclick="enrollmentManager.showEnrollmentModal('${course.courseId}')">
+                                📝 Đăng ký ngay
+                            </button>
+                            <a href="course-detail.html?id=${course.courseId}" class="btn btn-secondary">
+                                👀 Xem chi tiết
+                            </a>
+                        `;
+                }
+            }
+
+            renderTeacherView() {
+                document.getElementById('pageTitle').textContent = '👥 Quản lý đăng ký học viên';
+                document.getElementById('studentView').style.display = 'none';
+                document.getElementById('teacherView').style.display = 'block';
+                document.getElementById('exportBtn').style.display = 'block';
+
+                this.updateStats();
+                this.renderEnrollments();
+            }
+
+            updateStats() {
+                const total = this.enrollments.length;
+                const pending = this.enrollments.filter(e => e.status === 'pending').length;
+                const approved = this.enrollments.filter(e => e.status === 'approved').length;
+                const rejected = this.enrollments.filter(e => e.status === 'rejected').length;
+
+                document.getElementById('totalEnrollments').textContent = total;
+                document.getElementById('pendingEnrollments').textContent = pending;
+                document.getElementById('approvedEnrollments').textContent = approved;
+                document.getElementById('rejectedEnrollments').textContent = rejected;
+            }
+
+            filterEnrollments() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const courseFilter = document.getElementById('courseFilter').value;
+                const statusFilter = document.getElementById('statusFilter').value;
+                const dateFilter = document.getElementById('dateFilter').value;
+
+                this.filteredEnrollments = this.enrollments.filter(enrollment => {
+                    const matchesSearch = !searchTerm || 
+                        enrollment.studentName.toLowerCase().includes(searchTerm) ||
+                        enrollment.studentEmail.toLowerCase().includes(searchTerm);
+                    
+                    const matchesCourse = !courseFilter || enrollment.courseId === courseFilter;
+                    const matchesStatus = !statusFilter || enrollment.status === statusFilter;
+                    
+                    const matchesDate = !dateFilter || enrollment.enrolledAt.startsWith(dateFilter);
+
+                    return matchesSearch && matchesCourse && matchesStatus && matchesDate;
+                });
+
+                this.currentPage = 1;
+                this.renderEnrollments();
+            }
+
+            clearFilters() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('courseFilter').value = '';
+                document.getElementById('statusFilter').value = '';
+                document.getElementById('dateFilter').value = '';
+                this.filterEnrollments();
+            }
+
+            renderEnrollments() {
+                const tbody = document.getElementById('enrollmentsTableBody');
+                const startIndex = (this.currentPage - 1) * this.enrollmentsPerPage;
+                const endIndex = startIndex + this.enrollmentsPerPage;
+                const pageEnrollments = this.filteredEnrollments.slice(startIndex, endIndex);
+
+                // Update count
+                document.getElementById('enrollmentsCount').textContent = `Tổng: ${this.filteredEnrollments.length} đăng ký`;
+
+                if (pageEnrollments.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div class="empty-icon">📝</div>
+                                <p>Không tìm thấy đăng ký nào</p>
+                            </td>
+                        </tr>
+                    `;
+                    this.renderPagination();
+                    return;
+                }
+
+                const enrollmentsHTML = pageEnrollments.map(enrollment => `
+                    <tr>
+                        <td>
+                            <div class="student-info">
+                                <div class="student-avatar">
+                                    ${enrollment.studentName.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="student-details">
+                                    <div class="student-name">${enrollment.studentName}</div>
+                                    <div class="student-email">${enrollment.studentEmail}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${enrollment.courseName}</td>
+                        <td>${uiManager.formatDate(enrollment.enrolledAt)}</td>
+                        <td>
+                            <span class="status-badge ${enrollment.status}">
+                                ${this.getStatusText(enrollment.status)}
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            ${enrollment.status === 'pending' ? `
+                                <button class="action-btn approve" onclick="enrollmentManager.approveEnrollment('${enrollment.id}')" title="Duyệt">
+                                    ✅
+                                </button>
+                                <button class="action-btn reject" onclick="enrollmentManager.rejectEnrollment('${enrollment.id}')" title="Từ chối">
+                                    ❌
+                                </button>
+                            ` : ''}
+                            <button class="action-btn view" onclick="enrollmentManager.viewEnrollmentDetail('${enrollment.id}')" title="Xem chi tiết">
+                                👁️
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                tbody.innerHTML = enrollmentsHTML;
+                this.renderPagination();
+            }
+
+            renderPagination() {
+                const totalPages = Math.ceil(this.filteredEnrollments.length / this.enrollmentsPerPage);
+                const startIndex = (this.currentPage - 1) * this.enrollmentsPerPage + 1;
+                const endIndex = Math.min(startIndex + this.enrollmentsPerPage - 1, this.filteredEnrollments.length);
+
+                // Update pagination info
+                document.getElementById('paginationInfo').textContent = 
+                    `Hiển thị ${startIndex}-${endIndex} trong tổng số ${this.filteredEnrollments.length} kết quả`;
+
+                // Update pagination controls
+                const controls = document.getElementById('paginationControls');
+                let paginationHTML = '';
+
+                // Previous button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} 
+                            onclick="enrollmentManager.goToPage(${this.currentPage - 1})">
+                        ‹ Trước
+                    </button>
+                `;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= this.currentPage - 2 && i <= this.currentPage + 2)) {
+                        paginationHTML += `
+                            <button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" 
+                                    onclick="enrollmentManager.goToPage(${i})">
+                                ${i}
+                            </button>
+                        `;
+                    } else if (i === this.currentPage - 3 || i === this.currentPage + 3) {
+                        paginationHTML += '<span class="pagination-ellipsis">...</span>';
+                    }
+                }
+
+                // Next button
+                paginationHTML += `
+                    <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} 
+                            onclick="enrollmentManager.goToPage(${this.currentPage + 1})">
+                        Sau ›
+                    </button>
+                `;
+
+                controls.innerHTML = paginationHTML;
+            }
+
+            goToPage(page) {
+                const totalPages = Math.ceil(this.filteredEnrollments.length / this.enrollmentsPerPage);
+                if (page >= 1 && page <= totalPages) {
+                    this.currentPage = page;
+                    this.renderEnrollments();
+                }
+            }
+
+            showEnrollmentModal(courseId) {
+                const course = this.courses.find(c => c.courseId === courseId);
+                if (!course) return;
+
+                this.selectedCourse = course;
+
+                // Populate modal
+                document.getElementById('modalCourseTitle').textContent = course.title;
+                document.getElementById('modalCourseInstructor').textContent = course.instructor;
+                document.getElementById('modalCourseDuration').textContent = course.duration;
+                document.getElementById('modalCourseLevel').textContent = course.level;
+                document.getElementById('modalCoursePrice').textContent = course.price === 0 ? 'Miễn phí' : course.price.toLocaleString() + ' VNĐ';
+                document.getElementById('enrollmentReason').value = '';
+
+                uiManager.showModal('enrollmentModal');
+            }
+
+            submitEnrollment() {
+                if (!this.selectedCourse) return;
+
+                const reason = document.getElementById('enrollmentReason').value.trim();
+                
+                if (!reason) {
+                    uiManager.showToast('Vui lòng nhập lý do đăng ký', 'warning');
+                    return;
+                }
+
+                // Mock enrollment submission
+                uiManager.showToast('Đã gửi yêu cầu đăng ký thành công! Chờ giảng viên duyệt.', 'success');
+                
+                // Create enrollment record
+                const newEnrollment = {
+                    id: Date.now(),
+                    courseId: this.selectedCourse.courseId,
+                    courseName: this.selectedCourse.title,
+                    studentId: this.currentUser.id,
+                    studentName: this.currentUser.fullName || this.currentUser.username,
+                    status: 'pending',
+                    reason: reason,
+                    requestDate: new Date().toISOString(),
+                    instructor: this.selectedCourse.instructor
+                };
+
+                // Save enrollment request
+                const enrollments = JSON.parse(localStorage.getItem('enrollmentRequests') || '[]');
+                enrollments.push(newEnrollment);
+                localStorage.setItem('enrollmentRequests', JSON.stringify(enrollments));
+
+                // Log activity
+                authManager.logActivity('Course Enrollment Request', `Requested enrollment for course: ${this.selectedCourse.title}`);
+                
+                // Close modal and refresh
+                uiManager.hideModal(document.getElementById('enrollmentModal'));
+                
+                // Remove course from available list (since it's now pending)
+                this.courses = this.courses.filter(c => c.courseId !== this.selectedCourse.courseId);
+                this.renderAvailableCourses();
+            }
+
+            approveEnrollment(enrollmentId) {
+                const enrollment = this.enrollments.find(e => e.id === enrollmentId);
+                if (!enrollment) return;
+
+                uiManager.showConfirm(
+                    `Bạn có chắc muốn duyệt đăng ký của ${enrollment.studentName}?`,
+                    () => {
+                        enrollment.status = 'approved';
+                        this.updateStats();
+                        this.renderEnrollments();
+                        uiManager.showToast(`Đã duyệt đăng ký của ${enrollment.studentName}`, 'success');
+                        
+                        // Log activity
+                        authManager.logActivity('Enrollment Approved', `Approved enrollment for ${enrollment.studentName} in course: ${enrollment.courseName}`);
+                    }
+                );
+            }
+
+            rejectEnrollment(enrollmentId) {
+                const enrollment = this.enrollments.find(e => e.id === enrollmentId);
+                if (!enrollment) return;
+
+                uiManager.showConfirm(
+                    `Bạn có chắc muốn từ chối đăng ký của ${enrollment.studentName}?`,
+                    () => {
+                        enrollment.status = 'rejected';
+                        this.updateStats();
+                        this.renderEnrollments();
+                        uiManager.showToast(`Đã từ chối đăng ký của ${enrollment.studentName}`, 'success');
+                        
+                        // Log activity
+                        authManager.logActivity('Enrollment Rejected', `Rejected enrollment for ${enrollment.studentName} in course: ${enrollment.courseName}`);
+                    }
+                );
+            }
+
+            viewEnrollmentDetail(enrollmentId) {
+                const enrollment = this.enrollments.find(e => e.id === enrollmentId);
+                if (!enrollment) return;
+
+                uiManager.showToast(`Xem chi tiết đăng ký: ${enrollment.studentName} - ${enrollment.courseName}`, 'info');
+            }
+
+            cancelEnrollment(courseId) {
+                uiManager.showConfirm(
+                    'Bạn có chắc muốn hủy đăng ký khóa học này?',
+                    () => {
+                        uiManager.showToast('Đã hủy đăng ký khóa học', 'success');
+                        // Logic to handle cancellation
+                    }
+                );
+            }
+
+            exportReport() {
+                uiManager.showToast('Đang xuất báo cáo đăng ký...', 'info');
+                setTimeout(() => {
+                    uiManager.showToast('Xuất báo cáo thành công! File đã được tải xuống.', 'success');
+                }, 2000);
+            }
+
+            refreshData() {
+                this.loadData().then(() => {
+                    this.renderView();
+                    uiManager.showToast('Đã làm mới dữ liệu', 'success');
+                });
+            }
+
+            getStatusText(status) {
+                const statusMap = {
+                    'pending': 'Chờ duyệt',
+                    'approved': 'Đã duyệt',
+                    'rejected': 'Từ chối',
+                    'enrolled': 'Đã đăng ký',
+                    'available': 'Có thể đăng ký'
+                };
+                return statusMap[status] || status;
+            }
+
+            getRandomStatus() {
+                const statuses = ['pending', 'approved', 'rejected'];
+                const weights = [0.4, 0.5, 0.1]; // 40% pending, 50% approved, 10% rejected
+                const random = Math.random();
+                let sum = 0;
+                
+                for (let i = 0; i < weights.length; i++) {
+                    sum += weights[i];
+                    if (random <= sum) {
+                        return statuses[i];
+                    }
+                }
+                return statuses[0];
+            }
+
+            getRandomReason() {
+                const reasons = [
+                    "Muốn nâng cao kỹ năng chuyên môn",
+                    "Cần kiến thức cho công việc hiện tại",
+                    "Quan tâm đến lĩnh vực này",
+                    "Được giới thiệu bởi bạn bè",
+                    "Muốn chuyển đổi nghề nghiệp"
+                ];
+                return reasons[Math.floor(Math.random() * reasons.length)];
+            }
+
+            getRandomDate() {
+                const start = new Date(2024, 0, 1);
+                const end = new Date();
+                return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString();
+            }
+
+            shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+
+            approveEnrollment(enrollmentId) {
+                uiManager.showConfirm(
+                    'Bạn có chắc muốn duyệt đăng ký này?',
+                    () => {
+                        this.updateEnrollmentStatus(enrollmentId, 'approved');
+                    }
+                );
+            }
+
+            denyEnrollment(enrollmentId) {
+                uiManager.showConfirm(
+                    'Bạn có chắc muốn từ chối đăng ký này?',
+                    () => {
+                        this.updateEnrollmentStatus(enrollmentId, 'denied');
+                    }
+                );
+            }
+
+            updateEnrollmentStatus(enrollmentId, status) {
+                const enrollments = JSON.parse(localStorage.getItem('enrollmentRequests') || '[]');
+                const enrollmentIndex = enrollments.findIndex(e => e.id === enrollmentId);
+                
+                if (enrollmentIndex === -1) return;
+
+                const enrollment = enrollments[enrollmentIndex];
+                enrollment.status = status;
+                enrollment.reviewedDate = new Date().toISOString();
+                enrollment.reviewedBy = this.currentUser.username;
+
+                // If approved, add to user's courses
+                if (status === 'approved') {
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const userIndex = users.findIndex(u => u.id === enrollment.studentId);
+                    
+                    if (userIndex !== -1) {
+                        if (!users[userIndex].progress) users[userIndex].progress = { courses: [], quizzes: [] };
+                        if (!users[userIndex].progress.courses) users[userIndex].progress.courses = [];
+                        
+                        // Check if already enrolled
+                        const alreadyEnrolled = users[userIndex].progress.courses.some(c => c.courseId === enrollment.courseId);
+                        
+                        if (!alreadyEnrolled) {
+                            users[userIndex].progress.courses.push({
+                                courseId: enrollment.courseId,
+                                courseName: enrollment.courseName,
+                                enrolledAt: new Date().toISOString(),
+                                completed: 0
+                            });
+                            
+                            localStorage.setItem('users', JSON.stringify(users));
+                        }
+                    }
+                }
+
+                // Update enrollment record
+                enrollments[enrollmentIndex] = enrollment;
+                localStorage.setItem('enrollmentRequests', JSON.stringify(enrollments));
+
+                // Reload data
+                this.loadEnrollments();
+                this.renderEnrollments();
+
+                const statusText = status === 'approved' ? 'duyệt' : 'từ chối';
+                uiManager.showToast(`Đã ${statusText} đăng ký thành công!`, 'success');
+                
+                authManager.logActivity('Enrollment Review', 
+                    `${status === 'approved' ? 'Approved' : 'Denied'} enrollment for ${enrollment.courseName}`);
+            }
+
+            viewEnrollmentDetails(enrollmentId) {
+                const enrollment = this.enrollments.find(e => e.id === enrollmentId);
+                if (!enrollment) return;
+
+                const course = this.courses.find(c => c.courseId === enrollment.courseId);
+                const statusBadge = this.getStatusBadge(enrollment.status);
+                
+                const modalContent = `
+                    <div style="padding: var(--spacing-lg);">
+                        <h3 style="margin-bottom: var(--spacing-lg);">Chi tiết đăng ký</h3>
+                        
+                        <div style="display: grid; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+                            <div><strong>Khóa học:</strong> ${enrollment.courseName}</div>
+                            <div><strong>Học viên:</strong> ${enrollment.studentName}</div>
+                            <div><strong>Trạng thái:</strong> ${statusBadge}</div>
+                            <div><strong>Ngày đăng ký:</strong> ${new Date(enrollment.requestDate).toLocaleDateString('vi-VN')}</div>
+                            ${enrollment.reviewedDate ? `<div><strong>Ngày duyệt:</strong> ${new Date(enrollment.reviewedDate).toLocaleDateString('vi-VN')}</div>` : ''}
+                            ${enrollment.reviewedBy ? `<div><strong>Người duyệt:</strong> ${enrollment.reviewedBy}</div>` : ''}
+                        </div>
+
+                        <div style="margin-bottom: var(--spacing-lg);">
+                            <strong>Lý do đăng ký:</strong>
+                            <div style="background: var(--light-gray); padding: var(--spacing-md); border-radius: var(--border-radius-md); margin-top: var(--spacing-sm);">
+                                ${enrollment.reason}
+                            </div>
+                        </div>
+
+                        ${this.currentUser.role === 'teacher' && enrollment.status === 'pending' ? `
+                            <div style="display: flex; gap: var(--spacing-md); justify-content: center;">
+                                <button class="btn btn-accent" onclick="enrollmentManager.approveEnrollment(${enrollment.id}); uiManager.hideModal('alertModal');">
+                                    ✅ Duyệt đăng ký
+                                </button>
+                                <button class="btn btn-danger" onclick="enrollmentManager.denyEnrollment(${enrollment.id}); uiManager.hideModal('alertModal');">
+                                    ❌ Từ chối
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                uiManager.showModal('alertModal', 'Chi tiết đăng ký', modalContent);
+            }
+
+            exportEnrollmentData() {
+                const data = this.enrollments.map(enrollment => ({
+                    'Khóa học': enrollment.courseName,
+                    'Học viên': enrollment.studentName,
+                    'Trạng thái': this.getStatusText(enrollment.status),
+                    'Ngày đăng ký': new Date(enrollment.requestDate).toLocaleDateString('vi-VN'),
+                    'Lý do': enrollment.reason,
+                    'Người duyệt': enrollment.reviewedBy || '',
+                    'Ngày duyệt': enrollment.reviewedDate ? new Date(enrollment.reviewedDate).toLocaleDateString('vi-VN') : ''
+                }));
+
+                const csvContent = this.convertToCSV(data);
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `enrollment_data_${new Date().toISOString().split('T')[0]}.csv`;
+                link.click();
+
+                uiManager.showToast('Đã xuất dữ liệu đăng ký thành công!', 'success');
+                authManager.logActivity('Data Export', 'Exported enrollment data');
+            }
+
+            convertToCSV(objArray) {
+                const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+                let str = '';
+                
+                // Add BOM for UTF-8
+                str = '\uFEFF';
+                
+                // Headers
+                const headers = Object.keys(array[0]);
+                str += headers.join(',') + '\r\n';
+                
+                // Data
+                for (let i = 0; i < array.length; i++) {
+                    let line = '';
+                    for (let index in array[i]) {
+                        if (line !== '') line += ',';
+                        line += '"' + (array[i][index] || '').toString().replace(/"/g, '""') + '"';
+                    }
+                    str += line + '\r\n';
+                }
+                
+                return str;
+            }
+
+            getStatusText(status) {
+                const statusMap = {
+                    'pending': 'Chờ duyệt',
+                    'approved': 'Đã duyệt',
+                    'denied': 'Từ chối'
+                };
+                return statusMap[status] || status;
+            }
+        }
+
+        // Initialize enrollment manager when DOM is loaded
+        let enrollmentManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            enrollmentManager = new EnrollmentManager();
+        });
+    </script>
+</body>
+</html> 

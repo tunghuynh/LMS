@@ -1,0 +1,26 @@
+# Images Folder
+
+Thư mục này chứa các hình ảnh cho hệ thống E-Learning:
+
+## Course Thumbnails
+- course-101.png (Lập trình cơ bản)
+- course-102.png (Cấu trúc dữ liệu)  
+- course-103.png (Phát triển Web)
+- course-104.png (Cơ sở dữ liệu)
+- course-105.png (Machine Learning)
+
+## User Avatars
+- avatar-student01.png
+- avatar-student02.png
+- avatar-student03.png
+- avatar-teacher01.png
+- avatar-teacher02.png
+- avatar-admin01.png
+- avatar-default.png
+
+## System Images
+- logo.png
+- hero-banner.jpg
+- no-image.png
+
+**Lưu ý:** Các file này là placeholder. Trong production, cần thay thế bằng hình ảnh thật. 

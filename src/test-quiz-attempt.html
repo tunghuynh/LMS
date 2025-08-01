@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Quiz Attempt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-link {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            background: #2C6EAA;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .test-link:hover {
+            background: #1e5a94;
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Quiz Attempt</h1>
+    
+    <div class="info">
+        <h3>📋 Hướng dẫn test:</h3>
+        <p>1. Nhấp vào link để test quiz-attempt.html với different quizId</p>
+        <p>2. Mở Developer Console (F12) để xem logs</p>
+        <p>3. Kiểm tra xem có lỗi promise nào không</p>
+        <p>4. Test các function như next/prev/clear answer</p>
+    </div>
+
+    <div class="warning">
+        <h3>⚠️ Lưu ý:</h3>
+        <p>Quiz có timer nên sẽ tự động submit sau khi hết thời gian!</p>
+    </div>
+
+    <h3>🎯 Test Links:</h3>
+    
+    <a href="quiz-attempt.html?id=quiz1" class="test-link">
+        📝 Test Quiz 1 (JavaScript - 2 câu hỏi - 30 phút)
+    </a>
+    
+    <a href="quiz-attempt.html?id=quiz2" class="test-link">
+        🎨 Test Quiz 2 (UI/UX - 1 câu hỏi - 25 phút)
+    </a>
+    
+    <a href="quiz-attempt.html?id=nonexistent" class="test-link">
+        ❌ Test Quiz không tồn tại (Demo fallback)
+    </a>
+    
+    <a href="quiz-attempt.html?id=undefined" class="test-link">
+        ⚠️ Test undefined quizId (Fallback quiz)
+    </a>
+    
+    <a href="quiz-attempt.html" class="test-link">
+        🔗 Test không có quizId (URL error)
+    </a>
+
+    <div class="info">
+        <h3>🔍 Những gì cần kiểm tra:</h3>
+        <ul>
+            <li>✅ Quiz header hiển thị đúng thông tin</li>
+            <li>✅ Không có lỗi Promise</li>
+            <li>✅ Navigation grid render được</li>
+            <li>✅ Question content hiển thị</li>
+            <li>✅ Answer options clickable</li>
+            <li>✅ Timer đếm ngược</li>
+            <li>✅ Next/Prev buttons hoạt động</li>
+            <li>✅ Clear answer function</li>
+            <li>✅ Flag question function</li>
+            <li>✅ Progress indicator</li>
+            <li>✅ Console không có lỗi</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <h3>📚 Expected Quiz Content:</h3>
+        <ul>
+            <li><strong>quiz1:</strong> JavaScript Quiz (2 questions, 30 min)</li>
+            <li><strong>quiz2:</strong> UI/UX Quiz (1 question, 25 min)</li>
+            <li><strong>Demo Quiz:</strong> Fallback quiz (1 question, 15 min)</li>
+            <li><strong>Fallback Quiz:</strong> Error fallback (1 question, 10 min)</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <h3>🎮 Test Scenarios:</h3>
+        <ol>
+            <li><strong>Normal Flow:</strong> Answer questions → Submit</li>
+            <li><strong>Navigation:</strong> Jump between questions using grid</li>
+            <li><strong>Flag Questions:</strong> Mark questions for review</li>
+            <li><strong>Clear Answers:</strong> Remove selected answers</li>
+            <li><strong>Time Management:</strong> Watch timer countdown</li>
+            <li><strong>Auto-save:</strong> Answers should save automatically</li>
+        </ol>
+    </div>
+
+    <script>
+        // Setup mock user data for testing
+        const mockUser = {
+            id: 'user1',
+            username: 'testuser',
+            fullName: 'Test User', 
+            email: 'test@example.com',
+            role: 'student',
+            progress: {
+                courses: [
+                    {
+                        courseId: 'course1',
+                        courseName: 'Lập trình JavaScript',
+                        enrolledAt: new Date().toISOString(),
+                        completed: 75,
+                        lessonsCompleted: ['js1', 'js2']
+                    }
+                ],
+                quizzes: []
+            }
+        };
+
+        // Save mock user to localStorage
+        localStorage.setItem('currentUser', JSON.stringify(mockUser));
+        
+        console.log('✅ Mock user data saved to localStorage');
+        console.log('Current user:', mockUser);
+        
+        // Also ensure course and quiz data exist
+        if (!localStorage.getItem('courses')) {
+            const mockCourses = [
+                {
+                    courseId: 'course1',
+                    title: 'Lập trình JavaScript cơ bản',
+                    description: 'Học JavaScript từ cơ bản đến nâng cao'
+                },
+                {
+                    courseId: 'course2',
+                    title: 'Thiết kế UI/UX',
+                    description: 'Học thiết kế giao diện người dùng'
+                }
+            ];
+            localStorage.setItem('courses', JSON.stringify(mockCourses));
+            console.log('✅ Mock course data saved');
+        }
+    </script>
+</body>
+</html> 

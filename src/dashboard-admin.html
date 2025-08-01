@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Quản trị viên | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .admin-welcome {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .admin-subtitle {
+            opacity: 0.9;
+            font-size: var(--font-size-body);
+        }
+
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .status-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            border-left: 4px solid var(--accent-green);
+            transition: transform 0.2s ease;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .status-card.warning {
+            border-left-color: #ff9800;
+        }
+
+        .status-card.error {
+            border-left-color: #f44336;
+        }
+
+        .status-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--dark-gray);
+        }
+
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-green);
+        }
+
+        .status-card.warning .status-value {
+            color: #ff9800;
+        }
+
+        .status-card.error .status-value {
+            color: #f44336;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            transition: transform 0.2s ease;
+            text-align: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: var(--font-size-body);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-trend {
+            font-size: var(--font-size-small);
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .action-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .action-title {
+            font-weight: 600;
+            font-size: var(--font-size-h3);
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .action-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .action-item:hover {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .action-info {
+            flex: 1;
+        }
+
+        .action-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .action-desc {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .recent-activities {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.user { background: var(--primary-blue); }
+        .activity-icon.course { background: var(--accent-green); }
+        .activity-icon.system { background: #ff9800; }
+        .activity-icon.security { background: #f44336; }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .activity-desc {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .activity-time {
+            font-size: var(--font-size-small);
+            color: #999;
+            flex-shrink: 0;
+        }
+
+        .chart-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .admin-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .system-status {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">A</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Admin</span>
+                    <span class="header-role" id="userRole">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <!-- Admin Header -->
+            <div class="admin-header">
+                <div class="admin-welcome">Chào mừng, Admin!</div>
+                <div class="admin-subtitle">Bảng điều khiển quản trị hệ thống E-Learning</div>
+            </div>
+
+            <!-- System Status -->
+            <div class="system-status">
+                <div class="status-card">
+                    <div class="status-title">Trạng thái hệ thống</div>
+                    <div class="status-value">Hoạt động bình thường</div>
+                </div>
+                <div class="status-card">
+                    <div class="status-title">Server Uptime</div>
+                    <div class="status-value">99.9%</div>
+                </div>
+                <div class="status-card warning">
+                    <div class="status-title">Bộ nhớ sử dụng</div>
+                    <div class="status-value">75%</div>
+                </div>
+                <div class="status-card">
+                    <div class="status-title">Backup gần nhất</div>
+                    <div class="status-value">2 giờ trước</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-number" id="totalUsers">156</div>
+                    <div class="stat-label">Tổng người dùng</div>
+                    <div class="stat-trend">
+                        <span>↗</span> +12 người dùng tuần này
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-number" id="totalCourses">24</div>
+                    <div class="stat-label">Tổng khóa học</div>
+                    <div class="stat-trend">
+                        <span>↗</span> +3 khóa học tháng này
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🧪</div>
+                    <div class="stat-number" id="totalQuizzes">89</div>
+                    <div class="stat-label">Tổng Quiz</div>
+                    <div class="stat-trend">
+                        <span>↗</span> +8 quiz tuần này
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-number" id="activeUsers">128</div>
+                    <div class="stat-label">Người dùng hoạt động</div>
+                    <div class="stat-trend">
+                        <span>↗</span> +5% so với tuần trước
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Actions -->
+            <div class="admin-actions">
+                <!-- User Management -->
+                <div class="action-section">
+                    <h3 class="action-title">
+                        <span>👥</span> Quản lý người dùng
+                    </h3>
+                    <div class="action-list">
+                        <div class="action-item">
+                            <div class="action-info">
+                                <div class="action-name">Thêm người dùng mới</div>
+                                <div class="action-desc">Tạo tài khoản cho học viên/giảng viên</div>
+                            </div>
+                            <a href="users.html" class="btn btn-primary btn-small">Quản lý</a>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-info">
+                                <div class="action-name">Phân quyền hệ thống</div>
+                                <div class="action-desc">Cấu hình quyền chi tiết theo role</div>
+                            </div>
+                            <a href="permissions.html" class="btn btn-secondary btn-small">Phân quyền</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Management -->
+                <div class="action-section">
+                    <h3 class="action-title">
+                        <span>📚</span> Quản lý nội dung
+                    </h3>
+                    <div class="action-list">
+                        <div class="action-item">
+                            <div class="action-info">
+                                <div class="action-name">Duyệt khóa học mới</div>
+                                <div class="action-desc">Xem xét và phê duyệt khóa học</div>
+                            </div>
+                            <a href="courses.html" class="btn btn-primary btn-small">Duyệt</a>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-info">
+                                <div class="action-name">Quản lý danh mục</div>
+                                <div class="action-desc">Thêm/sửa danh mục khóa học</div>
+                            </div>
+                            <a href="categories.html" class="btn btn-secondary btn-small">Quản lý</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Management -->
+                <div class="action-section">
+                    <h3 class="action-title">
+                        <span>⚙️</span> Quản lý hệ thống
+                    </h3>
+                    <div class="action-list">
+                        <div class="action-item">
+                            <div class="action-info">
+                                <div class="action-name">Cấu hình hệ thống</div>
+                                <div class="action-desc">Thay đổi cài đặt chung</div>
+                            </div>
+                            <a href="settings.html" class="btn btn-primary btn-small">Cài đặt</a>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-info">
+                                <div class="action-name">Sao lưu dữ liệu</div>
+                                <div class="action-desc">Tạo backup toàn bộ hệ thống</div>
+                            </div>
+                            <button class="btn btn-secondary btn-small" onclick="adminDashboard.createBackup()">Backup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="chart-container">
+                <h3 style="margin-bottom: var(--spacing-md);">Thống kê truy cập hệ thống</h3>
+                <div class="chart-placeholder">
+                    📊 Biểu đồ thống kê sẽ được hiển thị ở đây (Chart.js)
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="recent-activities">
+                <h3 style="margin-bottom: var(--spacing-md);">Hoạt động gần đây</h3>
+                <div id="recentActivities">
+                    <!-- Activities will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        class AdminDashboard {
+            constructor() {
+                this.currentUser = null;
+                this.systemStats = {};
+                this.activities = [];
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication
+                if (!authManager.checkPageAccess(['admin'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.renderDashboard();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Responsive sidebar
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth > 768) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                        document.getElementById('content').classList.remove('sidebar-collapsed');
+                        document.getElementById('footer').classList.remove('sidebar-collapsed');
+                    }
+                });
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'A';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load users
+                    const usersResponse = await fetch('data/mock-users.json');
+                    const users = await usersResponse.json();
+                    
+                    // Load courses
+                    const coursesResponse = await fetch('data/mock-courses.json');
+                    const courses = await coursesResponse.json();
+                    
+                    // Load quizzes
+                    const quizzesResponse = await fetch('data/mock-quizzes.json');
+                    const quizzes = await quizzesResponse.json();
+
+                    // Load activity logs
+                    const logsResponse = await fetch('data/mock-logs.json');
+                    const logs = await logsResponse.json();
+
+                    // Calculate stats
+                    this.systemStats = {
+                        totalUsers: users.length,
+                        totalCourses: courses.length,
+                        totalQuizzes: quizzes.length,
+                        activeUsers: users.filter(u => u.role !== 'admin').length,
+                        studentsCount: users.filter(u => u.role === 'student').length,
+                        teachersCount: users.filter(u => u.role === 'teacher').length
+                    };
+
+                    // Get recent activities
+                    this.activities = logs.slice(-10).reverse();
+
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu', 'error');
+                }
+            }
+
+            renderDashboard() {
+                this.updateStats();
+                this.renderRecentActivities();
+            }
+
+            updateStats() {
+                // Update dashboard numbers
+                document.getElementById('totalUsers').textContent = this.systemStats.totalUsers;
+                document.getElementById('totalCourses').textContent = this.systemStats.totalCourses;
+                document.getElementById('totalQuizzes').textContent = this.systemStats.totalQuizzes;
+                document.getElementById('activeUsers').textContent = this.systemStats.activeUsers;
+            }
+
+            renderRecentActivities() {
+                const container = document.getElementById('recentActivities');
+                
+                if (this.activities.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">Chưa có hoạt động nào.</p>';
+                    return;
+                }
+
+                const activitiesHTML = this.activities.map(activity => {
+                    let iconClass = 'user';
+                    let icon = '👤';
+                    
+                    if (activity.action.includes('Course') || activity.action.includes('Lesson')) {
+                        iconClass = 'course';
+                        icon = '📚';
+                    } else if (activity.action.includes('Quiz')) {
+                        iconClass = 'course';
+                        icon = '🧪';
+                    } else if (activity.action.includes('System') || activity.action.includes('Backup')) {
+                        iconClass = 'system';
+                        icon = '⚙️';
+                    } else if (activity.action.includes('Login') || activity.action.includes('Password')) {
+                        iconClass = 'security';
+                        icon = '🔐';
+                    }
+                    
+                    return `
+                        <div class="activity-item">
+                            <div class="activity-icon ${iconClass}">
+                                ${icon}
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">${activity.user} - ${activity.action}</div>
+                                <div class="activity-desc">${activity.description}</div>
+                            </div>
+                            <div class="activity-time">${uiManager.formatDateTime(activity.timestamp)}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = activitiesHTML;
+            }
+
+            createBackup() {
+                uiManager.showConfirm(
+                    'Bạn có chắc muốn tạo bản sao lưu hệ thống? Quá trình này có thể mất vài phút.',
+                    () => {
+                        // Show loading
+                        uiManager.showToast('Đang tạo bản sao lưu...', 'info', 5000);
+                        
+                        // Simulate backup process
+                        setTimeout(() => {
+                            uiManager.showToast('Tạo bản sao lưu thành công!', 'success');
+                            
+                            // Log the backup activity
+                            authManager.logActivity('System Backup', 'Manual system backup created by admin');
+                        }, 3000);
+                    }
+                );
+            }
+        }
+
+        // Initialize dashboard when DOM is loaded
+        let adminDashboard;
+        document.addEventListener('DOMContentLoaded', () => {
+            adminDashboard = new AdminDashboard();
+        });
+    </script>
+
+    <!-- Components -->
+    <script src="js/components/menu-manager.js"></script>
+</body>
+</html> 

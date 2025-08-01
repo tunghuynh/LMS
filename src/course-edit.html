@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa Khóa học - E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+
+        
+        .course-edit-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+
+        .course-edit-header {
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .course-edit-title {
+            font-size: var(--font-size-h1);
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .course-edit-tabs {
+            display: flex;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: var(--spacing-md);
+            background: none;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-light);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-xl);
+        }
+
+        .form-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .form-section h3 {
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .thumbnail-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail-upload:hover {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .thumbnail-upload.has-image {
+            border-style: solid;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .thumbnail-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: var(--border-radius-md);
+        }
+
+        .upload-placeholder {
+            color: #666;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Lesson Management */
+        .lessons-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+        }
+
+        .lessons-header {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lesson-item {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .lesson-item:last-child {
+            border-bottom: none;
+        }
+
+        .lesson-handle {
+            cursor: move;
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .lesson-meta {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .lesson-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        /* Lesson Modal */
+        .lesson-form {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .content-type-selector {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .content-type-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .content-type-btn.active {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .content-editor {
+            display: none;
+        }
+
+        .content-editor.active {
+            display: block;
+        }
+
+        /* Course Settings */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .setting-card {
+            background: var(--light-gray);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+        }
+
+        .setting-card h4 {
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        /* Preview */
+        .course-preview {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+        }
+
+        .preview-header {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .preview-body {
+            padding: var(--spacing-lg);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            position: sticky;
+            bottom: 0;
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .course-edit-tabs {
+                flex-direction: column;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">T</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Teacher</span>
+                    <span class="header-role" id="userRole">Giảng viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="course-edit-container">
+                <!-- Header -->
+                <div class="course-edit-header">
+                    <h1 class="course-edit-title" id="pageTitle">📝 Tạo khóa học mới</h1>
+                    <p style="color: #666;">Tạo và quản lý nội dung khóa học của bạn một cách dễ dàng.</p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="course-edit-tabs">
+                    <button class="tab-btn active" onclick="courseEditor.showTab('basic')">
+                        📝 Thông tin cơ bản
+                    </button>
+                    <button class="tab-btn" onclick="courseEditor.showTab('content')">
+                        📚 Nội dung bài học
+                    </button>
+                    <button class="tab-btn" onclick="courseEditor.showTab('settings')">
+                        ⚙️ Cài đặt
+                    </button>
+                    <button class="tab-btn" onclick="courseEditor.showTab('preview')">
+                        👁️ Xem trước
+                    </button>
+                </div>
+
+                <!-- Basic Info Tab -->
+                <div id="basicContent" class="tab-content active">
+                    <div class="form-grid">
+                        <div class="main-form">
+                            <div class="form-section">
+                                <h3>📝 Thông tin khóa học</h3>
+                                <div class="form-group">
+                                    <label class="form-label">Tên khóa học *</label>
+                                    <input type="text" id="courseTitle" class="form-control" 
+                                           placeholder="Nhập tên khóa học..." required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Mô tả ngắn</label>
+                                    <textarea id="courseDescription" class="form-control" rows="4"
+                                              placeholder="Mô tả ngắn gọn về khóa học..."></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Mô tả chi tiết</label>
+                                    <textarea id="courseDetailedDescription" class="form-control" rows="8"
+                                              placeholder="Mô tả chi tiết về nội dung, mục tiêu học tập..."></textarea>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Danh mục *</label>
+                                        <select id="courseCategory" class="form-control" required>
+                                            <!-- Categories will be loaded -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Độ khó</label>
+                                        <select id="courseDifficulty" class="form-control">
+                                            <option value="beginner">Cơ bản</option>
+                                            <option value="intermediate">Trung cấp</option>
+                                            <option value="advanced">Nâng cao</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Thời lượng (giờ)</label>
+                                        <input type="number" id="courseDuration" class="form-control" min="1" value="10">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Ngôn ngữ</label>
+                                        <select id="courseLanguage" class="form-control">
+                                            <option value="vi">Tiếng Việt</option>
+                                            <option value="en">English</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-form">
+                            <div class="form-section">
+                                <h3>🖼️ Hình ảnh khóa học</h3>
+                                <div class="thumbnail-upload" id="thumbnailUpload" onclick="courseEditor.uploadThumbnail()">
+                                    <div class="upload-placeholder">
+                                        <div class="upload-icon">📷</div>
+                                        <p>Nhấp để tải lên hình ảnh</p>
+                                        <p style="font-size: var(--font-size-small); color: #999;">JPG, PNG tối đa 2MB</p>
+                                    </div>
+                                </div>
+                                <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="courseEditor.handleThumbnailUpload(event)">
+                            </div>
+
+                            <div class="form-section">
+                                <h3>🎯 Mục tiêu học tập</h3>
+                                <div id="learningObjectives">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Mục tiêu 1...">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline btn-small" onclick="courseEditor.addObjective()">
+                                    ➕ Thêm mục tiêu
+                                </button>
+                            </div>
+
+                            <div class="form-section">
+                                <h3>📋 Yêu cầu trước</h3>
+                                <div id="prerequisites">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Yêu cầu 1...">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline btn-small" onclick="courseEditor.addPrerequisite()">
+                                    ➕ Thêm yêu cầu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Tab -->
+                <div id="contentContent" class="tab-content">
+                    <div class="form-section">
+                        <h3>📚 Quản lý bài học</h3>
+                        <div class="lessons-container">
+                            <div class="lessons-header">
+                                <span>Danh sách bài học</span>
+                                <button class="btn btn-primary btn-small" onclick="courseEditor.showLessonModal()">
+                                    ➕ Thêm bài học
+                                </button>
+                            </div>
+                            <div id="lessonsList">
+                                <!-- Lessons will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settingsContent" class="tab-content">
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <h4>🔒 Quyền truy cập</h4>
+                            <div class="form-group">
+                                <label class="form-label">Trạng thái</label>
+                                <select id="courseStatus" class="form-control">
+                                    <option value="draft">Bản nháp</option>
+                                    <option value="published">Đã xuất bản</option>
+                                    <option value="archived">Lưu trữ</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="coursePublic">
+                                    Khóa học công khai
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="courseFeatured">
+                                    Khóa học nổi bật
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-card">
+                            <h4>💰 Giá cả</h4>
+                            <div class="form-group">
+                                <label class="form-label">Loại khóa học</label>
+                                <select id="courseType" class="form-control">
+                                    <option value="free">Miễn phí</option>
+                                    <option value="paid">Có phí</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="priceGroup" style="display: none;">
+                                <label class="form-label">Giá (VNĐ)</label>
+                                <input type="number" id="coursePrice" class="form-control" min="0">
+                            </div>
+                        </div>
+
+                        <div class="setting-card">
+                            <h4>📅 Thời gian</h4>
+                            <div class="form-group">
+                                <label class="form-label">Ngày bắt đầu</label>
+                                <input type="date" id="courseStartDate" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ngày kết thúc</label>
+                                <input type="date" id="courseEndDate" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="setting-card">
+                            <h4>👥 Học viên</h4>
+                            <div class="form-group">
+                                <label class="form-label">Số lượng tối đa</label>
+                                <input type="number" id="maxStudents" class="form-control" min="1" value="100">
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="autoEnroll">
+                                    Tự động duyệt đăng ký
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Tab -->
+                <div id="previewContent" class="tab-content">
+                    <div class="course-preview">
+                        <div class="preview-header">
+                            <h2 id="previewTitle">Tên khóa học</h2>
+                            <p id="previewDescription">Mô tả khóa học</p>
+                        </div>
+                        <div class="preview-body">
+                            <div id="previewDetails">
+                                <!-- Preview content will be generated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="window.history.back()">
+                        ← Quay lại
+                    </button>
+                    <button class="btn btn-outline" onclick="courseEditor.saveDraft()">
+                        💾 Lưu nháp
+                    </button>
+                    <button class="btn btn-primary" onclick="courseEditor.saveCourse()">
+                        ✅ Lưu khóa học
+                    </button>
+                    <button class="btn btn-accent" onclick="courseEditor.publishCourse()">
+                        🚀 Xuất bản
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- Lesson Modal -->
+    <div class="modal" id="lessonModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="lessonModalTitle">➕ Thêm bài học mới</h3>
+                <button class="modal-close" onclick="uiManager.hideModal('lessonModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="lesson-form" id="lessonForm">
+                    <div class="form-group">
+                        <label class="form-label">Tên bài học *</label>
+                        <input type="text" id="lessonTitle" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Loại nội dung</label>
+                        <div class="content-type-selector">
+                            <button type="button" class="content-type-btn active" onclick="courseEditor.selectContentType('video')">
+                                📹 Video
+                            </button>
+                            <button type="button" class="content-type-btn" onclick="courseEditor.selectContentType('text')">
+                                📝 Văn bản
+                            </button>
+                            <button type="button" class="content-type-btn" onclick="courseEditor.selectContentType('pdf')">
+                                📄 PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Video Content -->
+                    <div class="content-editor active" id="videoEditor">
+                        <div class="form-group">
+                            <label class="form-label">URL Video (YouTube)</label>
+                            <input type="url" id="videoUrl" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+                    </div>
+
+                    <!-- Text Content -->
+                    <div class="content-editor" id="textEditor">
+                        <div class="form-group">
+                            <label class="form-label">Nội dung bài học</label>
+                            <textarea id="textContent" class="form-control" rows="10"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- PDF Content -->
+                    <div class="content-editor" id="pdfEditor">
+                        <div class="form-group">
+                            <label class="form-label">File PDF</label>
+                            <input type="file" id="pdfFile" class="form-control" accept=".pdf">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Thời lượng (phút)</label>
+                        <input type="number" id="lessonDuration" class="form-control" min="1" value="30">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="lessonRequired">
+                            Bài học bắt buộc
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="uiManager.hideModal('lessonModal')">
+                    Hủy
+                </button>
+                <button class="btn btn-primary" onclick="courseEditor.saveLesson()">
+                    💾 Lưu bài học
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class CourseEditor {
+            constructor() {
+                this.currentCourse = null;
+                this.currentLesson = null;
+                this.lessons = [];
+                this.categories = [];
+                this.selectedContentType = 'video';
+                this.init();
+            }
+
+            init() {
+                // Check authentication
+                if (!authManager.isLoggedIn()) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const currentUser = authManager.getCurrentUser();
+                if (!['admin', 'teacher'].includes(currentUser.role)) {
+                    uiManager.showToast('Bạn không có quyền truy cập trang này', 'error');
+                    authManager.redirectToDashboard();
+                    return;
+                }
+
+                this.loadCategories();
+                this.setupEventListeners();
+                this.loadCourseData();
+            }
+
+            loadCategories() {
+                // Load categories from localStorage
+                const categories = JSON.parse(localStorage.getItem('courseCategories') || '[]');
+                const categorySelect = document.getElementById('courseCategory');
+                
+                categorySelect.innerHTML = '<option value="">Chọn danh mục</option>' +
+                    categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+            }
+
+            setupEventListeners() {
+                // Course type change
+                document.getElementById('courseType').addEventListener('change', (e) => {
+                    const priceGroup = document.getElementById('priceGroup');
+                    priceGroup.style.display = e.target.value === 'paid' ? 'block' : 'none';
+                });
+
+                // Auto-update preview
+                ['courseTitle', 'courseDescription'].forEach(id => {
+                    document.getElementById(id).addEventListener('input', () => {
+                        this.updatePreview();
+                    });
+                });
+            }
+
+            loadCourseData() {
+                // Check if editing existing course
+                const urlParams = new URLSearchParams(window.location.search);
+                const courseId = urlParams.get('id');
+                
+                if (courseId) {
+                    // Load existing course
+                    this.loadExistingCourse(courseId);
+                } else {
+                    // Set default values for new course
+                    this.setDefaultValues();
+                }
+            }
+
+            loadExistingCourse(courseId) {
+                // Load course data from localStorage or API
+                const courses = JSON.parse(localStorage.getItem('courses') || '[]');
+                this.currentCourse = courses.find(c => c.courseId === courseId);
+                
+                if (this.currentCourse) {
+                    document.getElementById('pageTitle').textContent = '✏️ Chỉnh sửa khóa học';
+                    this.populateForm();
+                } else {
+                    uiManager.showToast('Không tìm thấy khóa học', 'error');
+                    window.location.href = 'courses.html';
+                }
+            }
+
+            populateForm() {
+                const course = this.currentCourse;
+                
+                document.getElementById('courseTitle').value = course.title || '';
+                document.getElementById('courseDescription').value = course.description || '';
+                document.getElementById('courseDetailedDescription').value = course.detailedDescription || '';
+                document.getElementById('courseCategory').value = course.categoryId || '';
+                document.getElementById('courseDifficulty').value = course.difficulty || 'beginner';
+                document.getElementById('courseDuration').value = course.duration || 10;
+                document.getElementById('courseLanguage').value = course.language || 'vi';
+                
+                // Load lessons
+                this.lessons = course.lessons || [];
+                this.renderLessons();
+                
+                this.updatePreview();
+            }
+
+            setDefaultValues() {
+                const today = new Date().toISOString().split('T')[0];
+                const nextMonth = new Date();
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                
+                document.getElementById('courseStartDate').value = today;
+                document.getElementById('courseEndDate').value = nextMonth.toISOString().split('T')[0];
+                document.getElementById('courseLanguage').value = 'vi';
+                document.getElementById('courseDifficulty').value = 'beginner';
+            }
+
+            showTab(tabName) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Show selected tab content
+                document.getElementById(tabName + 'Content').classList.add('active');
+                event.target.classList.add('active');
+                
+                // Update preview when showing preview tab
+                if (tabName === 'preview') {
+                    this.updatePreview();
+                }
+            }
+
+            uploadThumbnail() {
+                document.getElementById('thumbnailInput').click();
+            }
+
+            handleThumbnailUpload(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    if (file.size > 2 * 1024 * 1024) {
+                        uiManager.showToast('File quá lớn. Vui lòng chọn file nhỏ hơn 2MB', 'error');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const uploadDiv = document.getElementById('thumbnailUpload');
+                        uploadDiv.classList.add('has-image');
+                        uploadDiv.innerHTML = `<img src="${e.target.result}" alt="Thumbnail" class="thumbnail-preview">`;
+                        this.courseThumbnail = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            addObjective() {
+                const container = document.getElementById('learningObjectives');
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                div.innerHTML = `
+                    <div style="display: flex; gap: var(--spacing-sm);">
+                        <input type="text" class="form-control" placeholder="Mục tiêu mới...">
+                        <button type="button" class="btn btn-danger btn-small" onclick="this.parentElement.parentElement.remove()">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+
+            addPrerequisite() {
+                const container = document.getElementById('prerequisites');
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                div.innerHTML = `
+                    <div style="display: flex; gap: var(--spacing-sm);">
+                        <input type="text" class="form-control" placeholder="Yêu cầu mới...">
+                        <button type="button" class="btn btn-danger btn-small" onclick="this.parentElement.parentElement.remove()">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+
+            showLessonModal() {
+                this.currentLesson = null;
+                document.getElementById('lessonModalTitle').textContent = '➕ Thêm bài học mới';
+                document.getElementById('lessonForm').reset();
+                this.selectContentType('video');
+                uiManager.showModal('lessonModal');
+            }
+
+            editLesson(index) {
+                this.currentLesson = this.lessons[index];
+                document.getElementById('lessonModalTitle').textContent = '✏️ Chỉnh sửa bài học';
+                
+                document.getElementById('lessonTitle').value = this.currentLesson.title;
+                document.getElementById('lessonDuration').value = this.currentLesson.duration;
+                document.getElementById('lessonRequired').checked = this.currentLesson.required;
+                
+                this.selectContentType(this.currentLesson.type);
+                
+                if (this.currentLesson.type === 'video') {
+                    document.getElementById('videoUrl').value = this.currentLesson.videoUrl || '';
+                } else if (this.currentLesson.type === 'text') {
+                    document.getElementById('textContent').value = this.currentLesson.content || '';
+                }
+                
+                uiManager.showModal('lessonModal');
+            }
+
+            selectContentType(type) {
+                this.selectedContentType = type;
+                
+                // Update buttons
+                document.querySelectorAll('.content-type-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event?.target.classList.add('active');
+                
+                // Show appropriate editor
+                document.querySelectorAll('.content-editor').forEach(editor => {
+                    editor.classList.remove('active');
+                });
+                document.getElementById(type + 'Editor').classList.add('active');
+            }
+
+            saveLesson() {
+                const title = document.getElementById('lessonTitle').value.trim();
+                if (!title) {
+                    uiManager.showToast('Vui lòng nhập tên bài học', 'warning');
+                    return;
+                }
+
+                const lessonData = {
+                    title: title,
+                    type: this.selectedContentType,
+                    duration: parseInt(document.getElementById('lessonDuration').value),
+                    required: document.getElementById('lessonRequired').checked
+                };
+
+                // Add content based on type
+                if (this.selectedContentType === 'video') {
+                    lessonData.videoUrl = document.getElementById('videoUrl').value;
+                } else if (this.selectedContentType === 'text') {
+                    lessonData.content = document.getElementById('textContent').value;
+                } else if (this.selectedContentType === 'pdf') {
+                    // Handle PDF file upload
+                    const pdfFile = document.getElementById('pdfFile').files[0];
+                    if (pdfFile) {
+                        lessonData.pdfFileName = pdfFile.name;
+                        // In real app, upload file to server
+                    }
+                }
+
+                if (this.currentLesson) {
+                    // Update existing lesson
+                    const index = this.lessons.indexOf(this.currentLesson);
+                    this.lessons[index] = { ...this.currentLesson, ...lessonData };
+                } else {
+                    // Add new lesson
+                    lessonData.id = Date.now();
+                    this.lessons.push(lessonData);
+                }
+
+                this.renderLessons();
+                uiManager.hideModal('lessonModal');
+                uiManager.showToast('Đã lưu bài học thành công!', 'success');
+            }
+
+            renderLessons() {
+                const container = document.getElementById('lessonsList');
+                
+                if (this.lessons.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: var(--spacing-xl); color: #666;">
+                            <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">📚</div>
+                            <p>Chưa có bài học nào. Hãy thêm bài học đầu tiên!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const lessonsHTML = this.lessons.map((lesson, index) => `
+                    <div class="lesson-item">
+                        <div class="lesson-handle">⋮⋮</div>
+                        <div class="lesson-info">
+                            <div class="lesson-title">${lesson.title}</div>
+                            <div class="lesson-meta">
+                                ${lesson.type === 'video' ? '📹' : lesson.type === 'text' ? '📝' : '📄'} 
+                                ${lesson.type} • ${lesson.duration} phút
+                                ${lesson.required ? ' • Bắt buộc' : ''}
+                            </div>
+                        </div>
+                        <div class="lesson-actions">
+                            <button class="btn btn-outline btn-small" onclick="courseEditor.editLesson(${index})">
+                                ✏️ Sửa
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="courseEditor.deleteLesson(${index})">
+                                🗑️ Xóa
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = lessonsHTML;
+            }
+
+            deleteLesson(index) {
+                uiManager.showConfirm(
+                    `Bạn có chắc muốn xóa bài học "${this.lessons[index].title}"?`,
+                    () => {
+                        this.lessons.splice(index, 1);
+                        this.renderLessons();
+                        uiManager.showToast('Đã xóa bài học', 'success');
+                    }
+                );
+            }
+
+            updatePreview() {
+                const title = document.getElementById('courseTitle').value || 'Tên khóa học';
+                const description = document.getElementById('courseDescription').value || 'Mô tả khóa học';
+                
+                document.getElementById('previewTitle').textContent = title;
+                document.getElementById('previewDescription').textContent = description;
+                
+                // Generate detailed preview
+                const details = document.getElementById('previewDetails');
+                details.innerHTML = `
+                    <h3>📋 Thông tin chi tiết</h3>
+                    <p><strong>Danh mục:</strong> ${document.getElementById('courseCategory').selectedOptions[0]?.text || 'Chưa chọn'}</p>
+                    <p><strong>Độ khó:</strong> ${document.getElementById('courseDifficulty').selectedOptions[0]?.text}</p>
+                    <p><strong>Thời lượng:</strong> ${document.getElementById('courseDuration').value} giờ</p>
+                    <p><strong>Số bài học:</strong> ${this.lessons.length}</p>
+                    <p><strong>Trạng thái:</strong> ${document.getElementById('courseStatus').selectedOptions[0]?.text}</p>
+                `;
+            }
+
+            collectFormData() {
+                // Collect objectives
+                const objectives = Array.from(document.querySelectorAll('#learningObjectives input'))
+                    .map(input => input.value.trim())
+                    .filter(value => value);
+
+                // Collect prerequisites
+                const prerequisites = Array.from(document.querySelectorAll('#prerequisites input'))
+                    .map(input => input.value.trim())
+                    .filter(value => value);
+
+                return {
+                    title: document.getElementById('courseTitle').value.trim(),
+                    description: document.getElementById('courseDescription').value.trim(),
+                    detailedDescription: document.getElementById('courseDetailedDescription').value.trim(),
+                    categoryId: document.getElementById('courseCategory').value,
+                    difficulty: document.getElementById('courseDifficulty').value,
+                    duration: parseInt(document.getElementById('courseDuration').value),
+                    language: document.getElementById('courseLanguage').value,
+                    status: document.getElementById('courseStatus').value,
+                    isPublic: document.getElementById('coursePublic').checked,
+                    featured: document.getElementById('courseFeatured').checked,
+                    type: document.getElementById('courseType').value,
+                    price: document.getElementById('coursePrice').value,
+                    startDate: document.getElementById('courseStartDate').value,
+                    endDate: document.getElementById('courseEndDate').value,
+                    maxStudents: parseInt(document.getElementById('maxStudents').value),
+                    autoEnroll: document.getElementById('autoEnroll').checked,
+                    objectives: objectives,
+                    prerequisites: prerequisites,
+                    lessons: this.lessons,
+                    thumbnail: this.courseThumbnail || null
+                };
+            }
+
+            saveDraft() {
+                const courseData = this.collectFormData();
+                courseData.status = 'draft';
+                this.saveCourseData(courseData, 'Đã lưu bản nháp');
+            }
+
+            saveCourse() {
+                const courseData = this.collectFormData();
+                
+                if (!courseData.title) {
+                    uiManager.showToast('Vui lòng nhập tên khóa học', 'warning');
+                    return;
+                }
+
+                if (!courseData.categoryId) {
+                    uiManager.showToast('Vui lòng chọn danh mục', 'warning');
+                    return;
+                }
+
+                this.saveCourseData(courseData, 'Đã lưu khóa học thành công!');
+            }
+
+            publishCourse() {
+                const courseData = this.collectFormData();
+                
+                if (!courseData.title || !courseData.categoryId || this.lessons.length === 0) {
+                    uiManager.showToast('Vui lòng hoàn thiện thông tin và thêm ít nhất 1 bài học', 'warning');
+                    return;
+                }
+
+                courseData.status = 'published';
+                this.saveCourseData(courseData, 'Đã xuất bản khóa học thành công!');
+            }
+
+            saveCourseData(courseData, message) {
+                // Load existing courses
+                const courses = JSON.parse(localStorage.getItem('courses') || '[]');
+                
+                if (this.currentCourse) {
+                    // Update existing course
+                    const index = courses.findIndex(c => c.courseId === this.currentCourse.courseId);
+                    courses[index] = { ...this.currentCourse, ...courseData, lastModified: new Date().toISOString() };
+                } else {
+                    // Create new course
+                    const newCourse = {
+                        courseId: Date.now().toString(),
+                        instructor: authManager.getCurrentUser().username,
+                        rating: 0,
+                        studentsEnrolled: 0,
+                        created: new Date().toISOString(),
+                        ...courseData
+                    };
+                    courses.push(newCourse);
+                }
+
+                // Save courses
+                localStorage.setItem('courses', JSON.stringify(courses));
+                
+                // Log activity
+                authManager.logActivity('Course Management', 
+                    `${this.currentCourse ? 'Updated' : 'Created'} course: ${courseData.title}`);
+
+                uiManager.showToast(message, 'success');
+                
+                // Redirect after save
+                setTimeout(() => {
+                    window.location.href = 'courses.html';
+                }, 1500);
+            }
+        }
+
+        // Initialize course editor
+        let courseEditor;
+        document.addEventListener('DOMContentLoaded', () => {
+            courseEditor = new CourseEditor();
+        });
+    </script>
+</body>
+</html> 
+

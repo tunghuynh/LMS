@@ -1,0 +1,213 @@
+[
+  {
+    "quizId": 201,
+    "title": "Quiz Tuần 1 - Lập trình cơ bản",
+    "courseId": 101,
+    "courseName": "Lập trình cơ bản",
+    "instructor": "teacher01",
+    "status": "open",
+    "timeLimit": 30,
+    "totalQuestions": 10,
+    "totalPoints": 100,
+    "description": "Quiz kiểm tra kiến thức cơ bản về biến và kiểu dữ liệu trong Python",
+    "createdAt": "2024-01-18",
+    "dueDate": "2024-01-25",
+    "questions": [
+      {
+        "questionId": 1,
+        "type": "radio",
+        "text": "Từ khóa nào dùng để khai báo hằng số trong Python?",
+        "options": ["let", "const", "var", "Không có từ khóa đặc biệt"],
+        "answer": "Không có từ khóa đặc biệt",
+        "points": 10,
+        "explanation": "Python không có từ khóa đặc biệt để khai báo hằng số. Thông thường dùng tên viết hoa."
+      },
+      {
+        "questionId": 2,
+        "type": "checkbox",
+        "text": "Những kiểu dữ liệu nào sau đây là kiểu nguyên thủy trong Python?",
+        "options": ["string", "int", "float", "list", "bool"],
+        "answer": ["string", "int", "float", "bool"],
+        "points": 15,
+        "explanation": "List là kiểu dữ liệu collection, không phải kiểu nguyên thủy."
+      },
+      {
+        "questionId": 3,
+        "type": "text",
+        "text": "Viết một cấu trúc lặp đơn giản trong Python để in số từ 1 đến 5:",
+        "answer": "for i in range(1, 6):",
+        "points": 20,
+        "explanation": "Có thể dùng for i in range(1, 6): hoặc for i in [1,2,3,4,5]:"
+      },
+      {
+        "questionId": 4,
+        "type": "radio",
+        "text": "Kết quả của biểu thức 5 // 2 trong Python là gì?",
+        "options": ["2.5", "2", "3", "2.0"],
+        "answer": "2",
+        "points": 10,
+        "explanation": "Toán tử // là phép chia lấy phần nguyên."
+      },
+      {
+        "questionId": 5,
+        "type": "checkbox",
+        "text": "Những cách nào có thể dùng để comment trong Python?",
+        "options": ["# comment", "/* comment */", "// comment", "\"\"\" comment \"\"\""],
+        "answer": ["# comment", "\"\"\" comment \"\"\""],
+        "points": 15,
+        "explanation": "Python dùng # cho single-line comment và triple quotes cho multi-line comment."
+      }
+    ]
+  },
+  {
+    "quizId": 202,
+    "title": "Quiz Giữa kỳ - Lập trình cơ bản",
+    "courseId": 101,
+    "courseName": "Lập trình cơ bản",
+    "instructor": "teacher01",
+    "status": "open",
+    "timeLimit": 60,
+    "totalQuestions": 15,
+    "totalPoints": 150,
+    "description": "Quiz giữa kỳ kiểm tra tổng hợp kiến thức về Python cơ bản",
+    "createdAt": "2024-02-10",
+    "dueDate": "2024-02-20",
+    "questions": [
+      {
+        "questionId": 6,
+        "type": "radio",
+        "text": "Hàm nào được dùng để lấy độ dài của một list trong Python?",
+        "options": ["length()", "size()", "len()", "count()"],
+        "answer": "len()",
+        "points": 10,
+        "explanation": "Hàm len() trả về số lượng phần tử trong một collection."
+      },
+      {
+        "questionId": 7,
+        "type": "text",
+        "text": "Viết code để tạo một list chứa các số chẵn từ 2 đến 10:",
+        "answer": "[2, 4, 6, 8, 10]",
+        "points": 15,
+        "explanation": "Có thể viết [2, 4, 6, 8, 10] hoặc [i for i in range(2, 11, 2)]"
+      }
+    ]
+  },
+  {
+    "quizId": 203,
+    "title": "Quiz JavaScript - Phát triển Web",
+    "courseId": 103,
+    "courseName": "Phát triển Web",
+    "instructor": "teacher02",
+    "status": "open",
+    "timeLimit": 45,
+    "totalQuestions": 12,
+    "totalPoints": 120,
+    "description": "Quiz kiểm tra kiến thức JavaScript ES6+ và DOM manipulation",
+    "createdAt": "2024-02-15",
+    "dueDate": "2024-02-25",
+    "questions": [
+      {
+        "questionId": 8,
+        "type": "radio",
+        "text": "Cách nào đúng để khai báo một arrow function trong JavaScript?",
+        "options": ["const func = () => {}", "function func() {}", "var func = function() {}", "def func():"],
+        "answer": "const func = () => {}",
+        "points": 10,
+        "explanation": "Arrow function được khai báo với syntax: const/let funcName = () => {}"
+      },
+      {
+        "questionId": 9,
+        "type": "checkbox",
+        "text": "Những method nào có thể dùng để thêm phần tử vào mảng JavaScript?",
+        "options": ["push()", "append()", "add()", "unshift()", "concat()"],
+        "answer": ["push()", "unshift()", "concat()"],
+        "points": 15,
+        "explanation": "push() thêm cuối, unshift() thêm đầu, concat() nối mảng. JavaScript không có append() hay add()."
+      },
+      {
+        "questionId": 10,
+        "type": "text",
+        "text": "Viết code để lấy element có id='myButton' trong DOM:",
+        "answer": "document.getElementById('myButton')",
+        "points": 10,
+        "explanation": "Dùng document.getElementById() để lấy element theo ID."
+      }
+    ]
+  },
+  {
+    "quizId": 204,
+    "title": "Quiz SQL - Cơ sở dữ liệu",
+    "courseId": 104,
+    "courseName": "Cơ sở dữ liệu",
+    "instructor": "teacher02",
+    "status": "open",
+    "timeLimit": 40,
+    "totalQuestions": 8,
+    "totalPoints": 80,
+    "description": "Quiz về các câu lệnh SQL cơ bản và thiết kế database",
+    "createdAt": "2024-02-20",
+    "dueDate": "2024-03-01",
+    "questions": [
+      {
+        "questionId": 11,
+        "type": "radio",
+        "text": "Câu lệnh SQL nào dùng để lấy dữ liệu từ database?",
+        "options": ["GET", "FETCH", "SELECT", "RETRIEVE"],
+        "answer": "SELECT",
+        "points": 10,
+        "explanation": "SELECT là câu lệnh cơ bản để truy vấn dữ liệu trong SQL."
+      },
+      {
+        "questionId": 12,
+        "type": "checkbox",
+        "text": "Những ràng buộc nào có thể áp dụng cho cột trong SQL?",
+        "options": ["PRIMARY KEY", "FOREIGN KEY", "NOT NULL", "UNIQUE", "INDEX"],
+        "answer": ["PRIMARY KEY", "FOREIGN KEY", "NOT NULL", "UNIQUE"],
+        "points": 15,
+        "explanation": "INDEX không phải là constraint mà là cấu trúc để tối ưu hóa truy vấn."
+      },
+      {
+        "questionId": 13,
+        "type": "text",
+        "text": "Viết câu lệnh SQL để tạo bảng 'users' với cột id (INT, PRIMARY KEY) và name (VARCHAR(100)):",
+        "answer": "CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100))",
+        "points": 20,
+        "explanation": "Syntax cơ bản để tạo bảng với CREATE TABLE."
+      }
+    ]
+  },
+  {
+    "quizId": 205,
+    "title": "Quiz Cấu trúc dữ liệu",
+    "courseId": 102,
+    "courseName": "Cấu trúc dữ liệu",
+    "instructor": "teacher01",
+    "status": "draft",
+    "timeLimit": 50,
+    "totalQuestions": 10,
+    "totalPoints": 100,
+    "description": "Quiz về các cấu trúc dữ liệu cơ bản: Array, Stack, Queue",
+    "createdAt": "2024-02-25",
+    "dueDate": "2024-03-10",
+    "questions": [
+      {
+        "questionId": 14,
+        "type": "radio",
+        "text": "Stack hoạt động theo nguyên tắc nào?",
+        "options": ["FIFO", "LIFO", "Random", "Priority"],
+        "answer": "LIFO",
+        "points": 10,
+        "explanation": "Stack hoạt động theo nguyên tắc Last In First Out (LIFO)."
+      },
+      {
+        "questionId": 15,
+        "type": "radio",
+        "text": "Queue hoạt động theo nguyên tắc nào?",
+        "options": ["FIFO", "LIFO", "Random", "Priority"],
+        "answer": "FIFO",
+        "points": 10,
+        "explanation": "Queue hoạt động theo nguyên tắc First In First Out (FIFO)."
+      }
+    ]
+  }
+] 

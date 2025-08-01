@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ Quản trị viên - E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-blue), #1e5a94);
+            color: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .avatar-section {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-large:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .avatar-large:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-small);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .profile-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .admin-stat {
+            text-align: center;
+        }
+
+        .admin-stat-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .admin-stat-label {
+            font-size: var(--font-size-small);
+            opacity: 0.8;
+        }
+
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: var(--spacing-md);
+            background: none;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .content-title {
+            font-size: var(--font-size-h2);
+            margin-bottom: var(--spacing-lg);
+            color: var(--dark-gray);
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .form-section h3 {
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .admin-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .admin-info-card {
+            background: var(--light-gray);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .admin-info-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--dark-gray);
+        }
+
+        .admin-info-value {
+            color: #666;
+        }
+
+        /* Security Section */
+        .security-alerts {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .security-alert-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .security-alert-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid #ffeaa7;
+        }
+
+        .security-alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-text {
+            color: #856404;
+            flex: 1;
+        }
+
+        .alert-status {
+            font-size: var(--font-size-small);
+            padding: 2px 8px;
+            border-radius: var(--border-radius-sm);
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* System Preferences */
+        .preference-group {
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--light-gray);
+            border-radius: var(--border-radius-md);
+        }
+
+        .preference-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+
+        .preference-toggle {
+            width: 50px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .preference-toggle.active {
+            background: var(--accent-green);
+        }
+
+        .preference-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--white);
+            transition: transform 0.3s ease;
+        }
+
+        .preference-toggle.active::after {
+            transform: translateX(26px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .admin-stats {
+                justify-content: center;
+            }
+
+            .profile-tabs {
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">A</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Admin</span>
+                    <span class="header-role" id="userRole">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="profile-container">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="avatar-section">
+                        <div class="avatar-large" id="profileAvatar" onclick="adminProfile.changeAvatar()">
+                            <span id="avatarText">👨‍💼</span>
+                            <div class="avatar-overlay">📷 Thay đổi</div>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">
+                            Tải ảnh lên
+                        </button>
+                    </div>
+                    <div class="profile-info">
+                        <h1 class="profile-name" id="profileName">Nguyễn Văn Admin</h1>
+                        <div class="profile-role" id="profileRole">👨‍💼 Quản trị viên hệ thống</div>
+                        <div class="profile-email" id="profileEmail">admin@eduplatform.com</div>
+                        <div class="admin-stats">
+                            <div class="admin-stat">
+                                <div class="admin-stat-number" id="totalUsers">325</div>
+                                <div class="admin-stat-label">Người dùng</div>
+                            </div>
+                            <div class="admin-stat">
+                                <div class="admin-stat-number" id="totalCourses">42</div>
+                                <div class="admin-stat-label">Khóa học</div>
+                            </div>
+                            <div class="admin-stat">
+                                <div class="admin-stat-number" id="systemUptime">99.9%</div>
+                                <div class="admin-stat-label">Uptime</div>
+                            </div>
+                            <div class="admin-stat">
+                                <div class="admin-stat-number" id="adminExperience">3</div>
+                                <div class="admin-stat-label">Năm kinh nghiệm</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Profile Tabs -->
+            <div class="profile-tabs">
+                <button class="tab-btn active" onclick="adminProfile.showTab('personal')" id="personalTab">
+                    👤 Thông tin cá nhân
+                </button>
+                <button class="tab-btn" onclick="adminProfile.showTab('settings')" id="settingsTab">
+                    ⚙️ Cài đặt hệ thống
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+
+            <!-- Personal Info Tab -->
+            <div id="personalContent" class="tab-content active">
+                <div class="content-card">
+                    <h2 class="content-title">👤 Thông tin cá nhân</h2>
+                    
+                    <!-- Admin Info Cards -->
+                    <div class="admin-info-grid">
+                        <div class="admin-info-card">
+                            <div class="admin-info-title">🏢 Thông tin công ty</div>
+                            <div class="admin-info-value">
+                                <strong>Công ty:</strong> EduPlatform Co., Ltd<br>
+                                <strong>Vị trí:</strong> CTO & System Administrator<br>
+                                <strong>Bộ phận:</strong> Công nghệ thông tin
+                            </div>
+                        </div>
+                        
+                        <div class="admin-info-card">
+                            <div class="admin-info-title">📞 Liên hệ</div>
+                            <div class="admin-info-value">
+                                <strong>Email:</strong> admin@eduplatform.com<br>
+                                <strong>Hotline:</strong> +84 123 456 789<br>
+                                <strong>Extension:</strong> 101
+                            </div>
+                        </div>
+                        
+                        <div class="admin-info-card">
+                            <div class="admin-info-title">🔐 Bảo mật</div>
+                            <div class="admin-info-value">
+                                <strong>Quyền:</strong> Super Administrator<br>
+                                <strong>2FA:</strong> Đã kích hoạt<br>
+                                <strong>Last Login:</strong> 12/12/2025 09:15
+                            </div>
+                        </div>
+                        
+                        <div class="admin-info-card">
+                            <div class="admin-info-title">📊 Trách nhiệm</div>
+                            <div class="admin-info-value">
+                                <strong>Quản lý:</strong> Người dùng, Khóa học<br>
+                                <strong>Giám sát:</strong> Hệ thống, Bảo mật<br>
+                                <strong>Báo cáo:</strong> CEO, Board of Directors
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="form-grid" id="personalForm">
+                        <div class="form-section">
+                            <h3>Thông tin cơ bản</h3>
+                            <div class="form-group">
+                                <label class="form-label">Họ và tên</label>
+                                <input type="text" id="fullName" class="form-control" value="Nguyễn Văn Admin">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="email" class="form-control" value="admin@eduplatform.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="tel" id="phone" class="form-control" value="+84123456789">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Địa chỉ</label>
+                                <textarea id="address" class="form-control" rows="3">123 Đường ABC, Quận 1, TP.HCM</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Thông tin công việc</h3>
+                            <div class="form-group">
+                                <label class="form-label">Chức vụ</label>
+                                <input type="text" id="position" class="form-control" value="CTO & System Administrator" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bộ phận</label>
+                                <input type="text" id="department" class="form-control" value="Công nghệ thông tin" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ngày bắt đầu</label>
+                                <input type="date" id="startDate" class="form-control" value="2022-01-15" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">ID nhân viên</label>
+                                <input type="text" id="employeeId" class="form-control" value="EMP001" readonly>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div style="margin-top: var(--spacing-xl); text-align: center;">
+                        <button class="btn btn-primary" onclick="adminProfile.saveProfile()">
+                            💾 Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settingsContent" class="tab-content">
+                <div class="content-card">
+                    <h2 class="content-title">⚙️ Cài đặt hệ thống</h2>
+                    
+                    <!-- Security Alerts -->
+                    <div class="security-alerts">
+                        <div class="security-alert-title">🔒 Cảnh báo bảo mật</div>
+                        <div class="security-alert-item">
+                            <span class="alert-text">Firewall đang hoạt động</span>
+                            <span class="alert-status">Bình thường</span>
+                        </div>
+                        <div class="security-alert-item">
+                            <span class="alert-text">SSL Certificate hết hạn trong 30 ngày</span>
+                            <span class="alert-status warning">Cảnh báo</span>
+                        </div>
+                        <div class="security-alert-item">
+                            <span class="alert-text">Backup tự động đã chạy thành công</span>
+                            <span class="alert-status">Bình thường</span>
+                        </div>
+                        <div class="security-alert-item">
+                            <span class="alert-text">Cập nhật bảo mật mới nhất</span>
+                            <span class="alert-status">Bình thường</span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-section">
+                            <h3>Bảo mật tài khoản</h3>
+                            <div class="form-group">
+                                <label class="form-label">Mật khẩu hiện tại</label>
+                                <input type="password" id="currentPassword" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mật khẩu mới</label>
+                                <input type="password" id="newPassword" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Xác nhận mật khẩu mới</label>
+                                <input type="password" id="confirmPassword" class="form-control">
+                            </div>
+                            <button class="btn btn-secondary" onclick="adminProfile.changePassword()">
+                                🔒 Đổi mật khẩu
+                            </button>
+                            
+                            <div style="margin-top: var(--spacing-lg);">
+                                <button class="btn btn-accent" onclick="adminProfile.setup2FA()">
+                                    🔐 Cài đặt 2FA
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Thông báo admin</h3>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="systemAlerts" checked>
+                                    Cảnh báo hệ thống
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="securityAlerts" checked>
+                                    Cảnh báo bảo mật
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="userRegistrations" checked>
+                                    Đăng ký người dùng mới
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="reportAlerts" checked>
+                                    Báo cáo hàng ngày
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Preferences -->
+                    <div class="preference-group">
+                        <div class="preference-title">🔧 Tùy chọn hệ thống</div>
+                        
+                        <div class="preference-item">
+                            <span>Bảo trì tự động</span>
+                            <div class="preference-toggle active" onclick="adminProfile.togglePreference(this)"></div>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <span>Backup hàng ngày</span>
+                            <div class="preference-toggle active" onclick="adminProfile.togglePreference(this)"></div>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <span>Giám sát hiệu năng</span>
+                            <div class="preference-toggle active" onclick="adminProfile.togglePreference(this)"></div>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <span>Log chi tiết</span>
+                            <div class="preference-toggle" onclick="adminProfile.togglePreference(this)"></div>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <span>Debug mode</span>
+                            <div class="preference-toggle" onclick="adminProfile.togglePreference(this)"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: var(--spacing-xl); text-align: center;">
+                        <button class="btn btn-primary" onclick="adminProfile.saveSettings()">
+                            💾 Lưu cài đặt
+                        </button>
+                        <button class="btn btn-accent" onclick="adminProfile.exportSettings()" style="margin-left: var(--spacing-md);">
+                            📤 Xuất cấu hình
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class AdminProfile {
+            constructor() {
+                this.currentUser = null;
+                this.init();
+            }
+
+            init() {
+                // Check authentication
+                if (!authManager.isLoggedIn()) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                
+                if (this.currentUser.role !== 'admin') {
+                    uiManager.showToast('Bạn không có quyền truy cập trang này', 'error');
+                    authManager.redirectToDashboard();
+                    return;
+                }
+
+                this.loadProfile();
+            }
+
+            loadProfile() {
+                // Update header info
+                document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'A';
+                
+                // Update profile info
+                document.getElementById('profileName').textContent = this.currentUser.fullName || this.currentUser.username;
+                
+                // Load admin-specific data
+                if (this.currentUser.adminProfile) {
+                    const profile = this.currentUser.adminProfile;
+                    document.getElementById('fullName').value = profile.fullName || this.currentUser.fullName || '';
+                    document.getElementById('email').value = profile.email || this.currentUser.email || '';
+                    document.getElementById('phone').value = profile.phone || '';
+                    document.getElementById('address').value = profile.address || '';
+                }
+            }
+
+            showTab(tabName) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Show selected tab content
+                document.getElementById(tabName + 'Content').classList.add('active');
+                document.getElementById(tabName + 'Tab').classList.add('active');
+            }
+
+            changeAvatar() {
+                const avatars = ['👨‍💼', 'A', '🧑‍💻', '⚙️'];
+                const currentAvatar = document.getElementById('profileAvatar').textContent;
+                const currentIndex = avatars.indexOf(currentAvatar);
+                const nextIndex = (currentIndex + 1) % avatars.length;
+                
+                document.getElementById('profileAvatar').textContent = avatars[nextIndex];
+                document.getElementById('userAvatar').textContent = avatars[nextIndex];
+                
+                uiManager.showToast('Đã thay đổi avatar', 'success');
+            }
+
+            saveProfile() {
+                const profileData = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value
+                };
+
+                // Save to localStorage
+                const updatedUser = {
+                    ...this.currentUser,
+                    fullName: profileData.fullName,
+                    email: profileData.email,
+                    adminProfile: profileData
+                };
+
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const userIndex = users.findIndex(u => u.id === this.currentUser.id);
+                if (userIndex > -1) {
+                    users[userIndex] = updatedUser;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                }
+
+                authManager.logActivity('Profile Updated', 'Updated admin profile information');
+                uiManager.showToast('Đã lưu thông tin hồ sơ thành công!', 'success');
+            }
+
+            changePassword() {
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    uiManager.showToast('Vui lòng điền đầy đủ thông tin', 'warning');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    uiManager.showToast('Mật khẩu xác nhận không khớp', 'error');
+                    return;
+                }
+
+                if (newPassword.length < 8) {
+                    uiManager.showToast('Mật khẩu admin phải có ít nhất 8 ký tự', 'error');
+                    return;
+                }
+
+                // Mock password change with higher security requirements
+                uiManager.showToast('Đã thay đổi mật khẩu thành công! Hệ thống sẽ logout để bảo mật.', 'success');
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
+                // Auto logout after password change for security
+                setTimeout(() => {
+                    authManager.logout();
+                }, 2000);
+            }
+
+            setup2FA() {
+                uiManager.showModal('alertModal', 'Cài đặt 2FA', `
+                    <div style="text-align: center; padding: var(--spacing-lg);">
+                        <div style="font-size: 3rem; margin-bottom: var(--spacing-lg);">🔐</div>
+                        <h3>Xác thực 2 yếu tố (2FA)</h3>
+                        <p style="margin: var(--spacing-md) 0;">
+                            Để tăng cường bảo mật, vui lòng sử dụng ứng dụng Google Authenticator 
+                            hoặc Authy để quét mã QR bên dưới.
+                        </p>
+                        <div style="background: #f8f9fa; padding: var(--spacing-lg); border-radius: var(--border-radius-md); margin: var(--spacing-lg) 0;">
+                            <div style="font-size: 4rem;">📱</div>
+                            <p style="font-size: var(--font-size-small); color: #666;">
+                                [QR Code sẽ được tạo tại đây]
+                            </p>
+                        </div>
+                        <button class="btn btn-primary" onclick="uiManager.hideModal('alertModal')">
+                            ✅ Đã cài đặt
+                        </button>
+                    </div>
+                `);
+            }
+
+            togglePreference(toggle) {
+                toggle.classList.toggle('active');
+                const isActive = toggle.classList.contains('active');
+                const settingName = toggle.parentElement.querySelector('span').textContent;
+                
+                uiManager.showToast(`${settingName}: ${isActive ? 'Bật' : 'Tắt'}`, 'info');
+            }
+
+            saveSettings() {
+                const settings = {
+                    systemAlerts: document.getElementById('systemAlerts').checked,
+                    securityAlerts: document.getElementById('securityAlerts').checked,
+                    userRegistrations: document.getElementById('userRegistrations').checked,
+                    reportAlerts: document.getElementById('reportAlerts').checked,
+                    systemPreferences: {}
+                };
+
+                // Get all preference toggles
+                document.querySelectorAll('.preference-toggle').forEach(toggle => {
+                    const settingName = toggle.parentElement.querySelector('span').textContent;
+                    settings.systemPreferences[settingName] = toggle.classList.contains('active');
+                });
+
+                // Save settings
+                localStorage.setItem('adminSettings', JSON.stringify(settings));
+                authManager.logActivity('System Settings Updated', 'Updated admin system settings');
+                uiManager.showToast('Đã lưu cài đặt hệ thống thành công!', 'success');
+            }
+
+            exportSettings() {
+                const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+                const dataStr = JSON.stringify(settings, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `admin_settings_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                uiManager.showToast('Đã xuất file cấu hình thành công!', 'success');
+                authManager.logActivity('Settings Export', 'Exported system configuration');
+            }
+        }
+
+        // Initialize admin profile
+        let adminProfile;
+        document.addEventListener('DOMContentLoaded', () => {
+            adminProfile = new AdminProfile();
+        });
+    </script>
+</body>
+</html> 
+

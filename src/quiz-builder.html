@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Quiz | E-Learning Platform</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    
+    <style>
+        .quiz-builder {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .builder-header {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .builder-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .builder-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .progress-info {
+            color: #666;
+            font-size: var(--font-size-small);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        /* Quiz Settings */
+        .quiz-settings {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .settings-title {
+            font-size: var(--font-size-h2);
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        /* Questions Container */
+        .questions-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .questions-header {
+            background: var(--light-gray);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .questions-title {
+            font-size: var(--font-size-h2);
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .add-question-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .questions-list {
+            padding: var(--spacing-lg);
+        }
+
+        /* Question Item */
+        .question-item {
+            background: var(--light-gray);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .question-item:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .question-item.editing {
+            border-color: var(--accent-green);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .question-number {
+            font-weight: 600;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .question-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .question-action-btn {
+            padding: var(--spacing-xs);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+            color: #666;
+        }
+
+        .question-action-btn:hover {
+            background: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .question-form {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .question-type-selector {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .type-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: var(--font-size-small);
+        }
+
+        .type-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .question-content {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .question-text-area {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Options */
+        .options-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            background: var(--white);
+        }
+
+        .options-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-sm);
+            background: var(--white);
+        }
+
+        .option-item.correct {
+            border-color: var(--accent-green);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .option-checkbox {
+            flex-shrink: 0;
+        }
+
+        .option-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: var(--spacing-xs);
+        }
+
+        .option-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .option-action-btn {
+            padding: var(--spacing-xs);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            color: #666;
+        }
+
+        .option-action-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .option-action-btn.correct {
+            color: var(--accent-green);
+        }
+
+        .add-option-btn {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px dashed var(--border-color);
+            background: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .add-option-btn:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        /* Question Preview */
+        .question-preview {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            background: var(--white);
+            margin-top: var(--spacing-md);
+        }
+
+        .preview-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        .preview-question {
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-gray);
+        }
+
+        .preview-options {
+            display: grid;
+            gap: var(--spacing-sm);
+        }
+
+        .preview-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .preview-option.correct {
+            border-color: var(--accent-green);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        /* Empty State */
+        .empty-questions {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Template Section */
+        .templates-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .template-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .template-card:hover {
+            border-color: var(--primary-blue);
+            background: rgba(44, 110, 170, 0.05);
+        }
+
+        .template-icon {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .template-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .template-desc {
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .preview-quiz {
+            padding: var(--spacing-lg);
+        }
+
+        .preview-quiz-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .preview-quiz-title {
+            font-size: var(--font-size-h1);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .preview-quiz-meta {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            font-size: var(--font-size-small);
+            color: #666;
+        }
+
+        .preview-question-item {
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+        }
+
+        .preview-question-number {
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-md);
+        }
+
+        @media (max-width: 768px) {
+            .quiz-builder {
+                margin: var(--spacing-md);
+            }
+            
+            .builder-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .action-buttons {
+                justify-content: space-between;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--spacing-md);
+            }
+            
+            .question-type-selector {
+                flex-wrap: wrap;
+            }
+            
+            .templates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="hamburger" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-logo">📚 EduPlatform</div>
+        </div>
+        <div class="header-right">
+            <div class="header-user" id="userInfo">
+                <div class="header-avatar" id="userAvatar">T</div>
+                <div class="header-user-info">
+                    <span class="header-username" id="userName">Teacher</span>
+                    <span class="header-role" id="userRole">Giảng viên</span>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="window.themeManager?.toggleTheme()" title="Chuyển đổi giao diện">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="authManager.logout()">
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-fixed" id="sidebar">
+            <div class="sidebar-nav" id="sidebarNav">
+                <!-- Menu will be populated by CommonMenuManager -->
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content main-content" id="content">
+            <div class="quiz-builder">
+                <!-- Builder Header -->
+                <div class="builder-header">
+                    <h1 class="builder-title" id="builderTitle">🔧 Tạo Quiz mới</h1>
+                    <div class="builder-actions">
+                        <div class="progress-info" id="progressInfo">
+                            Câu hỏi: <span id="questionCount">0</span> | Thời gian ước tính: <span id="estimatedTime">0</span> phút
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="quizBuilder.previewQuiz()">
+                                👁️ Xem trước
+                            </button>
+                            <button class="btn btn-secondary" onclick="quizBuilder.saveAsDraft()">
+                                💾 Lưu nháp
+                            </button>
+                            <button class="btn btn-primary" onclick="quizBuilder.publishQuiz()">
+                                🚀 Xuất bản
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Templates -->
+                <div class="templates-section" id="templatesSection">
+                    <div class="settings-title">
+                        📋 Sử dụng Template
+                    </div>
+                    <div class="templates-grid">
+                        <div class="template-card" onclick="quizBuilder.useTemplate('basic')">
+                            <div class="template-icon">📝</div>
+                            <div class="template-name">Quiz cơ bản</div>
+                            <div class="template-desc">10 câu trắc nghiệm đơn giản</div>
+                        </div>
+                        <div class="template-card" onclick="quizBuilder.useTemplate('mixed')">
+                            <div class="template-icon">🎯</div>
+                            <div class="template-name">Quiz hỗn hợp</div>
+                            <div class="template-desc">Kết hợp nhiều loại câu hỏi</div>
+                        </div>
+                        <div class="template-card" onclick="quizBuilder.useTemplate('advanced')">
+                            <div class="template-icon">🎓</div>
+                            <div class="template-name">Quiz nâng cao</div>
+                            <div class="template-desc">20 câu đa dạng và phức tạp</div>
+                        </div>
+                        <div class="template-card" onclick="quizBuilder.importFromExcel()">
+                            <div class="template-icon">📊</div>
+                            <div class="template-name">Import Excel</div>
+                            <div class="template-desc">Tải lên file Excel</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Settings -->
+                <div class="quiz-settings">
+                    <div class="settings-title">
+                        ⚙️ Cài đặt Quiz
+                    </div>
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label class="form-label">Tên Quiz *</label>
+                            <input type="text" id="quizTitle" class="form-control" placeholder="Nhập tên quiz...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Khóa học *</label>
+                            <select id="quizCourse" class="form-control">
+                                <option value="">Chọn khóa học</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Độ khó</label>
+                            <select id="quizDifficulty" class="form-control">
+                                <option value="Dễ">Dễ</option>
+                                <option value="Trung bình" selected>Trung bình</option>
+                                <option value="Khó">Khó</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Thời gian (phút)</label>
+                            <input type="number" id="quizDuration" class="form-control" value="30" min="5" max="180">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hạn chót</label>
+                            <input type="datetime-local" id="quizDeadline" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Điểm tối đa</label>
+                            <input type="number" id="quizMaxScore" class="form-control" value="100" min="1" max="1000">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mô tả Quiz</label>
+                        <textarea id="quizDescription" class="form-control" rows="3" placeholder="Mô tả ngắn gọn về nội dung quiz..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Questions Container -->
+                <div class="questions-container">
+                    <div class="questions-header">
+                        <h2 class="questions-title">❓ Câu hỏi</h2>
+                        <button class="btn btn-primary add-question-btn" onclick="quizBuilder.addQuestion()">
+                            ➕ Thêm câu hỏi
+                        </button>
+                    </div>
+                    <div class="questions-list" id="questionsList">
+                        <div class="empty-questions" id="emptyQuestions">
+                            <div class="empty-icon">❓</div>
+                            <p>Chưa có câu hỏi nào. Nhấn "Thêm câu hỏi" để bắt đầu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">👁️ Xem trước Quiz</h3>
+                <button class="modal-close" onclick="uiManager.hideModal(document.getElementById('previewModal'))">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-quiz" id="previewQuiz">
+                    <!-- Preview content will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="uiManager.hideModal(document.getElementById('previewModal'))">
+                    Đóng
+                </button>
+                <button type="button" class="btn btn-primary" onclick="quizBuilder.publishQuiz()">
+                    🚀 Xuất bản Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <p>&copy; 2025 E-Learning Platform. Phát triển bởi <strong>Tùng Huynh</strong> 🎨💻</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/components/menu-manager.js"></script>
+    <script>
+        class QuizBuilder {
+            constructor() {
+                this.currentUser = null;
+                this.courses = [];
+                this.quiz = {
+                    title: '',
+                    courseId: '',
+                    difficulty: 'Trung bình',
+                    duration: 30,
+                    deadline: '',
+                    maxScore: 100,
+                    description: '',
+                    questions: []
+                };
+                this.questionCounter = 0;
+                this.editingQuestionId = null;
+                
+                this.init();
+            }
+
+            async init() {
+                // Check authentication - only teachers and admins can access
+                if (!authManager.checkPageAccess(['teacher', 'admin'])) {
+                    return;
+                }
+
+                this.currentUser = authManager.getCurrentUser();
+                this.updateUserInfo();
+                this.bindEvents();
+                
+                await this.loadData();
+                this.setupForm();
+                this.checkForEditMode();
+            }
+
+            bindEvents() {
+                // Hamburger menu
+                document.getElementById('hamburgerBtn').addEventListener('click', () => {
+                    this.toggleSidebar();
+                });
+
+                // Form change listeners
+                document.getElementById('quizTitle').addEventListener('input', () => this.updateQuizData());
+                document.getElementById('quizCourse').addEventListener('change', () => this.updateQuizData());
+                document.getElementById('quizDifficulty').addEventListener('change', () => this.updateQuizData());
+                document.getElementById('quizDuration').addEventListener('input', () => this.updateQuizData());
+                document.getElementById('quizDeadline').addEventListener('change', () => this.updateQuizData());
+                document.getElementById('quizMaxScore').addEventListener('input', () => this.updateQuizData());
+                document.getElementById('quizDescription').addEventListener('input', () => this.updateQuizData());
+
+                // Auto-save every 30 seconds
+                setInterval(() => {
+                    this.autoSave();
+                }, 30000);
+            }
+
+            toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const content = document.getElementById('content');
+                const footer = document.getElementById('footer');
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    content.classList.toggle('sidebar-collapsed');
+                    footer.classList.toggle('sidebar-collapsed');
+                }
+            }
+
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('userName').textContent = this.currentUser.fullName || this.currentUser.username;
+                    document.getElementById('userAvatar').textContent = this.currentUser.fullName ? this.currentUser.fullName.charAt(0).toUpperCase() : 'T';
+                    document.getElementById('userRole').textContent = this.currentUser.role === 'admin' ? '👨‍💻 Quản trị viên' : '👨‍🏫 Giáo viên';
+                }
+            }
+
+            async loadData() {
+                try {
+                    // Load courses data
+                    const coursesResponse = await fetch('data/mock-courses.json');
+                    const allCourses = await coursesResponse.json();
+                    
+                    // Filter courses based on user role
+                    if (this.currentUser.role === 'teacher') {
+                        this.courses = allCourses.filter(course => course.instructor === this.currentUser.username);
+                    } else {
+                        this.courses = allCourses;
+                    }
+
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    uiManager.showToast('Có lỗi khi tải dữ liệu', 'error');
+                }
+            }
+
+            setupForm() {
+                // Populate course dropdown
+                const courseSelect = document.getElementById('quizCourse');
+                courseSelect.innerHTML = '<option value="">Chọn khóa học</option>';
+                
+                this.courses.forEach(course => {
+                    courseSelect.innerHTML += `<option value="${course.courseId}">${course.title}</option>`;
+                });
+
+                // Set default deadline (7 days from now)
+                const deadline = new Date();
+                deadline.setDate(deadline.getDate() + 7);
+                document.getElementById('quizDeadline').value = deadline.toISOString().slice(0, 16);
+                
+                this.updateProgress();
+            }
+
+            checkForEditMode() {
+                // Check if editing existing quiz
+                const urlParams = new URLSearchParams(window.location.search);
+                const quizId = urlParams.get('id');
+                
+                if (quizId) {
+                    this.loadQuizForEdit(quizId);
+                    document.getElementById('builderTitle').textContent = '✏️ Chỉnh sửa Quiz';
+                    document.getElementById('templatesSection').style.display = 'none';
+                }
+            }
+
+            loadQuizForEdit(quizId) {
+                // Mock loading quiz data for edit
+                const mockQuiz = {
+                    id: quizId,
+                    title: 'Quiz JavaScript Cơ bản',
+                    courseId: 'course_1',
+                    difficulty: 'Trung bình',
+                    duration: 45,
+                    deadline: '2024-12-31T23:59',
+                    maxScore: 100,
+                    description: 'Quiz kiểm tra kiến thức JavaScript cơ bản',
+                    questions: [
+                        {
+                            id: 'q1',
+                            type: 'radio',
+                            question: 'JavaScript là ngôn ngữ lập trình gì?',
+                            options: [
+                                { text: 'Compiled language', correct: false },
+                                { text: 'Interpreted language', correct: true },
+                                { text: 'Assembly language', correct: false },
+                                { text: 'Machine language', correct: false }
+                            ],
+                            points: 10
+                        }
+                    ]
+                };
+
+                this.quiz = mockQuiz;
+                this.populateForm();
+                this.renderQuestions();
+            }
+
+            populateForm() {
+                document.getElementById('quizTitle').value = this.quiz.title;
+                document.getElementById('quizCourse').value = this.quiz.courseId;
+                document.getElementById('quizDifficulty').value = this.quiz.difficulty;
+                document.getElementById('quizDuration').value = this.quiz.duration;
+                document.getElementById('quizDeadline').value = this.quiz.deadline;
+                document.getElementById('quizMaxScore').value = this.quiz.maxScore;
+                document.getElementById('quizDescription').value = this.quiz.description;
+            }
+
+            updateQuizData() {
+                this.quiz.title = document.getElementById('quizTitle').value;
+                this.quiz.courseId = document.getElementById('quizCourse').value;
+                this.quiz.difficulty = document.getElementById('quizDifficulty').value;
+                this.quiz.duration = parseInt(document.getElementById('quizDuration').value);
+                this.quiz.deadline = document.getElementById('quizDeadline').value;
+                this.quiz.maxScore = parseInt(document.getElementById('quizMaxScore').value);
+                this.quiz.description = document.getElementById('quizDescription').value;
+                
+                this.updateProgress();
+            }
+
+            updateProgress() {
+                document.getElementById('questionCount').textContent = this.quiz.questions.length;
+                
+                // Estimate time (2 minutes per question + base time)
+                const estimatedTime = Math.max(this.quiz.duration, this.quiz.questions.length * 2);
+                document.getElementById('estimatedTime').textContent = estimatedTime;
+            }
+
+            addQuestion() {
+                this.questionCounter++;
+                const questionId = `q_${this.questionCounter}`;
+                
+                const newQuestion = {
+                    id: questionId,
+                    type: 'radio',
+                    question: '',
+                    options: [
+                        { text: '', correct: false },
+                        { text: '', correct: false }
+                    ],
+                    points: 10
+                };
+
+                this.quiz.questions.push(newQuestion);
+                this.renderQuestions();
+                this.editQuestion(questionId);
+                this.updateProgress();
+                
+                // Scroll to new question
+                setTimeout(() => {
+                    const questionElement = document.getElementById(`question-${questionId}`);
+                    if (questionElement) {
+                        questionElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 100);
+            }
+
+            renderQuestions() {
+                const container = document.getElementById('questionsList');
+                const emptyState = document.getElementById('emptyQuestions');
+
+                if (this.quiz.questions.length === 0) {
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                
+                const questionsHTML = this.quiz.questions.map((question, index) => {
+                    const isEditing = this.editingQuestionId === question.id;
+                    
+                    return `
+                        <div class="question-item ${isEditing ? 'editing' : ''}" id="question-${question.id}">
+                            <div class="question-header">
+                                <div class="question-number">
+                                    ❓ Câu hỏi ${index + 1}
+                                    <span style="color: #666; font-weight: normal; font-size: var(--font-size-small);">
+                                        (${question.points} điểm)
+                                    </span>
+                                </div>
+                                <div class="question-actions">
+                                    <button class="question-action-btn" onclick="quizBuilder.editQuestion('${question.id}')" title="Chỉnh sửa">
+                                        ✏️
+                                    </button>
+                                    <button class="question-action-btn" onclick="quizBuilder.moveQuestionUp(${index})" title="Di chuyển lên" ${index === 0 ? 'disabled' : ''}>
+                                        ⬆️
+                                    </button>
+                                    <button class="question-action-btn" onclick="quizBuilder.moveQuestionDown(${index})" title="Di chuyển xuống" ${index === this.quiz.questions.length - 1 ? 'disabled' : ''}>
+                                        ⬇️
+                                    </button>
+                                    <button class="question-action-btn" onclick="quizBuilder.duplicateQuestion('${question.id}')" title="Nhân bản">
+                                        📋
+                                    </button>
+                                    <button class="question-action-btn" onclick="quizBuilder.deleteQuestion('${question.id}')" title="Xóa">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            ${isEditing ? this.renderQuestionForm(question) : this.renderQuestionPreview(question)}
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = questionsHTML;
+            }
+
+            renderQuestionForm(question) {
+                return `
+                    <div class="question-form">
+                        <div class="question-type-selector">
+                            <button class="type-btn ${question.type === 'radio' ? 'active' : ''}" onclick="quizBuilder.changeQuestionType('${question.id}', 'radio')">
+                                📻 Một đáp án
+                            </button>
+                            <button class="type-btn ${question.type === 'checkbox' ? 'active' : ''}" onclick="quizBuilder.changeQuestionType('${question.id}', 'checkbox')">
+                                ☑️ Nhiều đáp án
+                            </button>
+                            <button class="type-btn ${question.type === 'text' ? 'active' : ''}" onclick="quizBuilder.changeQuestionType('${question.id}', 'text')">
+                                📝 Tự luận
+                            </button>
+                        </div>
+                        
+                        <div class="question-content">
+                            <div class="form-group">
+                                <label class="form-label">Nội dung câu hỏi *</label>
+                                <textarea 
+                                    class="form-control question-text-area" 
+                                    placeholder="Nhập nội dung câu hỏi..."
+                                    onchange="quizBuilder.updateQuestion('${question.id}', 'question', this.value)"
+                                >${question.question}</textarea>
+                            </div>
+                            
+                            ${question.type !== 'text' ? this.renderOptionsForm(question) : ''}
+                            
+                            <div class="form-group" style="max-width: 200px;">
+                                <label class="form-label">Điểm số</label>
+                                <input 
+                                    type="number" 
+                                    class="form-control" 
+                                    value="${question.points}" 
+                                    min="1" 
+                                    max="100"
+                                    onchange="quizBuilder.updateQuestion('${question.id}', 'points', parseInt(this.value))"
+                                >
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-md);">
+                            <button class="btn btn-primary" onclick="quizBuilder.saveQuestion('${question.id}')">
+                                💾 Lưu câu hỏi
+                            </button>
+                            <button class="btn btn-secondary" onclick="quizBuilder.cancelEdit()">
+                                ❌ Hủy
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderOptionsForm(question) {
+                const isMultiple = question.type === 'checkbox';
+                
+                return `
+                    <div class="options-container">
+                        <div class="options-title">
+                            ${isMultiple ? '☑️ Các đáp án (có thể chọn nhiều đáp án đúng)' : '📻 Các đáp án (chọn 1 đáp án đúng)'}
+                        </div>
+                        
+                        ${question.options.map((option, index) => `
+                            <div class="option-item ${option.correct ? 'correct' : ''}">
+                                <input 
+                                    type="${isMultiple ? 'checkbox' : 'radio'}" 
+                                    name="correct-${question.id}" 
+                                    class="option-checkbox"
+                                    ${option.correct ? 'checked' : ''}
+                                    onchange="quizBuilder.updateOptionCorrect('${question.id}', ${index}, this.checked, '${question.type}')"
+                                >
+                                <input 
+                                    type="text" 
+                                    class="option-input" 
+                                    value="${option.text}" 
+                                    placeholder="Nhập đáp án..."
+                                    onchange="quizBuilder.updateOption('${question.id}', ${index}, this.value)"
+                                >
+                                <div class="option-actions">
+                                    <button class="option-action-btn correct" onclick="quizBuilder.toggleOptionCorrect('${question.id}', ${index})" title="Đáp án đúng">
+                                        ✅
+                                    </button>
+                                    <button class="option-action-btn" onclick="quizBuilder.deleteOption('${question.id}', ${index})" title="Xóa đáp án" ${question.options.length <= 2 ? 'disabled' : ''}>
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                        
+                        <button class="add-option-btn" onclick="quizBuilder.addOption('${question.id}')" ${question.options.length >= 6 ? 'disabled' : ''}>
+                            ➕ Thêm đáp án
+                        </button>
+                    </div>
+                `;
+            }
+
+            renderQuestionPreview(question) {
+                return `
+                    <div class="question-preview">
+                        <div class="preview-title">👁️ Xem trước</div>
+                        <div class="preview-question">${question.question || '<em>Chưa có nội dung câu hỏi</em>'}</div>
+                        
+                        ${question.type !== 'text' ? `
+                            <div class="preview-options">
+                                ${question.options.map(option => `
+                                    <div class="preview-option ${option.correct ? 'correct' : ''}">
+                                        <input type="${question.type}" disabled ${option.correct ? 'checked' : ''}>
+                                        <span>${option.text || '<em>Chưa có nội dung đáp án</em>'}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<p><em>Câu hỏi tự luận - học viên sẽ nhập câu trả lời</em></p>'}
+                    </div>
+                `;
+            }
+
+            editQuestion(questionId) {
+                this.editingQuestionId = questionId;
+                this.renderQuestions();
+            }
+
+            saveQuestion(questionId) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (!question) return;
+
+                // Validate question
+                if (!question.question.trim()) {
+                    uiManager.showToast('Vui lòng nhập nội dung câu hỏi', 'warning');
+                    return;
+                }
+
+                if (question.type !== 'text') {
+                    const hasValidOptions = question.options.some(opt => opt.text.trim());
+                    const hasCorrectAnswer = question.options.some(opt => opt.correct);
+
+                    if (!hasValidOptions) {
+                        uiManager.showToast('Vui lòng nhập ít nhất một đáp án', 'warning');
+                        return;
+                    }
+
+                    if (!hasCorrectAnswer) {
+                        uiManager.showToast('Vui lòng chọn ít nhất một đáp án đúng', 'warning');
+                        return;
+                    }
+                }
+
+                this.editingQuestionId = null;
+                this.renderQuestions();
+                uiManager.showToast('Đã lưu câu hỏi', 'success');
+            }
+
+            cancelEdit() {
+                this.editingQuestionId = null;
+                this.renderQuestions();
+            }
+
+            updateQuestion(questionId, field, value) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (question) {
+                    question[field] = value;
+                }
+            }
+
+            changeQuestionType(questionId, newType) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (!question) return;
+
+                question.type = newType;
+                
+                if (newType === 'text') {
+                    question.options = [];
+                } else if (question.options.length === 0) {
+                    question.options = [
+                        { text: '', correct: false },
+                        { text: '', correct: false }
+                    ];
+                }
+
+                // If changing from checkbox to radio, ensure only one correct answer
+                if (newType === 'radio') {
+                    let foundCorrect = false;
+                    question.options.forEach(option => {
+                        if (option.correct && foundCorrect) {
+                            option.correct = false;
+                        } else if (option.correct) {
+                            foundCorrect = true;
+                        }
+                    });
+                }
+
+                this.renderQuestions();
+            }
+
+            updateOption(questionId, optionIndex, text) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (question && question.options[optionIndex]) {
+                    question.options[optionIndex].text = text;
+                }
+            }
+
+            updateOptionCorrect(questionId, optionIndex, isCorrect, questionType) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (!question || !question.options[optionIndex]) return;
+
+                if (questionType === 'radio' && isCorrect) {
+                    // For radio, only one option can be correct
+                    question.options.forEach((option, index) => {
+                        option.correct = index === optionIndex;
+                    });
+                } else {
+                    question.options[optionIndex].correct = isCorrect;
+                }
+
+                this.renderQuestions();
+            }
+
+            toggleOptionCorrect(questionId, optionIndex) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (!question || !question.options[optionIndex]) return;
+
+                const option = question.options[optionIndex];
+                const newCorrect = !option.correct;
+
+                if (question.type === 'radio' && newCorrect) {
+                    // For radio, only one option can be correct
+                    question.options.forEach((opt, index) => {
+                        opt.correct = index === optionIndex;
+                    });
+                } else {
+                    option.correct = newCorrect;
+                }
+
+                this.renderQuestions();
+            }
+
+            addOption(questionId) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (question && question.options.length < 6) {
+                    question.options.push({ text: '', correct: false });
+                    this.renderQuestions();
+                }
+            }
+
+            deleteOption(questionId, optionIndex) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (question && question.options.length > 2) {
+                    question.options.splice(optionIndex, 1);
+                    this.renderQuestions();
+                }
+            }
+
+            moveQuestionUp(index) {
+                if (index > 0) {
+                    [this.quiz.questions[index], this.quiz.questions[index - 1]] = 
+                    [this.quiz.questions[index - 1], this.quiz.questions[index]];
+                    this.renderQuestions();
+                }
+            }
+
+            moveQuestionDown(index) {
+                if (index < this.quiz.questions.length - 1) {
+                    [this.quiz.questions[index], this.quiz.questions[index + 1]] = 
+                    [this.quiz.questions[index + 1], this.quiz.questions[index]];
+                    this.renderQuestions();
+                }
+            }
+
+            duplicateQuestion(questionId) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (!question) return;
+
+                this.questionCounter++;
+                const newQuestion = {
+                    ...JSON.parse(JSON.stringify(question)),
+                    id: `q_${this.questionCounter}`
+                };
+
+                const index = this.quiz.questions.findIndex(q => q.id === questionId);
+                this.quiz.questions.splice(index + 1, 0, newQuestion);
+                
+                this.renderQuestions();
+                this.updateProgress();
+                uiManager.showToast('Đã nhân bản câu hỏi', 'success');
+            }
+
+            deleteQuestion(questionId) {
+                const question = this.quiz.questions.find(q => q.id === questionId);
+                if (!question) return;
+
+                uiManager.showConfirm(
+                    'Bạn có chắc muốn xóa câu hỏi này?',
+                    () => {
+                        this.quiz.questions = this.quiz.questions.filter(q => q.id !== questionId);
+                        this.renderQuestions();
+                        this.updateProgress();
+                        uiManager.showToast('Đã xóa câu hỏi', 'success');
+                    }
+                );
+            }
+
+            useTemplate(templateType) {
+                let templateQuestions = [];
+
+                switch (templateType) {
+                    case 'basic':
+                        templateQuestions = this.getBasicTemplate();
+                        break;
+                    case 'mixed':
+                        templateQuestions = this.getMixedTemplate();
+                        break;
+                    case 'advanced':
+                        templateQuestions = this.getAdvancedTemplate();
+                        break;
+                }
+
+                if (templateQuestions.length > 0) {
+                    uiManager.showConfirm(
+                        `Sử dụng template sẽ thay thế tất cả câu hỏi hiện tại. Bạn có chắc chắn?`,
+                        () => {
+                            this.quiz.questions = templateQuestions;
+                            this.questionCounter = templateQuestions.length;
+                            this.renderQuestions();
+                            this.updateProgress();
+                            uiManager.showToast(`Đã áp dụng template ${templateType}`, 'success');
+                        }
+                    );
+                }
+            }
+
+            getBasicTemplate() {
+                return [
+                    {
+                        id: 'template_q1',
+                        type: 'radio',
+                        question: 'Câu hỏi mẫu 1: Đây là câu hỏi trắc nghiệm một đáp án?',
+                        options: [
+                            { text: 'Đáp án A', correct: false },
+                            { text: 'Đáp án B', correct: true },
+                            { text: 'Đáp án C', correct: false },
+                            { text: 'Đáp án D', correct: false }
+                        ],
+                        points: 10
+                    },
+                    {
+                        id: 'template_q2',
+                        type: 'checkbox',
+                        question: 'Câu hỏi mẫu 2: Đây là câu hỏi nhiều đáp án?',
+                        options: [
+                            { text: 'Đáp án A', correct: true },
+                            { text: 'Đáp án B', correct: false },
+                            { text: 'Đáp án C', correct: true },
+                            { text: 'Đáp án D', correct: false }
+                        ],
+                        points: 10
+                    }
+                ];
+            }
+
+            getMixedTemplate() {
+                return [
+                    ...this.getBasicTemplate(),
+                    {
+                        id: 'template_q3',
+                        type: 'text',
+                        question: 'Câu hỏi mẫu 3: Đây là câu hỏi tự luận?',
+                        options: [],
+                        points: 20
+                    }
+                ];
+            }
+
+            getAdvancedTemplate() {
+                const basic = this.getBasicTemplate();
+                const questions = [];
+                
+                for (let i = 0; i < 10; i++) {
+                    const template = basic[i % basic.length];
+                    questions.push({
+                        ...JSON.parse(JSON.stringify(template)),
+                        id: `template_q${i + 1}`,
+                        question: `Câu hỏi ${i + 1}: ${template.question}`
+                    });
+                }
+                
+                return questions;
+            }
+
+            importFromExcel() {
+                this.showImportExcelModal();
+            }
+
+            showImportExcelModal() {
+                const modalHtml = `
+                    <div class="modal-overlay" id="importExcelModal">
+                        <div class="modal-container" style="max-width: 600px;">
+                            <div class="modal-header">
+                                <h3>📊 Import câu hỏi từ Excel</h3>
+                                <button class="modal-close" onclick="document.getElementById('importExcelModal').remove()">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label class="form-label">📎 Chọn file Excel</label>
+                                    <input type="file" accept=".xlsx,.xls" class="form-control" id="excelFileInput">
+                                    <small class="form-help">Hỗ trợ định dạng: .xlsx, .xls</small>
+                                </div>
+                                
+                                <div class="import-template">
+                                    <h4>📋 Template Excel mẫu:</h4>
+                                    <div class="template-preview">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Question</th>
+                                                    <th>Type</th>
+                                                    <th>Option A</th>
+                                                    <th>Option B</th>
+                                                    <th>Option C</th>
+                                                    <th>Option D</th>
+                                                    <th>Correct</th>
+                                                    <th>Explanation</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>JavaScript là gì?</td>
+                                                    <td>multiple-choice</td>
+                                                    <td>Ngôn ngữ lập trình</td>
+                                                    <td>Framework</td>
+                                                    <td>Database</td>
+                                                    <td>Hệ điều hành</td>
+                                                    <td>A</td>
+                                                    <td>JS là ngôn ngữ lập trình</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button class="btn btn-secondary" onclick="quizBuilder.downloadTemplate()">
+                                        📥 Tải template mẫu
+                                    </button>
+                                </div>
+
+                                <div class="import-options">
+                                    <h4>⚙️ Tùy chọn import:</h4>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" checked> Ghi đè câu hỏi hiện tại
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" checked> Tự động đánh số câu hỏi
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox"> Bỏ qua câu hỏi lỗi
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" onclick="document.getElementById('importExcelModal').remove()">
+                                    Hủy
+                                </button>
+                                <button class="btn btn-primary" onclick="quizBuilder.processExcelImport()">
+                                    📊 Import câu hỏi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            }
+
+            downloadTemplate() {
+                // Mock download template
+                const csvContent = "Question,Type,Option A,Option B,Option C,Option D,Correct,Explanation\n" +
+                    "JavaScript là gì?,multiple-choice,Ngôn ngữ lập trình,Framework,Database,Hệ điều hành,A,JS là ngôn ngữ lập trình\n" +
+                    "HTML viết tắt của gì?,multiple-choice,HyperText Markup Language,Home Tool Markup Language,Hyperlinks Text Mark Language,None,A,HTML là HyperText Markup Language";
+                
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'quiz-template.csv';
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+                uiManager.showToast('Đã tải template mẫu', 'success');
+            }
+
+            processExcelImport() {
+                const fileInput = document.getElementById('excelFileInput');
+                
+                if (!fileInput.files[0]) {
+                    uiManager.showToast('Vui lòng chọn file Excel', 'error');
+                    return;
+                }
+                
+                // Mock processing
+                uiManager.showToast('Đang xử lý file Excel...', 'info');
+                
+                setTimeout(() => {
+                    // Mock imported questions
+                    const importedQuestions = [
+                        {
+                            question: "JavaScript được phát triển bởi ai?",
+                            type: "multiple-choice",
+                            options: ["Brendan Eich", "Tim Berners-Lee", "James Gosling", "Anders Hejlsberg"],
+                            correctAnswer: 0,
+                            explanation: "JavaScript được tạo ra bởi Brendan Eich tại Netscape"
+                        },
+                        {
+                            question: "CSS viết tắt của gì?",
+                            type: "multiple-choice",
+                            options: ["Cascading Style Sheets", "Computer Style Sheets", "Creative Style Sheets", "Colorful Style Sheets"],
+                            correctAnswer: 0,
+                            explanation: "CSS là Cascading Style Sheets"
+                        }
+                    ];
+                    
+                    // Add to current questions
+                    this.quiz.questions.push(...importedQuestions);
+                    this.renderQuestions();
+                    
+                    document.getElementById('importExcelModal').remove();
+                    uiManager.showToast(`Đã import thành công ${importedQuestions.length} câu hỏi`, 'success');
+                }, 2000);
+            }
+
+            previewQuiz() {
+                if (!this.validateQuiz()) {
+                    return;
+                }
+
+                const previewContainer = document.getElementById('previewQuiz');
+                const course = this.courses.find(c => c.courseId === this.quiz.courseId);
+                
+                previewContainer.innerHTML = `
+                    <div class="preview-quiz-header">
+                        <div class="preview-quiz-title">${this.quiz.title}</div>
+                        <div class="preview-quiz-meta">
+                            <span>📚 ${course ? course.title : 'Khóa học'}</span>
+                            <span>⏱️ ${this.quiz.duration} phút</span>
+                            <span>❓ ${this.quiz.questions.length} câu hỏi</span>
+                            <span>🎯 ${this.quiz.maxScore} điểm</span>
+                        </div>
+                    </div>
+                    
+                    ${this.quiz.description ? `<p style="margin-bottom: var(--spacing-lg); color: #666;">${this.quiz.description}</p>` : ''}
+                    
+                    ${this.quiz.questions.map((question, index) => `
+                        <div class="preview-question-item">
+                            <div class="preview-question-number">Câu ${index + 1} (${question.points} điểm):</div>
+                            <div style="margin-bottom: var(--spacing-md); font-weight: 500;">${question.question}</div>
+                            
+                            ${question.type === 'text' ? 
+                                '<p><em>Câu hỏi tự luận - học viên sẽ nhập câu trả lời</em></p>' :
+                                `<div class="preview-options">
+                                    ${question.options.map((option, optIndex) => `
+                                        <div class="preview-option ${option.correct ? 'correct' : ''}">
+                                            <input type="${question.type}" name="preview_q${index}" disabled ${option.correct ? 'checked' : ''}>
+                                            <span>${String.fromCharCode(65 + optIndex)}. ${option.text}</span>
+                                            ${option.correct ? '<span style="color: var(--accent-green); margin-left: auto;">✓</span>' : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>`
+                            }
+                        </div>
+                    `).join('')}
+                `;
+
+                uiManager.showModal('previewModal');
+            }
+
+            validateQuiz() {
+                if (!this.quiz.title.trim()) {
+                    uiManager.showToast('Vui lòng nhập tên quiz', 'warning');
+                    return false;
+                }
+
+                if (!this.quiz.courseId) {
+                    uiManager.showToast('Vui lòng chọn khóa học', 'warning');
+                    return false;
+                }
+
+                if (this.quiz.questions.length === 0) {
+                    uiManager.showToast('Vui lòng thêm ít nhất một câu hỏi', 'warning');
+                    return false;
+                }
+
+                // Validate each question
+                for (let i = 0; i < this.quiz.questions.length; i++) {
+                    const question = this.quiz.questions[i];
+                    
+                    if (!question.question.trim()) {
+                        uiManager.showToast(`Câu hỏi ${i + 1} chưa có nội dung`, 'warning');
+                        return false;
+                    }
+
+                    if (question.type !== 'text') {
+                        const hasValidOptions = question.options.some(opt => opt.text.trim());
+                        const hasCorrectAnswer = question.options.some(opt => opt.correct);
+
+                        if (!hasValidOptions) {
+                            uiManager.showToast(`Câu hỏi ${i + 1} chưa có đáp án`, 'warning');
+                            return false;
+                        }
+
+                        if (!hasCorrectAnswer) {
+                            uiManager.showToast(`Câu hỏi ${i + 1} chưa có đáp án đúng`, 'warning');
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            saveAsDraft() {
+                if (!this.quiz.title.trim()) {
+                    uiManager.showToast('Vui lòng nhập tên quiz để lưu nháp', 'warning');
+                    return;
+                }
+
+                this.updateQuizData();
+                
+                // Mock save as draft
+                uiManager.showToast('Đã lưu quiz dưới dạng nháp', 'success');
+                
+                // Log activity
+                authManager.logActivity('Quiz Draft Saved', `Saved draft: ${this.quiz.title}`);
+            }
+
+            publishQuiz() {
+                if (!this.validateQuiz()) {
+                    return;
+                }
+
+                this.updateQuizData();
+
+                uiManager.showConfirm(
+                    'Bạn có chắc muốn xuất bản quiz này? Sau khi xuất bản, học viên có thể đăng ký và làm bài.',
+                    () => {
+                        // Mock publish
+                        uiManager.showToast('Quiz đã được xuất bản thành công!', 'success');
+                        
+                        // Log activity
+                        authManager.logActivity('Quiz Published', `Published quiz: ${this.quiz.title}`);
+                        
+                        // Redirect to quiz list
+                        setTimeout(() => {
+                            window.location.href = 'quizzes.html';
+                        }, 2000);
+                    }
+                );
+            }
+
+            autoSave() {
+                if (this.quiz.title.trim() && this.quiz.questions.length > 0) {
+                    this.updateQuizData();
+                    console.log('Auto-saved quiz:', this.quiz.title);
+                }
+            }
+        }
+
+        // Initialize quiz builder when DOM is loaded
+        let quizBuilder;
+        document.addEventListener('DOMContentLoaded', () => {
+            quizBuilder = new QuizBuilder();
+        });
+    </script>
+</body>
+</html> 
